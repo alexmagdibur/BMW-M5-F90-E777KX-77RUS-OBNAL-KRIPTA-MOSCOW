@@ -14,6 +14,8 @@ public class ConsoleMenu {
         System.out.println("7. Просмотреть пилотов");
         System.out.println("8. Просмотреть инженеров");
         System.out.println("9. Просмотреть статистику гонок");
+        System.out.println("10. Просмотреть другие команды");
+        System.out.println("11. Просмотреть результаты последней гонки");
         System.out.println("0. Выход");
         System.out.print("Выберите пункт: ");
     }

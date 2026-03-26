@@ -14,6 +14,11 @@ import domain.race.RaceResult;
 import domain.race.RaceTrack;
 import service.RaceService;
 import service.WearService;
+import domain.race.RaceStanding;
+import service.BotService;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class Game {
 
@@ -27,6 +32,11 @@ public class Game {
     private final Team team;
     private final Car car;
     private final WearService wearService;
+    private final BotService botService;
+    private final List<Team> botTeams;
+    private final List<Car> botCars;
+    private List<RaceStanding> lastRaceStandings;
+
 
     public Game() {
         this.menu = new ConsoleMenu();
@@ -39,6 +49,15 @@ public class Game {
         this.team = new Team("Команда 1", 10000);
         this.car = new Car("Болид 1");
         this.wearService = new WearService();
+        this.botService = new BotService();
+        this.botTeams = botService.createBotTeams(3);
+        this.botCars = new ArrayList<>();
+        this.lastRaceStandings = new ArrayList<>();
+
+        for (Team botTeam : botTeams) {
+            Car botCar = botService.prepareBotCar(botTeam);
+            botCars.add(botCar);
+        }
     }
 
     public void run() {
@@ -60,6 +79,8 @@ public class Game {
             case 7 -> showPilots();
             case 8 -> showEngineers();
             case 9 -> showRaceStatistics();
+            case 10 -> showOtherTeams();
+            case 11 -> showLastRaceResults();
             case 0 -> stopGame();
             default -> System.out.println("Неверный ввод");
         }
@@ -108,25 +129,152 @@ public class Game {
         Pilot pilot = team.getPilots().get(0);
         Engineer engineer = team.getEngineers().get(0);
 
-        RaceResult result = raceService.simulateRace(car, pilot, engineer, selectedTrack, acceptedRisk);
-        team.addRaceResult(result);
+        List<RaceStanding> standings = new ArrayList<>();
 
-        if (result.isFinished()) {
+        RaceResult playerResult = raceService.simulateRace(car, pilot, engineer, selectedTrack, acceptedRisk);
+        team.addRaceResult(playerResult);
+
+        if (playerResult.isFinished()) {
             wearService.applyRaceWear(car);
         }
+
+        standings.add(new RaceStanding(team.getName(), playerResult));
+
+        for (int i = 0; i < botTeams.size(); i++) {
+            Team botTeam = botTeams.get(i);
+            Car botCar = botCars.get(i);
+
+            RaceResult botResult = botService.runBotRace(botTeam, botCar, selectedTrack, raceService);
+            botTeam.addRaceResult(botResult);
+
+            standings.add(new RaceStanding(botTeam.getName(), botResult));
+        }
+
+        standings.sort((a, b) -> {
+            boolean aFinished = a.getResult().isFinished();
+            boolean bFinished = b.getResult().isFinished();
+
+            if (aFinished && bFinished) {
+                return Double.compare(a.getResult().getFinalTime(), b.getResult().getFinalTime());
+            }
+            if (aFinished) {
+                return -1;
+            }
+            if (bFinished) {
+                return 1;
+            }
+            return 0;
+        });
+
+        this.lastRaceStandings = standings;
+
+        awardPrizeMoney(standings);
 
         System.out.println("\n=== РЕЗУЛЬТАТ ГОНКИ ===");
         System.out.println("Трасса: " + selectedTrack.getName());
         System.out.println("Пилот: " + pilot.getName());
         System.out.println("Инженер: " + engineer.getName());
-        System.out.println("Статус: " + result.getStatus());
+        System.out.println("Статус: " + playerResult.getStatus());
 
-        if (result.isFinished()) {
-            System.out.println("Итоговое время: " + String.format("%.2f", result.getFinalTime()));
+        if (playerResult.isFinished()) {
+            System.out.println("Итоговое время: " + String.format("%.2f", playerResult.getFinalTime()));
+        }
+
+        System.out.println("\n=== ОБЩАЯ ТАБЛИЦА ===");
+        for (int i = 0; i < standings.size(); i++) {
+            RaceStanding standing = standings.get(i);
+            RaceResult result = standing.getResult();
+
+            if (result.isFinished()) {
+                System.out.println((i + 1) + ". " + standing.getTeamName()
+                        + " | " + String.format("%.2f", result.getFinalTime())
+                        + " | " + result.getStatus());
+            } else {
+                System.out.println((i + 1) + ". " + standing.getTeamName()
+                        + " | DNF | " + result.getStatus());
+            }
         }
 
         System.out.println("\nСостояние болида после гонки:");
         wearService.printWearReport(car);
+    }
+
+    private void awardPrizeMoney(List<RaceStanding> standings) {
+        for (int i = 0; i < standings.size(); i++) {
+            int prize = switch (i) {
+                case 0 -> 3000;
+                case 1 -> 2000;
+                case 2 -> 1000;
+                default -> 0;
+            };
+
+            if (prize == 0) {
+                continue;
+            }
+
+            String teamName = standings.get(i).getTeamName();
+
+            if (team.getName().equals(teamName)) {
+                team.earn(prize);
+            } else {
+                for (Team botTeam : botTeams) {
+                    if (botTeam.getName().equals(teamName)) {
+                        botTeam.earn(prize);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void showOtherTeams() {
+        System.out.println("\n=== ДРУГИЕ КОМАНДЫ ===");
+
+        if (botTeams.isEmpty()) {
+            System.out.println("Других команд пока нет.");
+            return;
+        }
+
+        for (int i = 0; i < botTeams.size(); i++) {
+            Team bot = botTeams.get(i);
+            Car botCar = botCars.get(i);
+
+            System.out.println("\nКоманда: " + bot.getName());
+            System.out.println("Бюджет: " + bot.getBudget());
+
+            if (!bot.getPilots().isEmpty()) {
+                System.out.println("Пилот: " + bot.getPilots().get(0));
+            }
+
+            if (!bot.getEngineers().isEmpty()) {
+                System.out.println("Инженер: " + bot.getEngineers().get(0));
+            }
+
+            System.out.println(botCar);
+        }
+    }
+
+    private void showLastRaceResults() {
+        System.out.println("\n=== РЕЗУЛЬТАТЫ ПОСЛЕДНЕЙ ГОНКИ ===");
+
+        if (lastRaceStandings == null || lastRaceStandings.isEmpty()) {
+            System.out.println("Гонок пока не было.");
+            return;
+        }
+
+        for (int i = 0; i < lastRaceStandings.size(); i++) {
+            RaceStanding standing = lastRaceStandings.get(i);
+            RaceResult result = standing.getResult();
+
+            if (result.isFinished()) {
+                System.out.println((i + 1) + ". " + standing.getTeamName()
+                        + " | " + String.format("%.2f", result.getFinalTime())
+                        + " | " + result.getStatus());
+            } else {
+                System.out.println((i + 1) + ". " + standing.getTeamName()
+                        + " | DNF | " + result.getStatus());
+            }
+        }
     }
 
     private void showRaceStatistics() {

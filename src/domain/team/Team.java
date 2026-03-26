@@ -47,6 +47,12 @@ public class Team {
         }
     }
 
+    public void earn(int amount) {
+        if (amount > 0) {
+            budget += amount;
+        }
+    }
+
     public void addCar(Car car) {
         cars.add(car);
     }
