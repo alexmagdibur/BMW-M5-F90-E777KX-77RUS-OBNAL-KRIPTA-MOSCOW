@@ -19,6 +19,8 @@ public class MarketService {
         availableComponents.add(new Component(3, "Подвеска от Toyota Land Cruiser 200", 600, ComponentType.SUSPENSION));
         availableComponents.add(new Component(4, "Обвесы BMW M5 F90 M-Sport", 500, ComponentType.AEROKIT));
         availableComponents.add(new Component(5, "Шины Michelin Pilot Sport", 300, ComponentType.TIRES));
+        availableComponents.add(new Component(6, "Тонировка в круг", 200, ComponentType.EXTRA));
+        availableComponents.add(new Component(7, "Блатные номера Е777КХ 77RUS", 350, ComponentType.EXTRA));
     }
 
     public void listComponents() {

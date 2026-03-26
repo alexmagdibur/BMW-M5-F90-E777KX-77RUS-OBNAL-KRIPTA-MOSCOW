@@ -45,6 +45,15 @@ public class AssemblyService {
                 }
                 break;
 
+            case EXTRA:
+                for (Component extra : car.getExtras()) {
+                    if (extra.getName().equalsIgnoreCase(component.getName())) {
+                        System.out.println("Такой доп уже установлен!");
+                        return false;
+                    }
+                }
+                break;
+
             default:
                 return false;
         }
@@ -74,6 +83,10 @@ public class AssemblyService {
 
             case TIRES:
                 car.setTires(component);
+                break;
+
+            case EXTRA:
+                car.addExtra(component);
                 break;
 
             default:

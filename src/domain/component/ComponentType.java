@@ -5,5 +5,6 @@ public enum ComponentType {
     TRANSMISSION,
     SUSPENSION,
     AEROKIT,
-    TIRES
+    TIRES,
+    EXTRA
 }

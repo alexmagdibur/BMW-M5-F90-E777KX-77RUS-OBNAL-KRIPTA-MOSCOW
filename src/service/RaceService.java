@@ -125,8 +125,25 @@ public class RaceService {
         score += getComponentScore(car.getSuspension());
         score += getComponentScore(car.getAerokit());
         score += getComponentScore(car.getTires());
+        score += getExtraScore(car);
 
         return score;
+    }
+
+    private int getExtraScore(Car car) {
+        int bonus = 0;
+
+        for (Component extra : car.getExtras()) {
+            if (extra.getName().equalsIgnoreCase("Тонировка в круг")) {
+                bonus += 5;
+            } else if (extra.getName().equalsIgnoreCase("Блатные номера Е777КХ 77RUS")) {
+                bonus += 7;
+            } else {
+                bonus += 3;
+            }
+        }
+
+        return bonus;
     }
 
     private int getComponentScore(Component component) {
@@ -140,6 +157,7 @@ public class RaceService {
             case SUSPENSION -> 60;
             case AEROKIT -> 50;
             case TIRES -> 40;
+            case EXTRA -> 0;
         };
     }
 }
