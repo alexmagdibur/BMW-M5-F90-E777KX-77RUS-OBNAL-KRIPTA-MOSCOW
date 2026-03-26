@@ -15,10 +15,12 @@ public class RaceService {
 
     private final List<RaceTrack> tracks;
     private final Random random;
+    private final WearService wearService;
 
     public RaceService() {
         this.tracks = new ArrayList<>();
         this.random = new Random();
+        this.wearService = new WearService();
         fillTracks();
     }
 
@@ -43,7 +45,36 @@ public class RaceService {
         return tracks.get(choice - 1);
     }
 
-    public RaceResult simulateRace(Car car, Pilot pilot, Engineer engineer, RaceTrack track) {
+    public RaceResult simulateRace(Car car, Pilot pilot, Engineer engineer, RaceTrack track, boolean acceptedRisk) {
+        double incidentChance = 0.0;
+
+        if (acceptedRisk) {
+            incidentChance = wearService.calculateIncidentChance(car);
+
+            double engineerProtection = engineer.getQualification() * 0.2;
+            incidentChance -= engineerProtection;
+
+            if (incidentChance < 5) {
+                incidentChance = 5;
+            }
+        }
+
+        boolean incidentOccurred = acceptedRisk && random.nextDouble() * 100 < incidentChance;
+
+        if (incidentOccurred) {
+            Component brokenComponent = wearService.breakRandomCriticalComponent(car);
+            String brokenName = brokenComponent == null ? "неизвестный компонент" : brokenComponent.getName();
+
+            return new RaceResult(
+                    track.getName(),
+                    pilot.getName(),
+                    0,
+                    false,
+                    true,
+                    "Произошел инцидент: разрушен компонент \"" + brokenName + "\""
+            );
+        }
+
         int carScore = calculateCarScore(car);
         int pilotScore = pilot.getSkill();
         int engineerScore = engineer.getQualification();
@@ -51,14 +82,39 @@ public class RaceService {
         double randomFactor = random.nextDouble() * 5.0;
         double bonus = (carScore * 0.35) + (pilotScore * 0.25) + (engineerScore * 0.15);
         double difficultyPenalty = track.getDifficulty() * 0.2;
+        double wearPenalty = calculateWearPenalty(car);
 
-        double finalTime = track.getBaseTime() + difficultyPenalty - bonus + randomFactor;
+        double finalTime = track.getBaseTime() + difficultyPenalty + wearPenalty - bonus + randomFactor;
 
         if (finalTime < 20) {
             finalTime = 20;
         }
 
-        return new RaceResult(track.getName(), pilot.getName(), finalTime);
+        return new RaceResult(
+                track.getName(),
+                pilot.getName(),
+                finalTime,
+                true,
+                false,
+                "Финиш"
+        );
+    }
+
+    private double calculateWearPenalty(Car car) {
+        double penalty = 0.0;
+        penalty += getWearPenalty(car.getEngine(), 0.12);
+        penalty += getWearPenalty(car.getTransmission(), 0.08);
+        penalty += getWearPenalty(car.getSuspension(), 0.07);
+        penalty += getWearPenalty(car.getAerokit(), 0.05);
+        penalty += getWearPenalty(car.getTires(), 0.15);
+        return penalty;
+    }
+
+    private double getWearPenalty(Component component, double coefficient) {
+        if (component == null) {
+            return 0;
+        }
+        return component.getWear() * coefficient;
     }
 
     private int calculateCarScore(Car car) {

@@ -50,6 +50,50 @@ public class WearService {
         return false;
     }
 
+    public List<Component> getCriticalComponents(Car car) {
+        List<Component> criticalComponents = new ArrayList<>();
+
+        for (Component component : getInstalledComponents(car)) {
+            if (component.getWear() >= 70 && !component.isBroken()) {
+                criticalComponents.add(component);
+            }
+        }
+
+        return criticalComponents;
+    }
+
+    public double calculateIncidentChance(Car car) {
+        List<Component> criticalComponents = getCriticalComponents(car);
+
+        if (criticalComponents.isEmpty()) {
+            return 0.0;
+        }
+
+        double chance = 0.0;
+
+        for (Component component : criticalComponents) {
+            chance += (component.getWear() - 60) * 0.8;
+        }
+
+        if (chance > 80) {
+            chance = 80;
+        }
+
+        return chance;
+    }
+
+    public Component breakRandomCriticalComponent(Car car) {
+        List<Component> criticalComponents = getCriticalComponents(car);
+
+        if (criticalComponents.isEmpty()) {
+            return null;
+        }
+
+        Component brokenComponent = criticalComponents.get(random.nextInt(criticalComponents.size()));
+        brokenComponent.breakCompletely();
+        return brokenComponent;
+    }
+
     public void printWearReport(Car car) {
         System.out.println("\n=== СОСТОЯНИЕ КОМПЛЕКТУЮЩИХ ===");
         printComponentWear("Двигатель", car.getEngine());

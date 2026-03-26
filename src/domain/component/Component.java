@@ -16,8 +16,6 @@ public class Component {
         this.wear = 0.0;
     }
 
-
-
     public int getId() {
         return id;
     }
@@ -50,14 +48,16 @@ public class Component {
         }
     }
 
+    public void breakCompletely() {
+        wear = 100;
+    }
+
     public boolean isBroken() {
         return wear >= 100;
     }
 
     @Override
     public String toString() {
-        return name + " | Цена: " + price + " | Износ: " + wear + "% | Тип: " + type;
+        return name + " | Цена: " + price + " | Износ: " + String.format("%.1f", wear) + "% | Тип: " + type;
     }
-
-
 }

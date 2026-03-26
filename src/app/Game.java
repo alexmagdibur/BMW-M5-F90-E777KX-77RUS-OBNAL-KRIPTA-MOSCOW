@@ -70,10 +70,27 @@ public class Game {
             return;
         }
 
+        boolean acceptedRisk = false;
+
+        if (wearService.hasCriticalWear(car)) {
+            System.out.println("\nУ болида есть детали с критическим износом.");
+            wearService.printWearReport(car);
+            System.out.println("1 - Все равно выйти на старт");
+            System.out.println("0 - Отменить гонку");
+
+            int riskChoice = inputReader.readInt();
+
+            if (riskChoice == 0) {
+                System.out.println("Гонка отменена. Сначала замените проблемные детали.");
+                return;
+            }
+
+            acceptedRisk = true;
+        }
+
         System.out.println("\n=== ВЫБОР ТРАССЫ ===");
         raceService.listTracks();
         System.out.println("0 - Вернуться в главное меню");
-
 
         int choice = inputReader.readInt();
 
@@ -91,14 +108,25 @@ public class Game {
         Pilot pilot = team.getPilots().get(0);
         Engineer engineer = team.getEngineers().get(0);
 
-        RaceResult result = raceService.simulateRace(car, pilot, engineer, selectedTrack);
+        RaceResult result = raceService.simulateRace(car, pilot, engineer, selectedTrack, acceptedRisk);
         team.addRaceResult(result);
+
+        if (result.isFinished()) {
+            wearService.applyRaceWear(car);
+        }
 
         System.out.println("\n=== РЕЗУЛЬТАТ ГОНКИ ===");
         System.out.println("Трасса: " + selectedTrack.getName());
         System.out.println("Пилот: " + pilot.getName());
         System.out.println("Инженер: " + engineer.getName());
-        System.out.println("Итоговое время: " + String.format("%.2f", result.getFinalTime()));
+        System.out.println("Статус: " + result.getStatus());
+
+        if (result.isFinished()) {
+            System.out.println("Итоговое время: " + String.format("%.2f", result.getFinalTime()));
+        }
+
+        System.out.println("\nСостояние болида после гонки:");
+        wearService.printWearReport(car);
     }
 
     private void showRaceStatistics() {
@@ -129,14 +157,11 @@ public class Game {
             System.out.println("\nНельзя начать гонку: у команды нет инженера.");
             return false;
         }
+
         if (hasBrokenComponents()) {
             System.out.println("\nНельзя начать гонку: на болиде есть сломанные детали.");
             wearService.printWearReport(car);
             return false;
-        }
-        if (wearService.hasCriticalWear(car)) {
-            System.out.println("\nВнимание: у некоторых деталей критический износ.");
-            wearService.printWearReport(car);
         }
 
         return true;
