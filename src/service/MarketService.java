@@ -21,6 +21,7 @@ public class MarketService {
         availableComponents.add(new Component(5, "Шины Michelin Pilot Sport", 300, ComponentType.TIRES));
         availableComponents.add(new Component(6, "Тонировка в круг", 200, ComponentType.EXTRA));
         availableComponents.add(new Component(7, "Блатные номера Е777КХ 77RUS", 350, ComponentType.EXTRA));
+        availableComponents.add(new Component(8, "Автозвук Pride Car Audio", 350, ComponentType.EXTRA));
     }
 
     public void listComponents() {
