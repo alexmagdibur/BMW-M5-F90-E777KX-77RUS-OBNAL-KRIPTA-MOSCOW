@@ -17,7 +17,7 @@ public class RaceService {
     private final Random random;
     private final WearService wearService;
 
-    private double incidentChancePercent = 100.0;
+    private double incidentChancePercent = 0;
 
     public RaceService() {
         this.tracks = new ArrayList<>();
@@ -100,7 +100,6 @@ public class RaceService {
                 }
                 yield new RaceIncident(
                         "Вылет с трассы",
-                        "сломались обвесы",
                         car.getAerokit()
                 );
             }
@@ -110,7 +109,6 @@ public class RaceService {
                 }
                 yield new RaceIncident(
                         "Нетрезвый водитель",
-                        "пилот бахнул чекушку ягеря и неудачно дернул коробку",
                         car.getTransmission()
                 );
             }
@@ -120,7 +118,6 @@ public class RaceService {
                 }
                 yield new RaceIncident(
                         "В моторе масло протекло",
-                        "двигатель вышел из строя",
                         car.getEngine()
                 );
             }

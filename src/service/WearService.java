@@ -93,7 +93,6 @@ public class WearService {
         if (car.getAerokit() != null && car.getAerokit().getWear() >= 90 && !car.getAerokit().isBroken()) {
             incidents.add(new RaceIncident(
                     "Вылет с трассы",
-                    "Из-за критического износа аэрокита машина потеряла устойчивость",
                     car.getAerokit()
             ));
         }
@@ -101,7 +100,6 @@ public class WearService {
         if (car.getTransmission() != null && car.getTransmission().getWear() >= 90 && !car.getTransmission().isBroken()) {
             incidents.add(new RaceIncident(
                     "Нетрезвый водитель",
-                    "Трансмиссия работала нестабильно, управление стало непредсказуемым",
                     car.getTransmission()
             ));
         }
@@ -109,7 +107,6 @@ public class WearService {
         if (car.getEngine() != null && car.getEngine().getWear() >= 90 && !car.getEngine().isBroken()) {
             incidents.add(new RaceIncident(
                     "В моторе масло протекло",
-                    "Двигатель потерял мощность из-за критического состояния",
                     car.getEngine()
             ));
         }

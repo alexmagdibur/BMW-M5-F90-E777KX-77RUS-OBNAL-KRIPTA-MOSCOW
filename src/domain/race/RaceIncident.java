@@ -5,12 +5,10 @@ import domain.component.Component;
 public class RaceIncident {
 
     private final String title;
-    private final String description;
     private final Component damagedComponent;
 
-    public RaceIncident(String title, String description, Component damagedComponent) {
+    public RaceIncident(String title, Component damagedComponent) {
         this.title = title;
-        this.description = description;
         this.damagedComponent = damagedComponent;
     }
 
@@ -18,9 +16,6 @@ public class RaceIncident {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
     public Component getDamagedComponent() {
         return damagedComponent;
@@ -34,10 +29,10 @@ public class RaceIncident {
 
     public String buildStatus() {
         if (damagedComponent == null) {
-            return title + ": " + description;
+            return title;
         }
 
-        return title + ": " + description + " (поврежден компонент \"" +
+        return title +  " (поврежден компонент \"" +
                 damagedComponent.getName() + "\")";
     }
 }
