@@ -80,16 +80,16 @@ public class BotService {
     private Pilot generatePilot() {
         String[] names = {"Макс", "Леон", "Артем", "Никита", "Роман"};
         String name = names[random.nextInt(names.length)] + " #" + (100 + random.nextInt(900));
-        int skill = 70 + random.nextInt(26); // 70..95
-        int price = 900 + random.nextInt(501); // 900..1400
+        int skill = 70 + random.nextInt(16); // 70..86
+        int price = 900 + random.nextInt(301); // 900..1200
         return new Pilot(name, skill, price);
     }
 
     private Engineer generateEngineer() {
         String[] names = {"Игорь", "Олег", "Марк", "Денис", "Тимур"};
         String name = names[random.nextInt(names.length)] + " #" + (100 + random.nextInt(900));
-        int qualification = 70 + random.nextInt(26); // 70..95
-        int price = 800 + random.nextInt(601); // 800..1400
+        int qualification = 70 + random.nextInt(16); // 70..86
+        int price = 800 + random.nextInt(401); // 800..1200
         return new Engineer(name, qualification, price);
     }
 
