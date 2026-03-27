@@ -402,8 +402,8 @@ public class Game {
             }
 
             if (car.isComplete()) {
-                System.out.println("Болид полностью собран!");
-                assembling = false;
+                System.out.println("Болид полностью собран по обязательным компонентам!");
+                System.out.println("Можно установить дополнительные элементы");
             }
         }
     }
