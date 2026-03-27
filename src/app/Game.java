@@ -126,8 +126,17 @@ public class Game {
         }
 
         RaceTrack selectedTrack = raceService.getTrackByChoice(choice);
-        Pilot pilot = team.getPilots().get(0);
-        Engineer engineer = team.getEngineers().get(0);
+        Pilot pilot = choosePilot();
+        if (pilot == null) {
+            System.out.println("Гонка отменена: пилот не выбран.");
+            return;
+        }
+
+        Engineer engineer = chooseEngineer();
+        if (engineer == null) {
+            System.out.println("Гонка отменена: инженер не выбран.");
+            return;
+        }
 
         List<RaceStanding> standings = new ArrayList<>();
 
@@ -486,6 +495,29 @@ public class Game {
         }
     }
 
+    private Pilot choosePilot() {
+        System.out.println("\n=== ВЫБОР ПИЛОТА ===");
+
+        for (int i = 0; i < team.getPilots().size(); i++) {
+            System.out.println((i + 1) + ". " + team.getPilots().get(i));
+        }
+
+        System.out.println("0 - Отменить выбор");
+
+        int choice = inputReader.readInt();
+
+        if (choice == 0) {
+            return null;
+        }
+
+        if (choice < 1 || choice > team.getPilots().size()) {
+            System.out.println("Неверный выбор пилота.");
+            return null;
+        }
+
+        return team.getPilots().get(choice - 1);
+    }
+
     private void showEngineers() {
         System.out.println("\n=== ИНЖЕНЕРЫ КОМАНДЫ ===");
 
@@ -497,6 +529,29 @@ public class Game {
         for (Engineer engineer : team.getEngineers()) {
             System.out.println(engineer);
         }
+    }
+
+    private Engineer chooseEngineer() {
+        System.out.println("\n=== ВЫБОР ИНЖЕНЕРА ===");
+
+        for (int i = 0; i < team.getEngineers().size(); i++) {
+            System.out.println((i + 1) + ". " + team.getEngineers().get(i));
+        }
+
+        System.out.println("0 - Отменить выбор");
+
+        int choice = inputReader.readInt();
+
+        if (choice == 0) {
+            return null;
+        }
+
+        if (choice < 1 || choice > team.getEngineers().size()) {
+            System.out.println("Неверный выбор инженера.");
+            return null;
+        }
+
+        return team.getEngineers().get(choice - 1);
     }
 
     private void printOwnedComponents() {
