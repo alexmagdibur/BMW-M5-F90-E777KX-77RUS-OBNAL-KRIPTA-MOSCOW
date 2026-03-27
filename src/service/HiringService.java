@@ -52,7 +52,12 @@ public class HiringService {
             return;
         }
 
-        Pilot pilot = availablePilots.get(choice - 1);
+        Pilot pilot = (Pilot) availablePilots.get(choice - 1);
+
+        if (hasPilot(team, pilot)) {
+            System.out.println("Пилот " + pilot.getName() + " уже нанят в команду.");
+            return;
+        }
 
         if (!team.canAfford(pilot.getPrice())) {
             System.out.println("Недостаточно средств для найма пилота " + pilot.getName());
@@ -72,7 +77,12 @@ public class HiringService {
             return;
         }
 
-        Engineer engineer = availableEngineers.get(choice - 1);
+        Engineer engineer = (Engineer) availableEngineers.get(choice - 1);
+
+        if (hasEngineer(team, engineer)) {
+            System.out.println("Инженер " + engineer.getName() + " уже нанят в команду.");
+            return;
+        }
 
         if (!team.canAfford(engineer.getPrice())) {
             System.out.println("Недостаточно средств для найма инженера " + engineer.getName());
@@ -84,6 +94,26 @@ public class HiringService {
 
         System.out.println("Инженер " + engineer.getName() + " успешно нанят.");
         System.out.println("Оставшийся бюджет: " + team.getBudget());
+    }
+
+    private boolean hasPilot(Team team, Pilot pilot) {
+        for (Object obj : team.getPilots()) {
+            Pilot teamPilot = (Pilot) obj;
+            if (teamPilot.getName().equalsIgnoreCase(pilot.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasEngineer(Team team, Engineer engineer) {
+        for (Object obj : team.getEngineers()) {
+            Engineer teamEngineer = (Engineer) obj;
+            if (teamEngineer.getName().equalsIgnoreCase(engineer.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Pilot> getAvailablePilots() {
