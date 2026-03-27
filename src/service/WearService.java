@@ -2,7 +2,7 @@ package service;
 
 import domain.car.Car;
 import domain.component.Component;
-
+import domain.race.RaceIncident;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -129,6 +129,46 @@ public class WearService {
         addIfNotNull(components, car.getAerokit());
         addIfNotNull(components, car.getTires());
         return components;
+    }
+
+    public List<RaceIncident> getPossibleIncidents(Car car) {
+        List<RaceIncident> incidents = new ArrayList<>();
+
+        if (car.getAerokit() != null && car.getAerokit().getWear() >= 90 && !car.getAerokit().isBroken()) {
+            incidents.add(new RaceIncident(
+                    "Вылет с трассы",
+                    "Из-за критического износа аэрокита машина потеряла устойчивость",
+                    car.getAerokit()
+            ));
+        }
+
+        if (car.getTransmission() != null && car.getTransmission().getWear() >= 90 && !car.getTransmission().isBroken()) {
+            incidents.add(new RaceIncident(
+                    "Нетрезвый водитель",
+                    "Трансмиссия работала нестабильно, управление стало непредсказуемым",
+                    car.getTransmission()
+            ));
+        }
+
+        if (car.getEngine() != null && car.getEngine().getWear() >= 90 && !car.getEngine().isBroken()) {
+            incidents.add(new RaceIncident(
+                    "В моторе масло протекло",
+                    "Двигатель потерял мощность из-за критического состояния",
+                    car.getEngine()
+            ));
+        }
+
+        return incidents;
+    }
+
+    public RaceIncident getRandomIncident(Car car) {
+        List<RaceIncident> incidents = getPossibleIncidents(car);
+
+        if (incidents.isEmpty()) {
+            return null;
+        }
+
+        return incidents.get(random.nextInt(incidents.size()));
     }
 
     private void addIfNotNull(List<Component> components, Component component) {

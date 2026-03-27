@@ -6,7 +6,7 @@ import domain.person.Engineer;
 import domain.person.Pilot;
 import domain.race.RaceResult;
 import domain.race.RaceTrack;
-
+import domain.race.RaceIncident;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -62,6 +62,21 @@ public class RaceService {
         boolean incidentOccurred = acceptedRisk && random.nextDouble() * 100 < incidentChance;
 
         if (incidentOccurred) {
+            RaceIncident incident = wearService.getRandomIncident(car);
+
+            if (incident != null) {
+                incident.applyDamage();
+
+                return new RaceResult(
+                        track.getName(),
+                        pilot.getName(),
+                        0,
+                        false,
+                        true,
+                        incident.buildStatus()
+                );
+            }
+
             Component brokenComponent = wearService.breakRandomCriticalComponent(car);
             String brokenName = brokenComponent == null ? "неизвестный компонент" : brokenComponent.getName();
 
