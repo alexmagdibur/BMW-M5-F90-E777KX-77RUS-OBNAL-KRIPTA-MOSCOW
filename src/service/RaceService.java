@@ -46,39 +46,15 @@ public class RaceService {
     }
 
     public RaceResult simulateRace(Car car, Pilot pilot, Engineer engineer, RaceTrack track, boolean acceptedRisk) {
-        double incidentChance = 0.0;
+        List<RaceIncident> possibleIncidents = wearService.getPossibleIncidents(car);
 
-        if (acceptedRisk) {
-            incidentChance = wearService.calculateIncidentChance(car);
-
-            double engineerProtection = engineer.getQualification() * 0.2;
-            incidentChance -= engineerProtection;
-
-            if (incidentChance < 5) {
-                incidentChance = 5;
-            }
-        }
-
-        boolean incidentOccurred = acceptedRisk && random.nextDouble() * 100 < incidentChance;
+        // ОТЛАДКА: 100% шанс инцидента, если игрок согласился на риск
+        // и есть хотя бы один подходящий тематический инцидент
+        boolean incidentOccurred = acceptedRisk && !possibleIncidents.isEmpty();
 
         if (incidentOccurred) {
-            RaceIncident incident = wearService.getRandomIncident(car);
-
-            if (incident != null) {
-                incident.applyDamage();
-
-                return new RaceResult(
-                        track.getName(),
-                        pilot.getName(),
-                        0,
-                        false,
-                        true,
-                        incident.buildStatus()
-                );
-            }
-
-            Component brokenComponent = wearService.breakRandomCriticalComponent(car);
-            String brokenName = brokenComponent == null ? "неизвестный компонент" : brokenComponent.getName();
+            RaceIncident incident = possibleIncidents.get(random.nextInt(possibleIncidents.size()));
+            incident.applyDamage();
 
             return new RaceResult(
                     track.getName(),
@@ -86,7 +62,7 @@ public class RaceService {
                     0,
                     false,
                     true,
-                    "Произошел инцидент: разрушен компонент \"" + brokenName + "\""
+                    incident.buildStatus()
             );
         }
 
