@@ -157,7 +157,7 @@ public class RaceService {
             case SUSPENSION -> 60;
             case AEROKIT -> 50;
             case TIRES -> 40;
-            case EXTRA -> 0;
+            case EXTRA -> 10;
         };
     }
 }
