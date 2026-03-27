@@ -117,15 +117,6 @@ public class WearService {
         return incidents;
     }
 
-    public RaceIncident getRandomIncident(Car car) {
-        List<RaceIncident> incidents = getPossibleIncidents(car);
-
-        if (incidents.isEmpty()) {
-            return null;
-        }
-
-        return incidents.get(random.nextInt(incidents.size()));
-    }
 
     private void addIfNotNull(List<Component> components, Component component) {
         if (component != null) {

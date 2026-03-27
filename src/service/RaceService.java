@@ -17,6 +17,8 @@ public class RaceService {
     private final Random random;
     private final WearService wearService;
 
+    private double incidentChancePercent = 100.0;
+
     public RaceService() {
         this.tracks = new ArrayList<>();
         this.random = new Random();
@@ -48,13 +50,10 @@ public class RaceService {
     public RaceResult simulateRace(Car car, Pilot pilot, Engineer engineer, RaceTrack track, boolean acceptedRisk) {
         List<RaceIncident> possibleIncidents = wearService.getPossibleIncidents(car);
 
-        // ОТЛАДКА: 100% шанс инцидента, если игрок согласился на риск
-        // и есть хотя бы один подходящий тематический инцидент
-        boolean incidentOccurred = acceptedRisk && !possibleIncidents.isEmpty();
+        boolean incidentOccurred = random.nextDouble() * 100 < incidentChancePercent;
 
         if (incidentOccurred) {
-            RaceIncident incident = possibleIncidents.get(random.nextInt(possibleIncidents.size()));
-            incident.applyDamage();
+            RaceIncident incident = rollRandomIncident(car);
 
             return new RaceResult(
                     track.getName(),
@@ -89,6 +88,43 @@ public class RaceService {
                 false,
                 "Финиш"
         );
+    }
+
+    private RaceIncident rollRandomIncident(Car car) {
+        int incidentType = random.nextInt(3);
+
+        return switch (incidentType) {
+            case 0 -> {
+                if (car.getAerokit() != null) {
+                    car.getAerokit().breakCompletely();
+                }
+                yield new RaceIncident(
+                        "Вылет с трассы",
+                        "сломались обвесы",
+                        car.getAerokit()
+                );
+            }
+            case 1 -> {
+                if (car.getTransmission() != null) {
+                    car.getTransmission().breakCompletely();
+                }
+                yield new RaceIncident(
+                        "Нетрезвый водитель",
+                        "пилот бахнул чекушку ягеря и неудачно дернул коробку",
+                        car.getTransmission()
+                );
+            }
+            default -> {
+                if (car.getEngine() != null) {
+                    car.getEngine().breakCompletely();
+                }
+                yield new RaceIncident(
+                        "В моторе масло протекло",
+                        "двигатель вышел из строя",
+                        car.getEngine()
+                );
+            }
+        };
     }
 
     private double calculateWearPenalty(Car car) {
