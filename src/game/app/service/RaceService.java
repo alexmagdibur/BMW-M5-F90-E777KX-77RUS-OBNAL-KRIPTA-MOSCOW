@@ -1,12 +1,12 @@
-package service;
+package game.app.service;
 
-import domain.car.Car;
-import domain.component.Component;
-import domain.person.Engineer;
-import domain.person.Pilot;
-import domain.race.RaceResult;
-import domain.race.RaceTrack;
-import domain.race.RaceIncident;
+import game.app.domain.car.Car;
+import game.app.domain.component.Component;
+import game.app.domain.person.Engineer;
+import game.app.domain.person.Pilot;
+import game.app.domain.race.RaceResult;
+import game.app.domain.race.RaceTrack;
+import game.app.domain.race.RaceIncident;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

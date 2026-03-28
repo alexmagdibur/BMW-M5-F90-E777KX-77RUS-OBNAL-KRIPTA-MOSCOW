@@ -1,4 +1,4 @@
-package ui;
+package game.app.ui;
 
 import java.util.Scanner;
 

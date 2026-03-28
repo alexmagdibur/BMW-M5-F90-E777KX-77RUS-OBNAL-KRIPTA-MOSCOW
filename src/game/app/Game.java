@@ -1,23 +1,22 @@
-package app;
+package game.app;
 
-import domain.car.Car;
-import domain.component.Component;
-import domain.person.Engineer;
-import domain.person.Pilot;
-import domain.team.Team;
-import service.AssemblyService;
-import service.HiringService;
-import service.MarketService;
-import ui.ConsoleMenu;
-import ui.InputReader;
-import domain.race.RaceResult;
-import domain.race.RaceTrack;
-import service.RaceService;
-import service.WearService;
-import domain.race.RaceStanding;
-import service.BotService;
+import game.app.domain.car.Car;
+import game.app.domain.component.Component;
+import game.app.domain.person.Engineer;
+import game.app.domain.person.Pilot;
+import game.app.domain.team.Team;
+import game.app.service.AssemblyService;
+import game.app.service.HiringService;
+import game.app.service.MarketService;
+import game.app.ui.ConsoleMenu;
+import game.app.ui.InputReader;
+import game.app.domain.race.RaceResult;
+import game.app.domain.race.RaceTrack;
+import game.app.service.RaceService;
+import game.app.service.WearService;
+import game.app.domain.race.RaceStanding;
+import game.app.service.BotService;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Game {

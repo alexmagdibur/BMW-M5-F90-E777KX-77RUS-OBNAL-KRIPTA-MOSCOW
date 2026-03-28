@@ -1,8 +1,8 @@
-package service;
+package game.app.service;
 
-import domain.person.Engineer;
-import domain.person.Pilot;
-import domain.team.Team;
+import game.app.domain.person.Engineer;
+import game.app.domain.person.Pilot;
+import game.app.domain.team.Team;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package domain.person;
+package game.app.domain.person;
 
 public class Pilot {
 

@@ -1,10 +1,10 @@
-package domain.team;
+package game.app.domain.team;
 
-import domain.car.Car;
-import domain.component.Component;
-import domain.person.Engineer;
-import domain.person.Pilot;
-import domain.race.RaceResult;
+import game.app.domain.car.Car;
+import game.app.domain.component.Component;
+import game.app.domain.person.Engineer;
+import game.app.domain.person.Pilot;
+import game.app.domain.race.RaceResult;
 import java.util.ArrayList;
 import java.util.List;
 

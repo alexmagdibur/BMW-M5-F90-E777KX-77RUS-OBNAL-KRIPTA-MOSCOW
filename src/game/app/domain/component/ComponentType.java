@@ -1,4 +1,4 @@
-package domain.component;
+package game.app.domain.component;
 
 public enum ComponentType {
     ENGINE,

@@ -1,4 +1,4 @@
-package domain.race;
+package game.app.domain.race;
 
 public class RaceTrack {
 

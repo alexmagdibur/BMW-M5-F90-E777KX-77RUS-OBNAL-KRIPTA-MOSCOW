@@ -1,6 +1,6 @@
-package domain.race;
+package game.app.domain.race;
 
-import domain.component.Component;
+import game.app.domain.component.Component;
 
 public class RaceIncident {
 
