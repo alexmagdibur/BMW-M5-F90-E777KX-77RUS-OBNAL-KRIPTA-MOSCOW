@@ -116,11 +116,4 @@ public class HiringService {
         return false;
     }
 
-    public List<Pilot> getAvailablePilots() {
-        return availablePilots;
-    }
-
-    public List<Engineer> getAvailableEngineers() {
-        return availableEngineers;
-    }
 }

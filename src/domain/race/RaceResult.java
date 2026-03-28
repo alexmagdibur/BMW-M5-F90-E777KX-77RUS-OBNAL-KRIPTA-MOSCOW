@@ -6,7 +6,6 @@ public class RaceResult {
     private final String pilotName;
     private final double finalTime;
     private final boolean finished;
-    private final boolean incidentOccurred;
     private final String status;
 
     public RaceResult(String trackName, String pilotName, double finalTime,
@@ -15,16 +14,7 @@ public class RaceResult {
         this.pilotName = pilotName;
         this.finalTime = finalTime;
         this.finished = finished;
-        this.incidentOccurred = incidentOccurred;
         this.status = status;
-    }
-
-    public String getTrackName() {
-        return trackName;
-    }
-
-    public String getPilotName() {
-        return pilotName;
     }
 
     public double getFinalTime() {
@@ -33,10 +23,6 @@ public class RaceResult {
 
     public boolean isFinished() {
         return finished;
-    }
-
-    public boolean isIncidentOccurred() {
-        return incidentOccurred;
     }
 
     public String getStatus() {

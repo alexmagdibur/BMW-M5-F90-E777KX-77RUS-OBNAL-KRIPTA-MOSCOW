@@ -12,21 +12,6 @@ public class RaceIncident {
         this.damagedComponent = damagedComponent;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-
-    public Component getDamagedComponent() {
-        return damagedComponent;
-    }
-
-    public void applyDamage() {
-        if (damagedComponent != null) {
-            damagedComponent.breakCompletely();
-        }
-    }
-
     public String buildStatus() {
         if (damagedComponent == null) {
             return title;

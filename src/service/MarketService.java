@@ -51,7 +51,4 @@ public class MarketService {
         System.out.println("Оставшийся бюджет: " + team.getBudget());
     }
 
-    public List<Component> getAvailableComponents() {
-        return availableComponents;
-    }
 }
