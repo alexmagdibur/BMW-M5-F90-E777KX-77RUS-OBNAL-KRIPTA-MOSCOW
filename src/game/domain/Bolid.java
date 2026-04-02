@@ -27,11 +27,18 @@ public class Bolid {
         return components;
     }
 
+    private static final ComponentType[] REQUIRED = {
+        ComponentType.ENGINE,
+        ComponentType.TRANSMISSION,
+        ComponentType.SUSPENSION,
+        ComponentType.CHASSIS,
+        ComponentType.AERO_PACKAGE,
+        ComponentType.TIRES
+    };
+
     public boolean isComplete() {
-        for (ComponentType type : ComponentType.values()) {
-            if (!components.containsKey(type)) {
-                return false;
-            }
+        for (ComponentType type : REQUIRED) {
+            if (!components.containsKey(type)) return false;
         }
         return true;
     }

@@ -32,22 +32,22 @@ public class Team {
         return budget >= amount;
     }
 
-    public void deductBudget(long amount) {
+    public void spend(long amount) {
         if (!canAfford(amount)) {
             throw new IllegalStateException("Недостаточно бюджета.");
         }
         budget -= amount;
     }
 
-    public void addBudget(long amount) {
+    public void earn(long amount) {
         budget += amount;
     }
 
-    public void addToInventory(Component component) {
+    public void addComponent(Component component) {
         inventory.add(component);
     }
 
-    public void removeFromInventory(Component component) {
+    public void removeComponent(Component component) {
         inventory.remove(component);
     }
 
@@ -55,11 +55,11 @@ public class Team {
         bolids.add(bolid);
     }
 
-    public void hirePilot(Pilot pilot) {
+    public void addPilot(Pilot pilot) {
         pilots.add(pilot);
     }
 
-    public void hireEngineer(Engineer engineer) {
+    public void addEngineer(Engineer engineer) {
         engineers.add(engineer);
     }
 
@@ -70,7 +70,45 @@ public class Team {
 
     @Override
     public String toString() {
-        return String.format("Название: %s | Бюджет: %d | Болиды: %d | Пилоты: %d | Инженеры: %d",
-                name, budget, bolids.size(), pilots.size(), engineers.size());
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Команда: %s | Бюджет: %,d руб.%n", name, budget));
+
+        sb.append(String.format("Болиды (%d):%n", bolids.size()));
+        if (bolids.isEmpty()) {
+            sb.append("  —\n");
+        } else {
+            for (Bolid b : bolids)
+                sb.append(String.format("  %-27s | Перфоманс: %3d | Собран: %s%n",
+                    b.getName(), b.getPerformanceScore(), b.isComplete() ? "Да" : "Нет"));
+        }
+
+        sb.append(String.format("Пилоты (%d):%n", pilots.size()));
+        if (pilots.isEmpty()) {
+            sb.append("  —\n");
+        } else {
+            for (Pilot p : pilots)
+                sb.append(String.format("  %-27s | Скилл: %3d | Зарплата: %,d руб.%n",
+                    p.getName(), p.getSkill(), p.getSalary()));
+        }
+
+        sb.append(String.format("Инженеры (%d):%n", engineers.size()));
+        if (engineers.isEmpty()) {
+            sb.append("  —\n");
+        } else {
+            for (Engineer e : engineers)
+                sb.append(String.format("  %-27s | Скилл: %3d | Зарплата: %,d руб.%n",
+                    e.getName(), e.getQualification(), e.getSalary()));
+        }
+
+        sb.append(String.format("Инвентарь (%d):%n", inventory.size()));
+        if (inventory.isEmpty()) {
+            sb.append("  —");
+        } else {
+            for (Component c : inventory)
+                sb.append(String.format("  %-27s | Перфоманс: %3d | Цена: %,8d руб. | Износ: %d%%%n",
+                    c.getName(), c.getPerformanceValue(), c.getPrice(), c.getWear()));
+        }
+
+        return sb.toString().stripTrailing();
     }
 }

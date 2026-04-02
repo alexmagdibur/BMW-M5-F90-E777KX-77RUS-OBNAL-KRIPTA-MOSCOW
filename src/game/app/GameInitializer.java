@@ -26,12 +26,12 @@ public class GameInitializer {
         Component aero = new Component("Standard Aero", ComponentType.AERO_PACKAGE, 100_000, 65);
         Component tires = new Component("Soft Tires", ComponentType.TIRES, 80_000, 80);
 
-        team.addToInventory(engine);
-        team.addToInventory(transmission);
-        team.addToInventory(suspension);
-        team.addToInventory(chassis);
-        team.addToInventory(aero);
-        team.addToInventory(tires);
+        team.addComponent(engine);
+        team.addComponent(transmission);
+        team.addComponent(suspension);
+        team.addComponent(chassis);
+        team.addComponent(aero);
+        team.addComponent(tires);
 
         // Assemble a ready bolid
         Bolid bolid = new Bolid("Test Bolid #1");
@@ -44,8 +44,10 @@ public class GameInitializer {
         team.addBolid(bolid);
 
         // Staff
-        team.hirePilot(new Pilot("Lewis Testov", 300_000, 90));
-        team.hireEngineer(new Engineer("Adrian Debugov", 250_000, 88));
+        team.addPilot(new Pilot("Lewis Testov", 300_000, 90));
+        team.addEngineer(new Engineer("Adrian Debugov", 250_000, 88));
+
+        System.out.println(team);
 
         return team;
     }

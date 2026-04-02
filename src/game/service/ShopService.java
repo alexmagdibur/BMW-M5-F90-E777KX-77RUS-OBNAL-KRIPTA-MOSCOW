@@ -80,8 +80,8 @@ public class ShopService {
                 return;
             }
 
-            team.deductBudget(selected.getPrice());
-            team.addToInventory(new Component(selected.getName(), selected.getType(),
+            team.spend(selected.getPrice());
+            team.addComponent(new Component(selected.getName(), selected.getType(),
                 selected.getPrice(), selected.getPerformanceValue()));
             System.out.printf("Куплено: %s за %,d руб. | Бюджет: %,d руб.%n",
                 selected.getName(), selected.getPrice(), team.getBudget());

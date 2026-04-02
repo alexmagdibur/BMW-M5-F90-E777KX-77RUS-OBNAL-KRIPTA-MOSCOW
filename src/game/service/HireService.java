@@ -45,8 +45,8 @@ public class HireService {
             return;
         }
 
-        team.deductBudget(selected.getSalary());
-        team.hirePilot(selected);
+        team.spend(selected.getSalary());
+        team.addPilot(selected);
         System.out.printf("Нанят пилот: %s (зарплата %,d руб.)%n", selected.getName(), selected.getSalary());
     }
 
@@ -77,8 +77,8 @@ public class HireService {
             return;
         }
 
-        team.deductBudget(selected.getSalary());
-        team.hireEngineer(selected);
+        team.spend(selected.getSalary());
+        team.addEngineer(selected);
         System.out.printf("Нанят инженер: %s (зарплата %,d руб.)%n", selected.getName(), selected.getSalary());
     }
 }

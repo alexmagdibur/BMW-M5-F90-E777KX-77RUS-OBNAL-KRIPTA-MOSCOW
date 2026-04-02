@@ -1,6 +1,7 @@
 package game.ui;
 
 import game.domain.Team;
+import game.service.AssemblyService;
 import game.service.HireService;
 import game.service.ShopService;
 import game.util.Ansi;
@@ -11,12 +12,14 @@ public class GameMenu {
     private boolean running;
     private final ShopService shopService;
     private final HireService hireService;
+    private final AssemblyService assemblyService;
 
     public GameMenu(Team playerTeam) {
         this.playerTeam = playerTeam;
         this.running = true;
         this.shopService = new ShopService(playerTeam);
         this.hireService = new HireService(playerTeam);
+        this.assemblyService = new AssemblyService(playerTeam);
     }
 
     public void run() {
@@ -48,7 +51,7 @@ public class GameMenu {
         switch (choice) {
             case 1 -> System.out.println("[Not implemented] Start race");
             case 2 -> shopService.openShop();
-            case 3 -> System.out.println("[Not implemented] Assemble bolid");
+            case 3 -> assemblyService.assembleBolid();
             case 4 -> hireService.hireEngineer();
             case 5 -> hireService.hirePilot();
             case 6 -> System.out.println("[Not implemented] View bolids");
