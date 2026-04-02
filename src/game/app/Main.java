@@ -3,11 +3,12 @@ package game.app;
 import game.domain.Team;
 import game.ui.ConsoleInput;
 import game.ui.GameMenu;
+import game.util.Ansi;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("======================= ZOV AUTO: МОЖНО, А ЗАЧЕМ ============================");
+        System.out.println(Ansi.bold("———————— ZOV AUTO: МОЖНО, А ЗАЧЕМ ————————"));
         System.out.println("1. Новая игра");
         System.out.println("2. Тестовый режим");
 

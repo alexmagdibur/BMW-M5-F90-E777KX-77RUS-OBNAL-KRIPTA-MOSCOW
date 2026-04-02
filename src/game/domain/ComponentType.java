@@ -6,5 +6,6 @@ public enum ComponentType {
     SUSPENSION,
     CHASSIS,
     AERO_PACKAGE,
-    TIRES
+    TIRES,
+    EXTRA
 }
