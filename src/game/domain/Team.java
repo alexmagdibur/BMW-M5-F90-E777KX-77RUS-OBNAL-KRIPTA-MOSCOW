@@ -34,7 +34,7 @@ public class Team {
 
     public void deductBudget(long amount) {
         if (!canAfford(amount)) {
-            throw new IllegalStateException("Not enough budget.");
+            throw new IllegalStateException("Недостаточно бюджета.");
         }
         budget -= amount;
     }
@@ -70,7 +70,7 @@ public class Team {
 
     @Override
     public String toString() {
-        return String.format("Team: %s | Budget: %d | Bolids: %d | Pilots: %d | Engineers: %d",
+        return String.format("Название: %s | Бюджет: %d | Болиды: %d | Пилоты: %d | Инженеры: %d",
                 name, budget, bolids.size(), pilots.size(), engineers.size());
     }
 }

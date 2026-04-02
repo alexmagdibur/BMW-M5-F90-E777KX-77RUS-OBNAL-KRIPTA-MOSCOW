@@ -15,27 +15,26 @@ public class GameMenu {
     public void run() {
         while (running) {
             printMenu();
-            int choice = ConsoleInput.readInt("Your choice: ");
+            int choice = ConsoleInput.readInt("Введите ваш выбор: ");
             handleChoice(choice);
         }
     }
 
     private void printMenu() {
-        System.out.println("\n========== ZovAuto — Кубок Аркхема ==========");
-        System.out.println("Team: " + playerTeam.getName() + " | Budget: " + playerTeam.getBudget());
-        System.out.println("----------------------------------------------");
-        System.out.println(" 1. Start race");
-        System.out.println(" 2. Buy components");
-        System.out.println(" 3. Assemble bolid");
-        System.out.println(" 4. Hire engineer");
-        System.out.println(" 5. Hire pilot");
-        System.out.println(" 6. View bolids");
-        System.out.println(" 7. View pilots");
-        System.out.println(" 8. Race statistics");
-        System.out.println(" 9. View other teams");
-        System.out.println("10. View other results");
-        System.out.println("11. Exit");
-        System.out.println("==============================================");
+        System.out.println("\n============================== ГЛАВНОЕ МЕНЮ ===================================");
+        System.out.println(playerTeam);
+        System.out.println(" ");
+        System.out.println(" 1. Начать гонку");
+        System.out.println(" 2. Купить компоненты");
+        System.out.println(" 3. Собрать болид");
+        System.out.println(" 4. Нанять инженера");
+        System.out.println(" 5. Нанять пилота");
+        System.out.println(" 6. Посмотреть болиды");
+        System.out.println(" 7. Посмотреть пилотов");
+        System.out.println(" 8. Статистика гонок");
+        System.out.println(" 9. Посмотреть другие команды");
+        System.out.println("10. Посмотреть результаты");
+        System.out.println("11. Выход");
     }
 
     private void handleChoice(int choice) {
@@ -51,10 +50,10 @@ public class GameMenu {
             case 9 -> System.out.println("[Not implemented] View other teams");
             case 10 -> System.out.println("[Not implemented] View other results");
             case 11 -> {
-                System.out.println("Goodbye!");
+                System.out.println("До встречи!");
                 running = false;
             }
-            default -> System.out.println("Invalid choice. Enter 1–11.");
+            default -> System.out.println("Неверный выбор");
         }
     }
 }

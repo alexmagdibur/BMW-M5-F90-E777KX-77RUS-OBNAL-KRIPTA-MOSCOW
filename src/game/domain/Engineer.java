@@ -17,6 +17,6 @@ public class Engineer extends TeamMember {
 
     @Override
     public String toString() {
-        return String.format("Engineer: %s | Qualification: %d | Salary: %d", getName(), qualification, getSalary());
+        return String.format("Инженер: %s | Скилл: %d | Зарплата: %d", getName(), qualification, getSalary());
     }
 }

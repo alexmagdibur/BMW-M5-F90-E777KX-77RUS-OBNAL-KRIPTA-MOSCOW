@@ -17,6 +17,6 @@ public class Pilot extends TeamMember {
 
     @Override
     public String toString() {
-        return String.format("Pilot: %s | Skill: %d | Salary: %d", getName(), skill, getSalary());
+        return String.format("Пилот: %s | Скилл: %d | Зарплата: %d", getName(), skill, getSalary());
     }
 }

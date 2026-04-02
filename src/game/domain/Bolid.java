@@ -53,7 +53,7 @@ public class Bolid {
 
     @Override
     public String toString() {
-        return String.format("Bolid: %s | Performance: %d | Complete: %s",
-                name, getPerformanceScore(), isComplete() ? "Yes" : "No");
+        return String.format("Болид: %s | Перфоманс: %d | Сборка: %s",
+                name, getPerformanceScore(), isComplete() ? "Да" : "Нет");
     }
 }

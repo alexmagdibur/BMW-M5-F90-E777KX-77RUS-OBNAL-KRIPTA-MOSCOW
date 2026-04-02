@@ -10,7 +10,7 @@ public class ConsoleInput {
         System.out.print(prompt);
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            System.out.print("Enter a number: ");
+            System.out.print("Введите номер: ");
         }
         int value = scanner.nextInt();
         scanner.nextLine();

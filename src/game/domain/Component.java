@@ -36,7 +36,7 @@ public class Component {
 
     @Override
     public String toString() {
-        return String.format("[%s] %s | Perf: %d | Price: %d | Wear: %d%%",
+        return String.format("[%s] %s | Перфоманс: %d | Цена: %d | Износ: %d%%",
                 type, name, performanceValue, price, wear);
     }
 }
