@@ -41,10 +41,12 @@ public class GameMenu {
         System.out.println(" 5. Нанять пилота");
         System.out.println(" 6. Посмотреть болиды");
         System.out.println(" 7. Посмотреть пилотов");
-        System.out.println(" 8. Статистика гонок");
-        System.out.println(" 9. Посмотреть другие команды");
-        System.out.println("10. Посмотреть результаты");
-        System.out.println("11. Выход");
+        System.out.println(" 8. Посмотреть инженеров");
+        System.out.println(" 9. Посмотреть инвентарь");
+        System.out.println("10. Статистика гонок");
+        System.out.println("11. Посмотреть другие команды");
+        System.out.println("12. Посмотреть результаты");
+        System.out.println("13. Выход");
     }
 
     private void handleChoice(int choice) {
@@ -54,12 +56,14 @@ public class GameMenu {
             case 3 -> assemblyService.assembleBolid();
             case 4 -> hireService.hireEngineer();
             case 5 -> hireService.hirePilot();
-            case 6 -> System.out.println("[Not implemented] View bolids");
-            case 7 -> System.out.println("[Not implemented] View pilots");
-            case 8 -> System.out.println("[Not implemented] Race statistics");
-            case 9 -> System.out.println("[Not implemented] View other teams");
-            case 10 -> System.out.println("[Not implemented] View other results");
-            case 11 -> {
+            case 6 -> System.out.println(playerTeam.getBolidsInfo());
+            case 7 -> System.out.println(playerTeam.getPilotsInfo());
+            case 8 -> System.out.println(playerTeam.getEngineersInfo());
+            case 9 -> System.out.println(playerTeam.getInventoryInfo());
+            case 10 -> System.out.println("[Not implemented] Race statistics");
+            case 11 -> System.out.println("[Not implemented] View other teams");
+            case 12 -> System.out.println("[Not implemented] View other results");
+            case 13 -> {
                 System.out.println("До встречи!");
                 running = false;
             }
