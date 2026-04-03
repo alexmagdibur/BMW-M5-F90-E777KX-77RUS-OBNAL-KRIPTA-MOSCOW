@@ -39,6 +39,12 @@ public class HireService {
         }
 
         Pilot selected = options.get(choice - 1);
+        boolean alreadyHired = team.getPilots().stream()
+            .anyMatch(p -> p.getName().equals(selected.getName()));
+        if (alreadyHired) {
+            System.out.println("Этот пилот уже в вашей команде.");
+            return;
+        }
         if (!team.canAfford(selected.getSalary())) {
             System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
                 selected.getSalary(), team.getBudget());
@@ -71,6 +77,12 @@ public class HireService {
         }
 
         Engineer selected = options.get(choice - 1);
+        boolean alreadyHired = team.getEngineers().stream()
+            .anyMatch(e -> e.getName().equals(selected.getName()));
+        if (alreadyHired) {
+            System.out.println("Этот инженер уже в вашей команде.");
+            return;
+        }
         if (!team.canAfford(selected.getSalary())) {
             System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
                 selected.getSalary(), team.getBudget());
