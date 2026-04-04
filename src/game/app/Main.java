@@ -1,9 +1,9 @@
-package game.app;
+package app;
 
-import game.domain.Team;
-import game.ui.ConsoleInput;
-import game.ui.GameMenu;
-import game.util.Ansi;
+import domain.Team;
+import ui.ConsoleInput;
+import ui.GameMenu;
+import util.Ansi;
 
 public class Main {
 

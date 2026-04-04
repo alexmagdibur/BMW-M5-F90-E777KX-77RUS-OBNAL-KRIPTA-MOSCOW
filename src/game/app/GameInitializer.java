@@ -1,6 +1,6 @@
-package game.app;
+package app;
 
-import game.domain.*;
+import domain.*;
 
 public class GameInitializer {
 

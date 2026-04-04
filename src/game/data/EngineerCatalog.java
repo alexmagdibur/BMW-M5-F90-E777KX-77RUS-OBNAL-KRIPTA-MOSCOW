@@ -1,6 +1,6 @@
-package game.data;
+package data;
 
-import game.domain.Engineer;
+import domain.Engineer;
 
 import java.util.List;
 

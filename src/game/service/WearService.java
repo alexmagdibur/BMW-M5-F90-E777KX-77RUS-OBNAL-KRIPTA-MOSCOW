@@ -1,11 +1,11 @@
-package game.service;
+package service;
 
-import game.domain.Bolid;
-import game.domain.Component;
-import game.domain.ComponentType;
-import game.domain.Engineer;
-import game.domain.Track;
-import game.util.RandomUtil;
+import domain.Bolid;
+import domain.Component;
+import domain.ComponentType;
+import domain.Engineer;
+import domain.Track;
+import util.RandomUtil;
 
 import java.util.Map;
 

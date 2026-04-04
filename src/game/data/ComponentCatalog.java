@@ -1,7 +1,7 @@
-package game.data;
+package data;
 
-import game.domain.Component;
-import game.domain.ComponentType;
+import domain.Component;
+import domain.ComponentType;
 
 import java.util.List;
 

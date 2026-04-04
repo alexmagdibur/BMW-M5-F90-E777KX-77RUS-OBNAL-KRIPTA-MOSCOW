@@ -1,4 +1,4 @@
-package game.service;
+package service;
 
 public class WerewolfService {
 }

@@ -1,15 +1,15 @@
-package game.service;
+package service;
 
-import game.domain.Bolid;
-import game.domain.Component;
-import game.domain.Engineer;
-import game.domain.Pilot;
-import game.domain.Race;
-import game.domain.RaceResult;
-import game.domain.Team;
-import game.domain.Track;
-import game.domain.Weather;
-import game.util.RandomUtil;
+import domain.Bolid;
+import domain.Component;
+import domain.Engineer;
+import domain.Pilot;
+import domain.Race;
+import domain.RaceResult;
+import domain.Team;
+import domain.Track;
+import domain.Weather;
+import util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;

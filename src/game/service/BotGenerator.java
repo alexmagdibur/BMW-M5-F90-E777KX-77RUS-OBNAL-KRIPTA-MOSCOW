@@ -1,11 +1,11 @@
-package game.service;
+package service;
 
-import game.domain.RaceResult;
-import game.domain.SectionType;
-import game.domain.Track;
-import game.domain.TrackSection;
-import game.domain.Weather;
-import game.util.RandomUtil;
+import domain.RaceResult;
+import domain.SectionType;
+import domain.Track;
+import domain.TrackSection;
+import domain.Weather;
+import util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.List;

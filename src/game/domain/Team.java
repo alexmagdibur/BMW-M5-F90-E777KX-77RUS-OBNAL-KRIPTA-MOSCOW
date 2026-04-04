@@ -1,8 +1,8 @@
-package game.domain;
+package domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import game.util.Ansi;
+import util.Ansi;
 
 public class Team {
 

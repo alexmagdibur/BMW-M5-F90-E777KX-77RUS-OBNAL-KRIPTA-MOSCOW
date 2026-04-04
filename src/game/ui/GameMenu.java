@@ -1,23 +1,23 @@
-package game.ui;
+package ui;
 
-import game.data.TrackCatalog;
-import game.domain.Bolid;
-import game.domain.Component;
-import game.domain.ComponentType;
-import game.domain.Engineer;
-import game.domain.Pilot;
-import game.domain.Race;
-import game.domain.Team;
-import game.domain.Track;
-import game.domain.Weather;
-import game.service.AssemblyService;
-import game.service.BotGenerator;
-import game.service.HireService;
-import game.service.RaceService;
-import game.service.WearService;
+import data.TrackCatalog;
+import domain.Bolid;
+import domain.Component;
+import domain.ComponentType;
+import domain.Engineer;
+import domain.Pilot;
+import domain.Race;
+import domain.Team;
+import domain.Track;
+import domain.Weather;
+import service.AssemblyService;
+import service.BotGenerator;
+import service.HireService;
+import service.RaceService;
+import service.WearService;
 
-import game.service.ShopService;
-import game.util.Ansi;
+import service.ShopService;
+import util.Ansi;
 
 import java.util.ArrayList;
 import java.util.List;

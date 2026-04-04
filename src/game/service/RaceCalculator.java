@@ -1,12 +1,12 @@
-package game.service;
+package service;
 
-import game.domain.Bolid;
-import game.domain.Engineer;
-import game.domain.Pilot;
-import game.domain.SectionType;
-import game.domain.Track;
-import game.domain.TrackSection;
-import game.domain.Weather;
+import domain.Bolid;
+import domain.Engineer;
+import domain.Pilot;
+import domain.SectionType;
+import domain.Track;
+import domain.TrackSection;
+import domain.Weather;
 
 /**
  * Deterministic lap-time calculator.

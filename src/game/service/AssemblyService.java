@@ -1,11 +1,11 @@
-package game.service;
+package service;
 
-import game.domain.Bolid;
-import game.domain.Component;
-import game.domain.ComponentType;
-import game.domain.Team;
-import game.ui.ConsoleInput;
-import game.util.Ansi;
+import domain.Bolid;
+import domain.Component;
+import domain.ComponentType;
+import domain.Team;
+import ui.ConsoleInput;
+import util.Ansi;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,12 @@
-package game.service;
+package service;
 
-import game.data.EngineerCatalog;
-import game.data.PilotCatalog;
-import game.domain.Engineer;
-import game.domain.Pilot;
-import game.domain.Team;
-import game.ui.ConsoleInput;
-import game.util.Ansi;
+import data.EngineerCatalog;
+import data.PilotCatalog;
+import domain.Engineer;
+import domain.Pilot;
+import domain.Team;
+import ui.ConsoleInput;
+import util.Ansi;
 
 import java.util.List;
 

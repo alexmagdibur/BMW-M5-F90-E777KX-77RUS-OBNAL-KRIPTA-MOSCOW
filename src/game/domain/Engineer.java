@@ -1,4 +1,4 @@
-package game.domain;
+package domain;
 
 public class Engineer extends TeamMember {
 

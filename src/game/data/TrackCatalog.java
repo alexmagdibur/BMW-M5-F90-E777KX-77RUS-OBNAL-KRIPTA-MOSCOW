@@ -1,8 +1,8 @@
-package game.data;
+package data;
 
-import game.domain.SectionType;
-import game.domain.Track;
-import game.domain.TrackSection;
+import domain.SectionType;
+import domain.Track;
+import domain.TrackSection;
 
 import java.util.List;
 

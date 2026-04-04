@@ -1,4 +1,4 @@
-package game.domain;
+package domain;
 
 public abstract class TeamMember {
 

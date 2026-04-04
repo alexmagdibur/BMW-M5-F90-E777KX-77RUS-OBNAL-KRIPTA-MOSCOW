@@ -1,4 +1,4 @@
-package game.domain;
+package domain;
 
 /**
  * Weather conditions that affect race lap times.

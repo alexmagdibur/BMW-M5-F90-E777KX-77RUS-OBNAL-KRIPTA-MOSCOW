@@ -1,4 +1,4 @@
-package game.domain;
+package domain;
 
 public enum SectionType {
     STRAIGHT("Прямая"),
