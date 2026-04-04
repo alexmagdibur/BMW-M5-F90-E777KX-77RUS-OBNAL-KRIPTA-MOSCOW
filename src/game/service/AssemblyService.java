@@ -69,17 +69,17 @@ public class AssemblyService {
             return;
         }
 
-        System.out.println(Ansi.bold("\n———— Экстра (необязательно, можно несколько) ————"));
+        System.out.println(Ansi.bold("\nДополнительно"));
         List<Component> chosenExtras = new ArrayList<>();
         while (true) {
             List<Component> available = team.getInventory().stream()
                 .filter(c -> c.getType() == ComponentType.EXTRA && !chosenExtras.contains(c))
                 .toList();
             if (available.isEmpty()) {
-                System.out.println("Больше нет экстра-компонентов в инвентаре.");
+                System.out.println("Больше нет доп-компонентов в инвентаре.");
                 break;
             }
-            System.out.println("  Доступные экстра-компоненты:");
+            System.out.println("  Доступные доп-компоненты:");
             for (int i = 0; i < available.size(); i++) {
                 Component c = available.get(i);
                 System.out.printf("   %d. %-27s | Перфоманс: %3d%n",

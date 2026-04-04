@@ -10,7 +10,7 @@ public class BotTest {
 
     private static final Track TRACK = new Track("Тест", List.of(
         new TrackSection(SectionType.STRAIGHT, 2000),
-        new TrackSection(SectionType.TURN,      500)
+        new TrackSection(SectionType.TURN, 500)
     ));
 
     @Test

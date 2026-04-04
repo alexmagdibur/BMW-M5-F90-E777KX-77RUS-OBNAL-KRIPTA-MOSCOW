@@ -10,19 +10,19 @@ public class RaceTest {
 
     private static Bolid buildCompleteBolid() {
         Bolid bolid = new Bolid("Тест-болид");
-        bolid.installComponent(new Component("Двигатель",   ComponentType.ENGINE,       0, 60));
+        bolid.installComponent(new Component("Двигатель", ComponentType.ENGINE, 0, 60));
         bolid.installComponent(new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 55));
-        bolid.installComponent(new Component("Подвеска",    ComponentType.SUSPENSION,   0, 50));
-        bolid.installComponent(new Component("Шасси",       ComponentType.CHASSIS,       0, 50));
-        bolid.installComponent(new Component("Обвесы",      ComponentType.AERO_PACKAGE, 0, 50));
-        bolid.installComponent(new Component("Шины",        ComponentType.TIRES,         0, 60));
+        bolid.installComponent(new Component("Подвеска", ComponentType.SUSPENSION, 0, 50));
+        bolid.installComponent(new Component("Шасси", ComponentType.CHASSIS, 0, 50));
+        bolid.installComponent(new Component("Обвесы", ComponentType.AERO_PACKAGE, 0, 50));
+        bolid.installComponent(new Component("Шины", ComponentType.TIRES, 0, 60));
         return bolid;
     }
 
     private static Track simpleTrack() {
         return new Track("Тест-трасса", List.of(
             new TrackSection(SectionType.STRAIGHT, 2000),
-            new TrackSection(SectionType.TURN,      500)
+            new TrackSection(SectionType.TURN, 500)
         ));
     }
 
@@ -44,7 +44,7 @@ public class RaceTest {
             .findFirst()
             .orElseThrow();
 
-        assertTrue(playerResult.getTime() > 0,            "Время должно быть больше нуля");
+        assertTrue(playerResult.getTime() > 0, "Время должно быть больше нуля");
         assertTrue(playerResult.getTime() < Double.MAX_VALUE, "Время не должно быть DNF-значением");
     }
 

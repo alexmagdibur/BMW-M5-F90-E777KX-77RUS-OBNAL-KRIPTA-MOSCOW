@@ -29,7 +29,7 @@ public class IncidentTest {
     void wornComponentCausesDNF() {
         Bolid bolid = new Bolid("Болид");
         Component engine = buildBolid(bolid);
-        engine.setWear(75); // > 50 → изношен → инцидент
+        engine.setWear(75);
 
         Race race = new RaceService().runRace(
             new Team("Тест", 0),

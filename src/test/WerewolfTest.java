@@ -32,7 +32,6 @@ public class WerewolfTest {
         setWerewolfChance(0.4); // восстанавливаем исходное значение
     }
 
-    // ─── поле isWerewolf ─────────────────────────────────────────────────────
 
     @Test
     void pilotIsNotWerewolfByDefault() {
@@ -48,7 +47,6 @@ public class WerewolfTest {
         assertFalse(pilot.isWerewolf());
     }
 
-    // ─── гонка ───────────────────────────────────────────────────────────────
 
     @Test
     void solarEclipseWithChance1AlwaysMakesWerewolf()  {
@@ -86,7 +84,6 @@ public class WerewolfTest {
         assertFalse(race.isPlayerDNF(), "При обычной погоде пилот не должен получить DNF из-за флага оборотня");
     }
 
-    // ─── Ван Хельсинг ────────────────────────────────────────────────────────
 
     @Test
     void vanHelsingRemovesWerewolfPilotFromTeam() {
@@ -116,7 +113,6 @@ public class WerewolfTest {
         assertTrue(team.getPilots().contains(pilot), "Ван Хельсинг не должен удалять обычного пилота");
     }
 
-    // ─── Баффи ───────────────────────────────────────────────────────────────
 
     @Test
     void buffyHealsWerewolfPilot() {
@@ -133,7 +129,6 @@ public class WerewolfTest {
         assertTrue(team.getPilots().contains(pilot), "Баффи не должна удалять пилота из команды");
     }
 
-    // ─── вспомогательные методы ───────────────────────────────────────────────
 
     private static Bolid buildBolid() {
         Bolid b = new Bolid("Болид");

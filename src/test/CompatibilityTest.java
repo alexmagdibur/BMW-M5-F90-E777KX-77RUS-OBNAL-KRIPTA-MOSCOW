@@ -10,7 +10,6 @@ public class CompatibilityTest {
         return new Component("Компонент", ComponentType.ENGINE, 0, 50, level);
     }
 
-    // ─── несовместимые пары ───────────────────────────────────────────────────
 
     @Test
     void level1AndLevel3AreIncompatible() {
@@ -24,7 +23,6 @@ public class CompatibilityTest {
             "Несовместимость симметрична");
     }
 
-    // ─── совместимые пары ────────────────────────────────────────────────────
 
     @Test
     void level1AndLevel2AreCompatible() {

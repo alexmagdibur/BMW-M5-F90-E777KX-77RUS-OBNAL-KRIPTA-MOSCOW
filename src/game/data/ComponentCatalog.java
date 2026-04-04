@@ -9,17 +9,17 @@ public class ComponentCatalog {
 
     public static List<Component> getEngines() {
         return List.of(
-            new Component("V6 Атмосферный", ComponentType.ENGINE,300_000, 60, 1),
-            new Component("V8 Турбо", ComponentType.ENGINE, 600_000, 80, 2),
-            new Component("V10 Гибрид", ComponentType.ENGINE, 1_200_000, 95, 3)
+            new Component("Lada Priora 16-кл.", ComponentType.ENGINE,300_000, 60, 1),
+            new Component("BMW B48 Turbo", ComponentType.ENGINE, 600_000, 80, 2),
+            new Component("Porsche 9A2 Evo", ComponentType.ENGINE, 1_200_000, 95, 3)
         );
     }
 
     public static List<Component> getTransmissions() {
         return List.of(
-            new Component("5-ст. Механика", ComponentType.TRANSMISSION, 150_000, 55, 1),
-            new Component("7-ст. Автомат", ComponentType.TRANSMISSION, 300_000, 75, 2),
-            new Component("8-ст. Секвентальная", ComponentType.TRANSMISSION, 600_000, 90, 3)
+            new Component("МКПП ВАЗ 2115 5-ст.", ComponentType.TRANSMISSION, 150_000, 55, 1),
+            new Component("АКПП BMW ZF 8HP", ComponentType.TRANSMISSION, 300_000, 75, 2),
+            new Component("AMT Porsche PDK", ComponentType.TRANSMISSION, 600_000, 90, 3)
         );
     }
 
@@ -41,17 +41,17 @@ public class ComponentCatalog {
 
     public static List<Component> getAeroPackages() {
         return List.of(
-            new Component("Базовый аэропакет", ComponentType.AERO_PACKAGE, 80_000, 50),
-            new Component("Спортивный аэропакет", ComponentType.AERO_PACKAGE, 200_000, 68),
-            new Component("Продвинутый аэропакет",ComponentType.AERO_PACKAGE, 450_000, 85)
+            new Component("Стоковые обвесы", ComponentType.AERO_PACKAGE, 80_000, 50),
+            new Component("Обвесы BMW M5 F90", ComponentType.AERO_PACKAGE, 200_000, 68),
+            new Component("Lamborghini Avendator Aero",ComponentType.AERO_PACKAGE, 450_000, 85)
         );
     }
 
     public static List<Component> getTires() {
         return List.of(
-            new Component("Жёсткие шины", ComponentType.TIRES, 60_000, 55),
-            new Component("Средние шины", ComponentType.TIRES, 100_000, 70),
-            new Component("Мягкие шины", ComponentType.TIRES, 140_000, 85)
+            new Component("Pirelli P Zero Hard", ComponentType.TIRES, 60_000, 55),
+            new Component("Pirelli P Zero Medium", ComponentType.TIRES, 100_000, 70),
+            new Component("Pirelli P Zero Soft", ComponentType.TIRES, 140_000, 85)
         );
     }
 
