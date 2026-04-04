@@ -1,10 +1,13 @@
 package service;
 
+import domain.Engineer;
 import domain.Pilot;
 import domain.Team;
+import domain.TeamMember;
 import ui.ConsoleInput;
 import util.Ansi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WerewolfService {
@@ -40,15 +43,17 @@ public class WerewolfService {
                 VAN_HELSING_COST, team.getBudget());
             return;
         }
-        Pilot target = selectPilotForWerewolfCheck("Ван Хельсинг");
+        TeamMember target = selectStaffForWerewolfCheck("Ван Хельсинг");
         if (target == null) return;
 
         team.spend(VAN_HELSING_COST);
         if (target.isWerewolf()) {
-            team.removePilot(target);
-            System.out.printf("Ван Хельсинг уничтожил оборотня %s! Пилот удалён из команды.%n", target.getName());
+            removeMember(target);
+            System.out.printf("Ван Хельсинг уничтожил оборотня %s! %s удалён из команды.%n",
+                target.getName(), roleLabel(target));
         } else {
-            System.out.printf("Пилот %s не является оборотнем. Ван Хельсинг ушёл ни с чем.%n", target.getName());
+            System.out.printf("%s %s не является оборотнем. Ван Хельсинг ушёл ни с чем.%n",
+                roleLabel(target), target.getName());
         }
     }
 
@@ -58,31 +63,51 @@ public class WerewolfService {
                 BUFFY_COST, team.getBudget());
             return;
         }
-        Pilot target = selectPilotForWerewolfCheck("Баффи");
+        TeamMember target = selectStaffForWerewolfCheck("Баффи");
         if (target == null) return;
 
         team.spend(BUFFY_COST);
         if (target.isWerewolf()) {
             target.setWerewolf(false);
-            System.out.printf("Баффи вылечила оборотня %s! Пилот снова человек.%n", target.getName());
+            System.out.printf("Баффи вылечила оборотня %s! %s снова человек.%n",
+                target.getName(), roleLabel(target));
         } else {
-            System.out.printf("Пилот %s не является оборотнем. Баффи ушла ни с чем.%n", target.getName());
+            System.out.printf("%s %s не является оборотнем. Баффи ушла ни с чем.%n",
+                roleLabel(target), target.getName());
         }
     }
 
-    private Pilot selectPilotForWerewolfCheck(String hunter) {
-        List<Pilot> pilots = team.getPilots();
-        if (pilots.isEmpty()) {
-            System.out.println("В команде нет пилотов.");
+    private TeamMember selectStaffForWerewolfCheck(String hunter) {
+        List<TeamMember> staff = new ArrayList<>();
+        staff.addAll(team.getPilots());
+        staff.addAll(team.getEngineers());
+
+        if (staff.isEmpty()) {
+            System.out.println("В команде нет персонала.");
             return null;
         }
-        System.out.printf("%nВыберите пилота для проверки (%s):%n", hunter);
-        for (int i = 0; i < pilots.size(); i++) {
-            System.out.printf("  %d. %s%n", i + 1, pilots.get(i).getName());
+        System.out.printf("%nВыберите члена команды для проверки (%s):%n", hunter);
+        for (int i = 0; i < staff.size(); i++) {
+            TeamMember m = staff.get(i);
+            System.out.printf("  %d. [%s] %s%n", i + 1, roleLabel(m), m.getName());
         }
         System.out.println("  0. Отмена");
         int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
-        if (idx < 0 || idx >= pilots.size()) return null;
-        return pilots.get(idx);
+        if (idx < 0 || idx >= staff.size()) return null;
+        return staff.get(idx);
+    }
+
+    private void removeMember(TeamMember member) {
+        if (member instanceof Pilot p) {
+            team.removePilot(p);
+        } else if (member instanceof Engineer e) {
+            team.removeEngineer(e);
+        }
+    }
+
+    private static String roleLabel(TeamMember member) {
+        if (member instanceof Pilot) return "Пилот";
+        if (member instanceof Engineer) return "Инженер";
+        return "Сотрудник";
     }
 }

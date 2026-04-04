@@ -32,13 +32,17 @@ public class RaceService {
                         Track track, Weather weather) {
         if (weather == Weather.SOLAR_ECLIPSE) {
             pilot.setWerewolf(RandomUtil.nextDouble(0.0, 1.0) < WEREWOLF_CHANCE);
+            engineer.setWerewolf(RandomUtil.nextDouble(0.0, 1.0) < WEREWOLF_CHANCE);
         } else {
             pilot.setWerewolf(false);
+            engineer.setWerewolf(false);
         }
 
         String dnfReason = null;
         if (pilot.isWerewolf()) {
             dnfReason = "Пилот стал оборотнем, у него лапки! DNF";
+        } else if (engineer.isWerewolf()) {
+            dnfReason = "Инженер стал оборотнем, у него лапки! DNF";
         } else {
             dnfReason = checkIncident(bolid);
         }

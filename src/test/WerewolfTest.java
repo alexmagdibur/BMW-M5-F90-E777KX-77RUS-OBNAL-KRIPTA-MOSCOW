@@ -33,13 +33,20 @@ public class WerewolfTest {
     }
 
 
+    // ─── Флаги оборотня ───────────────────────────────────────────────────────
+
     @Test
     void pilotIsNotWerewolfByDefault() {
         assertFalse(new Pilot("Пилот", 0, 50).isWerewolf());
     }
 
     @Test
-    void werewolfFlagCanBeSetAndCleared() {
+    void engineerIsNotWerewolfByDefault() {
+        assertFalse(new Engineer("Инженер", 0, 50).isWerewolf());
+    }
+
+    @Test
+    void werewolfFlagCanBeSetAndClearedForPilot() {
         Pilot pilot = new Pilot("Пилот", 0, 50);
         pilot.setWerewolf(true);
         assertTrue(pilot.isWerewolf());
@@ -47,10 +54,20 @@ public class WerewolfTest {
         assertFalse(pilot.isWerewolf());
     }
 
+    @Test
+    void werewolfFlagCanBeSetAndClearedForEngineer() {
+        Engineer engineer = new Engineer("Инженер", 0, 50);
+        engineer.setWerewolf(true);
+        assertTrue(engineer.isWerewolf());
+        engineer.setWerewolf(false);
+        assertFalse(engineer.isWerewolf());
+    }
+
+    // ─── Гонка при солнечном затмении ─────────────────────────────────────────
 
     @Test
-    void solarEclipseWithChance1AlwaysMakesWerewolf()  {
-        setWerewolfChance(1.0); // гарантируем оборотня при солнечном затмении
+    void solarEclipseWithChance1AlwaysMakesWerewolf() {
+        setWerewolfChance(1.0);
 
         Race race = new RaceService().runRace(
             new Team("Тест", 0),
@@ -61,12 +78,12 @@ public class WerewolfTest {
             Weather.SOLAR_ECLIPSE
         );
 
-        assertTrue(race.isPlayerDNF(), "Пилот-оборотень должен получить DNF");
+        assertTrue(race.isPlayerDNF(), "При chance=1 и затмении должен быть DNF");
     }
 
     @Test
-    void nonEclipseWeatherResetsWerewolfFlag()  {
-        setWerewolfChance(1.0); // даже при chance=1 без затмения флаг должен сброситься
+    void nonEclipseWeatherResetsWerewolfFlagForPilot() {
+        setWerewolfChance(1.0);
 
         Pilot pilot = new Pilot("Пилот", 0, 50);
         pilot.setWerewolf(true);
@@ -80,10 +97,31 @@ public class WerewolfTest {
             Weather.DRY
         );
 
-        assertFalse(pilot.isWerewolf(), "При обычной погоде флаг оборотня должен сброситься");
-        assertFalse(race.isPlayerDNF(), "При обычной погоде пилот не должен получить DNF из-за флага оборотня");
+        assertFalse(pilot.isWerewolf(), "При обычной погоде флаг пилота должен сброситься");
+        assertFalse(race.isPlayerDNF(), "При обычной погоде не должен быть DNF из-за оборотня");
     }
 
+    @Test
+    void nonEclipseWeatherResetsWerewolfFlagForEngineer() {
+        setWerewolfChance(1.0);
+
+        Engineer engineer = new Engineer("Инженер", 0, 50);
+        engineer.setWerewolf(true);
+
+        Race race = new RaceService().runRace(
+            new Team("Тест", 0),
+            buildBolid(),
+            new Pilot("Пилот", 0, 50),
+            engineer,
+            simpleTrack(),
+            Weather.DRY
+        );
+
+        assertFalse(engineer.isWerewolf(), "При обычной погоде флаг инженера должен сброситься");
+        assertFalse(race.isPlayerDNF(), "При обычной погоде инженер-оборотень не должен давать DNF");
+    }
+
+    // ─── Ван Хельсинг ─────────────────────────────────────────────────────────
 
     @Test
     void vanHelsingRemovesWerewolfPilotFromTeam() {
@@ -92,11 +130,11 @@ public class WerewolfTest {
         pilot.setWerewolf(true);
         team.addPilot(pilot);
 
-        mockInput("1\n1\n"); // выбор Ван Хельсинга (1), затем пилот #1
+        mockInput("1\n1\n"); // Ван Хельсинг (1), пилот #1
 
         new WerewolfService(team).werewolfHunt();
 
-        assertFalse(team.getPilots().contains(pilot), "Ван Хельсинг должен удалить пилота-оборотня из команды");
+        assertFalse(team.getPilots().contains(pilot), "Ван Хельсинг должен удалить пилота-оборотня");
     }
 
     @Test
@@ -113,6 +151,35 @@ public class WerewolfTest {
         assertTrue(team.getPilots().contains(pilot), "Ван Хельсинг не должен удалять обычного пилота");
     }
 
+    @Test
+    void vanHelsingRemovesWerewolfEngineerFromTeam() {
+        Team team = new Team("Тест", 500_000);
+        Engineer engineer = new Engineer("Оборотень", 0, 50);
+        engineer.setWerewolf(true);
+        team.addEngineer(engineer);
+
+        mockInput("1\n1\n"); // Ван Хельсинг (1), инженер #1
+
+        new WerewolfService(team).werewolfHunt();
+
+        assertFalse(team.getEngineers().contains(engineer), "Ван Хельсинг должен удалить инженера-оборотня");
+    }
+
+    @Test
+    void vanHelsingDoesNotRemoveNormalEngineer() {
+        Team team = new Team("Тест", 500_000);
+        Engineer engineer = new Engineer("Человек", 0, 50);
+        engineer.setWerewolf(false);
+        team.addEngineer(engineer);
+
+        mockInput("1\n1\n");
+
+        new WerewolfService(team).werewolfHunt();
+
+        assertTrue(team.getEngineers().contains(engineer), "Ван Хельсинг не должен удалять обычного инженера");
+    }
+
+    // ─── Баффи ────────────────────────────────────────────────────────────────
 
     @Test
     void buffyHealsWerewolfPilot() {
@@ -121,12 +188,27 @@ public class WerewolfTest {
         pilot.setWerewolf(true);
         team.addPilot(pilot);
 
-        mockInput("2\n1\n"); // выбор Баффи (2), затем пилот #1
+        mockInput("2\n1\n"); // Баффи (2), пилот #1
 
         new WerewolfService(team).werewolfHunt();
 
         assertFalse(pilot.isWerewolf(), "Баффи должна вылечить пилота-оборотня");
         assertTrue(team.getPilots().contains(pilot), "Баффи не должна удалять пилота из команды");
+    }
+
+    @Test
+    void buffyHealsWerewolfEngineer() {
+        Team team = new Team("Тест", 500_000);
+        Engineer engineer = new Engineer("Оборотень", 0, 50);
+        engineer.setWerewolf(true);
+        team.addEngineer(engineer);
+
+        mockInput("2\n1\n"); // Баффи (2), инженер #1
+
+        new WerewolfService(team).werewolfHunt();
+
+        assertFalse(engineer.isWerewolf(), "Баффи должна вылечить инженера-оборотня");
+        assertTrue(team.getEngineers().contains(engineer), "Баффи не должна удалять инженера из команды");
     }
 
 

@@ -68,6 +68,10 @@ public class Team {
         engineers.add(engineer);
     }
 
+    public void removeEngineer(Engineer engineer) {
+        engineers.remove(engineer);
+    }
+
     public boolean isReadyToRace() {
         boolean hasBolid = bolids.stream().anyMatch(Bolid::isComplete);
         return hasBolid && !pilots.isEmpty() && !engineers.isEmpty();
