@@ -81,8 +81,7 @@ public class ShopService {
             }
 
             team.spend(selected.getPrice());
-            team.addComponent(new Component(selected.getName(), selected.getType(),
-                selected.getPrice(), selected.getPerformanceValue()));
+            team.addComponent(selected.copy());
             System.out.printf("Куплено: %s за %,d руб. | Бюджет: %,d руб.%n",
                 selected.getName(), selected.getPrice(), team.getBudget());
             System.out.println(" 1. Купить ещё один");

@@ -9,21 +9,25 @@ public class Race {
     private final int              playerPosition;
     private final long             prizeAwarded;
     private final Weather          weather;
+    private final String           incidentComponent; // null if no incident
 
     public Race(Track track, List<RaceResult> results, int playerPosition, long prizeAwarded,
-                Weather weather) {
-        this.track          = track;
-        this.results        = List.copyOf(results);
-        this.playerPosition = playerPosition;
-        this.prizeAwarded   = prizeAwarded;
-        this.weather        = weather;
+                Weather weather, String incidentComponent) {
+        this.track              = track;
+        this.results            = List.copyOf(results);
+        this.playerPosition     = playerPosition;
+        this.prizeAwarded       = prizeAwarded;
+        this.weather            = weather;
+        this.incidentComponent  = incidentComponent;
     }
 
-    public Track            getTrack()          { return track; }
-    public List<RaceResult> getResults()        { return results; }
-    public int              getPlayerPosition() { return playerPosition; }
-    public long             getPrizeAwarded()   { return prizeAwarded; }
-    public Weather          getWeather()        { return weather; }
+    public Track            getTrack()              { return track; }
+    public List<RaceResult> getResults()            { return results; }
+    public int              getPlayerPosition()     { return playerPosition; }
+    public long             getPrizeAwarded()       { return prizeAwarded; }
+    public Weather          getWeather()            { return weather; }
+    public boolean          isPlayerDNF()           { return incidentComponent != null; }
+    public String           getIncidentComponent()  { return incidentComponent; }
 
     @Override
     public String toString() {
@@ -34,9 +38,13 @@ public class Race {
             sb.append(" ").append(r).append("\n");
         }
 
-        sb.append(String.format("%nМесто: %d", playerPosition));
-        if (prizeAwarded > 0) {
-            sb.append(String.format("  |  +%,d руб.", prizeAwarded));
+        if (incidentComponent != null) {
+            sb.append(String.format("%nРезультат: DNF — отказ компонента «%s»", incidentComponent));
+        } else {
+            sb.append(String.format("%nМесто: %d", playerPosition));
+            if (prizeAwarded > 0) {
+                sb.append(String.format("  |  +%,d руб.", prizeAwarded));
+            }
         }
 
         return sb.toString();

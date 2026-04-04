@@ -2,6 +2,8 @@ package game.ui;
 
 import game.data.TrackCatalog;
 import game.domain.Bolid;
+import game.domain.Component;
+import game.domain.ComponentType;
 import game.domain.Engineer;
 import game.domain.Pilot;
 import game.domain.Race;
@@ -12,6 +14,8 @@ import game.service.AssemblyService;
 import game.service.BotGenerator;
 import game.service.HireService;
 import game.service.RaceService;
+import game.service.WearService;
+
 import game.service.ShopService;
 import game.util.Ansi;
 
@@ -64,7 +68,8 @@ public class GameMenu {
         System.out.println("10. Статистика гонок");
         System.out.println("11. Посмотреть другие команды");
         System.out.println("12. Посмотреть другие результаты");
-        System.out.println("13. Выход");
+        System.out.println("13. Обслуживание болида");
+        System.out.println("14. Выход");
     }
 
     private void handleChoice(int choice) {
@@ -81,7 +86,8 @@ public class GameMenu {
             case 10 -> showRaceStats();
             case 11 -> showOtherTeams();
             case 12 -> showOtherResults();
-            case 13 -> {
+            case 13 -> maintenanceBolid();
+            case 14 -> {
                 System.out.println("До встречи!");
                 running = false;
             }
@@ -104,11 +110,28 @@ public class GameMenu {
         Pilot    pilot    = selectPilot();    if (pilot    == null) return;
         Engineer engineer = selectEngineer(); if (engineer == null) return;
 
+        List<Component> maxWorn = bolid.getAllComponents().stream()
+            .filter(c -> c.getType() != ComponentType.EXTRA && c.getWear() >= 100).toList();
+        if (!maxWorn.isEmpty()) {
+            System.out.println(Ansi.bold("СТАРТ НЕВОЗМОЖЕН: следующие компоненты полностью изношены (100%):"));
+            for (Component c : maxWorn)
+                System.out.printf("  — %s%n", c.getName());
+            System.out.println("Замените или почините их в пункте «Обслуживание болида».");
+            return;
+        }
+
+        if (bolid.hasWornComponents()) {
+            System.out.println(Ansi.bold("ВНИМАНИЕ: болид имеет компоненты с износом > 50%. Возможен инцидент!"));
+        }
+
         System.out.println(Ansi.bold("\nЗапускаем гонку на трассе: " + track.getName() + "..."));
 
         Race race = raceService.runRace(playerTeam, bolid, pilot, engineer, track, currentWeather);
         raceHistory.add(race);
         System.out.println(race);
+
+        WearService.applyWear(bolid, track);
+        printWearReport(bolid);
 
         Weather nextWeather = Weather.random();
         if (nextWeather != currentWeather) {
@@ -201,6 +224,170 @@ public class GameMenu {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // Износ
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void printWearReport(Bolid bolid) {
+        System.out.println(Ansi.bold("\nИзнос компонентов после гонки:"));
+        boolean anyWorn = false;
+        for (Component c : bolid.getAllComponents()) {
+            if (c.getType() == ComponentType.EXTRA) continue;
+            String warn = c.isWornOut() ? " ⚠ ВЫСОКИЙ ИЗНОС" : "";
+            System.out.printf("  %-25s %3d%%%s%n", c.getName(), c.getWear(), warn);
+            if (c.isWornOut()) anyWorn = true;
+        }
+        if (anyWorn) {
+            System.out.println(Ansi.bold("ПРЕДУПРЕЖДЕНИЕ: компоненты с износом > 50% снижают надёжность."));
+            System.out.println("Рекомендуется починить или заменить их (пункт «Обслуживание болида»).");
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Обслуживание болида
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void maintenanceBolid() {
+        System.out.println(Ansi.bold("\n———————— ОБСЛУЖИВАНИЕ БОЛИДА ————————"));
+
+        List<Bolid> ready = playerTeam.getBolids().stream()
+            .filter(Bolid::isComplete).toList();
+        if (ready.isEmpty()) {
+            System.out.println("Нет собранных болидов.");
+            return;
+        }
+
+        Bolid bolid;
+        if (ready.size() == 1) {
+            bolid = ready.get(0);
+        } else {
+            System.out.println("Выберите болид:");
+            for (int i = 0; i < ready.size(); i++)
+                System.out.printf("  %d. %s%n", i + 1, ready.get(i).getName());
+            int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+            if (idx < 0 || idx >= ready.size()) { System.out.println("Неверный выбор."); return; }
+            bolid = ready.get(idx);
+        }
+
+        boolean loop = true;
+        while (loop) {
+            System.out.println(Ansi.bold("\nБолид: " + bolid.getName()));
+            List<Component> components = bolid.getAllComponents().stream()
+                .filter(c -> c.getType() != ComponentType.EXTRA).toList();
+            for (int i = 0; i < components.size(); i++) {
+                Component c = components.get(i);
+                String flag = c.isWornOut() ? " ⚠" : "";
+                System.out.printf("  %d. %-25s %3d%%%s%n", i + 1, c.getName(), c.getWear(), flag);
+            }
+            System.out.println("\n  R. Починить компонент");
+            System.out.println("  Z. Заменить компонент");
+            System.out.println("  0. Назад");
+
+            String choice = ConsoleInput.readLine("Ваш выбор: ").trim().toUpperCase();
+            switch (choice) {
+                case "R" -> repairComponent(bolid, components);
+                case "Z" -> replaceComponent(bolid, components);
+                case "0" -> loop = false;
+                default  -> System.out.println("Неверный выбор.");
+            }
+        }
+    }
+
+    private void repairComponent(Bolid bolid, List<Component> components) {
+        if (playerTeam.getEngineers().isEmpty()) {
+            System.out.println("Нет инженера для ремонта.");
+            return;
+        }
+
+        System.out.println("Выберите компонент для ремонта:");
+        for (int i = 0; i < components.size(); i++) {
+            Component c = components.get(i);
+            System.out.printf("  %d. %-25s %3d%%%n", i + 1, c.getName(), c.getWear());
+        }
+        System.out.println("  0. Отмена");
+        int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+        if (idx < 0 || idx >= components.size()) return;
+
+        Engineer engineer = playerTeam.getEngineers().get(0);
+        if (playerTeam.getEngineers().size() > 1) {
+            System.out.println("Выберите инженера:");
+            List<Engineer> engineers = playerTeam.getEngineers();
+            for (int i = 0; i < engineers.size(); i++) {
+                Engineer e = engineers.get(i);
+                long cost = WearService.repairCost(e);
+                int amount = WearService.repairAmount(e);
+                System.out.printf("  %d. %-25s | Скилл: %2d | Снизит износ на %d%% | Стоимость: %,d руб.%n",
+                    i + 1, e.getName(), e.getQualification(), amount, cost);
+            }
+            int eIdx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+            if (eIdx < 0 || eIdx >= engineers.size()) return;
+            engineer = engineers.get(eIdx);
+        }
+
+        Component c = components.get(idx);
+        long cost = WearService.repairCost(engineer);
+        int amount = WearService.repairAmount(engineer);
+
+        System.out.printf("Ремонт «%s»: снизит износ на %d%%, стоимость %,d руб. Подтвердить? (1-да / 0-нет): ",
+            c.getName(), amount, cost);
+        int confirm = ConsoleInput.readInt("");
+        if (confirm != 1) return;
+
+        if (!playerTeam.canAfford(cost)) {
+            System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
+                cost, playerTeam.getBudget());
+            return;
+        }
+
+        playerTeam.spend(cost);
+        c.setWear(Math.max(0, c.getWear() - amount));
+        System.out.printf("Отремонтировано. Износ «%s»: %d%%%n", c.getName(), c.getWear());
+    }
+
+    private void replaceComponent(Bolid bolid, List<Component> components) {
+        System.out.println("Выберите слот для замены:");
+        for (int i = 0; i < components.size(); i++) {
+            Component c = components.get(i);
+            System.out.printf("  %d. %-25s %3d%%  [%s]%n",
+                i + 1, c.getName(), c.getWear(), c.getType());
+        }
+        System.out.println("  0. Отмена");
+        int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+        if (idx < 0 || idx >= components.size()) return;
+
+        Component old = components.get(idx);
+        ComponentType slotType = old.getType();
+
+        List<Component> candidates = playerTeam.getInventory().stream()
+            .filter(c -> c.getType() == slotType).toList();
+        if (candidates.isEmpty()) {
+            System.out.printf("В инвентаре нет компонентов типа «%s».%n", slotType);
+            return;
+        }
+
+        System.out.println("Выберите замену из инвентаря:");
+        for (int i = 0; i < candidates.size(); i++) {
+            Component c = candidates.get(i);
+            System.out.printf("  %d. %-25s | Перфоманс: %3d | Износ: %3d%%%n",
+                i + 1, c.getName(), c.getPerformanceValue(), c.getWear());
+        }
+        System.out.println("  0. Отмена");
+        int cIdx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+        if (cIdx < 0 || cIdx >= candidates.size()) return;
+
+        Component replacement = candidates.get(cIdx);
+        if (old.getType() == ComponentType.EXTRA) {
+            bolid.getExtras().remove(old);
+            bolid.addExtra(replacement);
+        } else {
+            bolid.installComponent(replacement);
+        }
+        playerTeam.removeComponent(replacement);
+        playerTeam.addComponent(old);
+        System.out.printf("Заменено: «%s» → «%s». Старый компонент отправлен в инвентарь.%n",
+            old.getName(), replacement.getName());
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Статистика гонок
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -215,26 +402,34 @@ public class GameMenu {
         int    total       = raceHistory.size();
         int    wins        = 0;
         int    podiums     = 0;
+        int    dnfs        = 0;
         long   totalPrize  = 0;
         int    bestPos     = Integer.MAX_VALUE;
         int    posSum      = 0;
+        int    finished    = 0;
 
         for (Race r : raceHistory) {
-            int pos = r.getPlayerPosition();
-            posSum    += pos;
             totalPrize += r.getPrizeAwarded();
-            if (pos == 1) wins++;
-            if (pos <= 3) podiums++;
-            if (pos < bestPos) bestPos = pos;
+            if (r.isPlayerDNF()) {
+                dnfs++;
+            } else {
+                int pos = r.getPlayerPosition();
+                posSum += pos;
+                finished++;
+                if (pos == 1) wins++;
+                if (pos <= 3) podiums++;
+                if (pos < bestPos) bestPos = pos;
+            }
         }
 
-        double avgPos = (double) posSum / total;
-
-        System.out.printf("Гонок сыграно:       %d%n",   total);
-        System.out.printf("Побед (1-е место):   %d%n",   wins);
-        System.out.printf("Подиумов (топ-3):    %d%n",   podiums);
-        System.out.printf("Лучшая позиция:      %d%n",   bestPos);
-        System.out.printf("Средняя позиция:     %.1f%n", avgPos);
+        System.out.printf("Гонок сыграно:       %d%n", total);
+        System.out.printf("Побед (1-е место):   %d%n", wins);
+        System.out.printf("Подиумов (топ-3):    %d%n", podiums);
+        System.out.printf("DNF (инциденты):     %d%n", dnfs);
+        if (finished > 0) {
+            System.out.printf("Лучшая позиция:      %d%n",   bestPos);
+            System.out.printf("Средняя позиция:     %.1f%n", (double) posSum / finished);
+        }
         System.out.printf("Заработано призовых: %,d руб.%n", totalPrize);
     }
 

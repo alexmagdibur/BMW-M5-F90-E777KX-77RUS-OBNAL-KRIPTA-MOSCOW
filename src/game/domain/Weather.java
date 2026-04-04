@@ -11,22 +11,20 @@ package game.domain;
  */
 public enum Weather {
 
-    DRY ("Солнечно",   "☀",  1.00, 1.00, 1.00, 1.00),
-    WET ("Высокая влажность",  "🌧",  0.88, 0.80, 0.91, 0.85),
-    RAIN("Дождь",  "⛈",  0.76, 0.68, 0.83, 0.74);
+    DRY ("Солнечно",   1.00, 1.00, 1.00, 1.00),
+    WET ("Высокая влажность"  ,  0.88, 0.80, 0.91, 0.85),
+    RAIN("Дождь",  0.76, 0.68, 0.83, 0.74);
 
     private final String displayName;
-    private final String icon;
     private final double straightMult;
     private final double turnMult;
     private final double climbMult;
     private final double descentMult;
 
-    Weather(String displayName, String icon,
+    Weather(String displayName,
             double straightMult, double turnMult,
             double climbMult, double descentMult) {
         this.displayName  = displayName;
-        this.icon         = icon;
         this.straightMult = straightMult;
         this.turnMult     = turnMult;
         this.climbMult    = climbMult;
@@ -44,10 +42,9 @@ public enum Weather {
     }
 
     public String getDisplayName() { return displayName; }
-    public String getIcon()        { return icon; }
 
     @Override
-    public String toString() { return icon + " " + displayName; }
+    public String toString() { return displayName; }
 
     /** Random weather condition. */
     public static Weather random() {

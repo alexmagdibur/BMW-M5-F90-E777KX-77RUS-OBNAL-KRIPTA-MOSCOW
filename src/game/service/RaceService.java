@@ -1,6 +1,7 @@
 package game.service;
 
 import game.domain.Bolid;
+import game.domain.Component;
 import game.domain.Engineer;
 import game.domain.Pilot;
 import game.domain.Race;
@@ -8,6 +9,7 @@ import game.domain.RaceResult;
 import game.domain.Team;
 import game.domain.Track;
 import game.domain.Weather;
+import game.util.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,19 +21,17 @@ public class RaceService {
     private static final long PRIZE_2ND = 1_000_000;
     private static final long PRIZE_3RD =   500_000;
 
-    /**
-     * Runs a full race:
-     *   1. Calculates deterministic player lap time.
-     *   2. Generates 3 random bot competitors.
-     *   3. Sorts all results by time, assigns positions 1..N.
-     *   4. Awards prize money to the team for top-3 finishes.
-     *
-     * @return Race object containing sorted results and prize info.
-     */
     public Race runRace(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
                         Track track, Weather weather) {
-        double playerTime = RaceCalculator.calculateTime(bolid, pilot, engineer, track, weather);
-        RaceResult playerResult = new RaceResult(team.getName(), playerTime, true);
+        String incidentComponent = checkIncident(bolid);
+        RaceResult playerResult;
+
+        if (incidentComponent != null) {
+            playerResult = RaceResult.dnf(team.getName(), true);
+        } else {
+            double playerTime = RaceCalculator.calculateTime(bolid, pilot, engineer, track, weather);
+            playerResult = new RaceResult(team.getName(), playerTime, true);
+        }
 
         List<RaceResult> all = new ArrayList<>(BotGenerator.generate(track, weather));
         all.add(playerResult);
@@ -42,17 +42,36 @@ public class RaceService {
             all.get(i).setPosition(i + 1);
         }
 
-        long prize = switch (playerResult.getPosition()) {
-            case 1 -> PRIZE_1ST;
-            case 2 -> PRIZE_2ND;
-            case 3 -> PRIZE_3RD;
-            default -> 0L;
-        };
+        long prize = 0;
+        if (incidentComponent == null) {
+            prize = switch (playerResult.getPosition()) {
+                case 1 -> PRIZE_1ST;
+                case 2 -> PRIZE_2ND;
+                case 3 -> PRIZE_3RD;
+                default -> 0L;
+            };
+        }
 
         if (prize > 0) {
             team.earn(prize);
         }
 
-        return new Race(track, all, playerResult.getPosition(), prize, weather);
+        return new Race(track, all, playerResult.getPosition(), prize, weather, incidentComponent);
+    }
+
+    private static final double INCIDENT_CHANCE = 1; // 25% per worn component
+
+    /**
+     * Each component with wear > 50% has a flat 25% chance of causing an incident.
+     * Returns the name of the failed component, or null if no incident.
+     */
+    private String checkIncident(Bolid bolid) {
+        for (Component c : bolid.getComponents().values()) {
+            if (c.isWornOut() && RandomUtil.nextDouble(0.0, 1.0) < INCIDENT_CHANCE) {
+                c.setWear(100);
+                return c.getName();
+            }
+        }
+        return null;
     }
 }
