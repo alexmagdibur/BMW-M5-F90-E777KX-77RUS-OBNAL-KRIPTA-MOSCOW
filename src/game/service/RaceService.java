@@ -21,7 +21,12 @@ public class RaceService {
     private static final long PRIZE_2ND = 1_000_000;
     private static final long PRIZE_3RD = 500_000;
 
-    private static final double WEREWOLF_CHANCE = 0.4;
+    private static double WEREWOLF_CHANCE = 0.4;
+
+    /** Только для тестов: позволяет переопределить вероятность оборотня. */
+    public static void setWerewolfChance(double value) {
+        WEREWOLF_CHANCE = value;
+    }
 
     public Race runRace(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
                         Track track, Weather weather) {
