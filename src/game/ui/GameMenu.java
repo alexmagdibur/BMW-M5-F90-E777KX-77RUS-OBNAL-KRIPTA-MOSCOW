@@ -69,7 +69,12 @@ public class GameMenu {
         System.out.println("11. Посмотреть другие команды");
         System.out.println("12. Посмотреть другие результаты");
         System.out.println("13. Обслуживание болида");
-        System.out.println("14. Выход");
+        if (currentWeather == Weather.SOLAR_ECLIPSE) {
+            System.out.println("14. Вычислить оборотней");
+            System.out.println("15. Выход");
+        } else {
+            System.out.println("14. Выход");
+        }
     }
 
     private void handleChoice(int choice) {
@@ -88,8 +93,20 @@ public class GameMenu {
             case 12 -> showOtherResults();
             case 13 -> maintenanceBolid();
             case 14 -> {
-                System.out.println("До встречи!");
-                running = false;
+                if (currentWeather == Weather.SOLAR_ECLIPSE) {
+                    werewolfHunt();
+                } else {
+                    System.out.println("До встречи!");
+                    running = false;
+                }
+            }
+            case 15 -> {
+                if (currentWeather == Weather.SOLAR_ECLIPSE) {
+                    System.out.println("До встречи!");
+                    running = false;
+                } else {
+                    System.out.println("Неверный выбор");
+                }
             }
             default -> System.out.println("Неверный выбор");
         }
@@ -385,6 +402,81 @@ public class GameMenu {
         playerTeam.addComponent(old);
         System.out.printf("Заменено: «%s» → «%s». Старый компонент отправлен в инвентарь.%n",
             old.getName(), replacement.getName());
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Охота на оборотней
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private static final long VAN_HELSING_COST = 100_000L;
+    private static final long BUFFY_COST        =  75_000L;
+
+    private void werewolfHunt() {
+        System.out.println(Ansi.bold("\n———————— ВЫЧИСЛЕНИЕ ОБОРОТНЕЙ ————————"));
+        System.out.printf("Бюджет: %,d руб.%n", playerTeam.getBudget());
+        System.out.println("1. Нанять Ван Хельсинга (" + String.format("%,d", VAN_HELSING_COST) + " руб.) — уничтожить оборотня");
+        System.out.println("2. Нанять Баффи (" + String.format("%,d", BUFFY_COST) + " руб.) — вылечить оборотня");
+        System.out.println("0. Назад");
+
+        int choice = ConsoleInput.readInt("Ваш выбор: ");
+        switch (choice) {
+            case 1 -> hireVanHelsing();
+            case 2 -> hireBuffy();
+            case 0 -> {}
+            default -> System.out.println("Неверный выбор.");
+        }
+    }
+
+    private void hireVanHelsing() {
+        if (!playerTeam.canAfford(VAN_HELSING_COST)) {
+            System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
+                VAN_HELSING_COST, playerTeam.getBudget());
+            return;
+        }
+        Pilot target = selectPilotForWerewolfCheck("Ван Хельсинг");
+        if (target == null) return;
+
+        playerTeam.spend(VAN_HELSING_COST);
+        if (target.isWerewolf()) {
+            playerTeam.removePilot(target);
+            System.out.printf("Ван Хельсинг уничтожил оборотня %s! Пилот удалён из команды.%n", target.getName());
+        } else {
+            System.out.printf("Пилот %s не является оборотнем. Ван Хельсинг ушёл ни с чем.%n", target.getName());
+        }
+    }
+
+    private void hireBuffy() {
+        if (!playerTeam.canAfford(BUFFY_COST)) {
+            System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
+                BUFFY_COST, playerTeam.getBudget());
+            return;
+        }
+        Pilot target = selectPilotForWerewolfCheck("Баффи");
+        if (target == null) return;
+
+        playerTeam.spend(BUFFY_COST);
+        if (target.isWerewolf()) {
+            target.setWerewolf(false);
+            System.out.printf("Баффи вылечила оборотня %s! Пилот снова человек.%n", target.getName());
+        } else {
+            System.out.printf("Пилот %s не является оборотнем. Баффи ушла ни с чем.%n", target.getName());
+        }
+    }
+
+    private Pilot selectPilotForWerewolfCheck(String hunter) {
+        List<Pilot> pilots = playerTeam.getPilots();
+        if (pilots.isEmpty()) {
+            System.out.println("В команде нет пилотов.");
+            return null;
+        }
+        System.out.printf("%nВыберите пилота для проверки (%s):%n", hunter);
+        for (int i = 0; i < pilots.size(); i++) {
+            System.out.printf("  %d. %s%n", i + 1, pilots.get(i).getName());
+        }
+        System.out.println("  0. Отмена");
+        int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+        if (idx < 0 || idx >= pilots.size()) return null;
+        return pilots.get(idx);
     }
 
     // ─────────────────────────────────────────────────────────────────────────

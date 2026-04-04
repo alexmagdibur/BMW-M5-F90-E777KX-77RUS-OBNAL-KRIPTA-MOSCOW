@@ -21,12 +21,26 @@ public class RaceService {
     private static final long PRIZE_2ND = 1_000_000;
     private static final long PRIZE_3RD =   500_000;
 
+    private static final double WEREWOLF_CHANCE = 0.4;
+
     public Race runRace(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
                         Track track, Weather weather) {
-        String incidentComponent = checkIncident(bolid);
-        RaceResult playerResult;
+        // Werewolf mechanic: re-roll during eclipse, clear otherwise
+        if (weather == Weather.SOLAR_ECLIPSE) {
+            pilot.setWerewolf(RandomUtil.nextDouble(0.0, 1.0) < WEREWOLF_CHANCE);
+        } else {
+            pilot.setWerewolf(false);
+        }
 
-        if (incidentComponent != null) {
+        String dnfReason = null;
+        if (pilot.isWerewolf()) {
+            dnfReason = "Пилот стал оборотнем, у него лапки! DNF";
+        } else {
+            dnfReason = checkIncident(bolid);
+        }
+
+        RaceResult playerResult;
+        if (dnfReason != null) {
             playerResult = RaceResult.dnf(team.getName(), true);
         } else {
             double playerTime = RaceCalculator.calculateTime(bolid, pilot, engineer, track, weather);
@@ -43,7 +57,7 @@ public class RaceService {
         }
 
         long prize = 0;
-        if (incidentComponent == null) {
+        if (dnfReason == null) {
             prize = switch (playerResult.getPosition()) {
                 case 1 -> PRIZE_1ST;
                 case 2 -> PRIZE_2ND;
@@ -56,20 +70,20 @@ public class RaceService {
             team.earn(prize);
         }
 
-        return new Race(track, all, playerResult.getPosition(), prize, weather, incidentComponent);
+        return new Race(track, all, playerResult.getPosition(), prize, weather, dnfReason);
     }
 
     private static final double INCIDENT_CHANCE = 1; // 25% per worn component
 
     /**
-     * Each component with wear > 50% has a flat 25% chance of causing an incident.
-     * Returns the name of the failed component, or null if no incident.
+     * Each component with wear > 50% has a flat chance of causing an incident.
+     * Returns a display-ready DNF reason string, or null if no incident.
      */
     private String checkIncident(Bolid bolid) {
         for (Component c : bolid.getComponents().values()) {
             if (c.isWornOut() && RandomUtil.nextDouble(0.0, 1.0) < INCIDENT_CHANCE) {
                 c.setWear(100);
-                return c.getName();
+                return "отказ компонента «" + c.getName() + "»";
             }
         }
         return null;

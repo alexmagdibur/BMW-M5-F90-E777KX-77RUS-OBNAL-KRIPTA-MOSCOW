@@ -60,6 +60,10 @@ public class Team {
         pilots.add(pilot);
     }
 
+    public void removePilot(Pilot pilot) {
+        pilots.remove(pilot);
+    }
+
     public void addEngineer(Engineer engineer) {
         engineers.add(engineer);
     }

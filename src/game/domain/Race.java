@@ -39,7 +39,7 @@ public class Race {
         }
 
         if (incidentComponent != null) {
-            sb.append(String.format("%nРезультат: DNF — отказ компонента «%s»", incidentComponent));
+            sb.append(String.format("%nРезультат: DNF — %s", incidentComponent));
         } else {
             sb.append(String.format("%nМесто: %d", playerPosition));
             if (prizeAwarded > 0) {
