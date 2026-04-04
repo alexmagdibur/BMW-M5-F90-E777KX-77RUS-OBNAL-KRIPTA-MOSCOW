@@ -12,19 +12,17 @@ public class Bolid {
     private List<Component> extras;
 
     public Bolid(String name) {
-        this.name       = name;
+        this.name = name;
         this.components = new EnumMap<>(ComponentType.class);
-        this.extras     = new ArrayList<>();
+        this.extras = new ArrayList<>();
     }
 
     public String getName() { return name; }
 
-    /** Installs a main-slot component (one per ComponentType). */
     public void installComponent(Component component) {
         components.put(component.getType(), component);
     }
 
-    /** Adds an EXTRA component; multiple extras are allowed. */
     public void addExtra(Component component) {
         extras.add(component);
     }
@@ -33,7 +31,6 @@ public class Bolid {
         return components.get(type);
     }
 
-    /** Returns main-slot components only (ENGINE, TRANSMISSION, etc.). */
     public Map<ComponentType, Component> getComponents() {
         return components;
     }
@@ -42,7 +39,6 @@ public class Bolid {
         return extras;
     }
 
-    /** Returns all installed components: main slots + all extras. */
     public List<Component> getAllComponents() {
         List<Component> all = new ArrayList<>(components.values());
         all.addAll(extras);

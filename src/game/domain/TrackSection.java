@@ -3,7 +3,7 @@ package domain;
 public class TrackSection {
 
     private final SectionType type;
-    private final int length; // metres
+    private final int length;
 
     public TrackSection(SectionType type, int length) {
         this.type = type;

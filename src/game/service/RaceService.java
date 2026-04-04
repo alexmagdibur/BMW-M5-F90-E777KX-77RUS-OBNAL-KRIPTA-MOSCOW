@@ -19,13 +19,12 @@ public class RaceService {
 
     private static final long PRIZE_1ST = 2_000_000;
     private static final long PRIZE_2ND = 1_000_000;
-    private static final long PRIZE_3RD =   500_000;
+    private static final long PRIZE_3RD = 500_000;
 
     private static final double WEREWOLF_CHANCE = 0.4;
 
     public Race runRace(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
                         Track track, Weather weather) {
-        // Werewolf mechanic: re-roll during eclipse, clear otherwise
         if (weather == Weather.SOLAR_ECLIPSE) {
             pilot.setWerewolf(RandomUtil.nextDouble(0.0, 1.0) < WEREWOLF_CHANCE);
         } else {
@@ -73,12 +72,9 @@ public class RaceService {
         return new Race(track, all, playerResult.getPosition(), prize, weather, dnfReason);
     }
 
-    private static final double INCIDENT_CHANCE = 1; // 25% per worn component
+    private static final double INCIDENT_CHANCE = 1;
 
-    /**
-     * Each component with wear > 50% has a flat chance of causing an incident.
-     * Returns a display-ready DNF reason string, or null if no incident.
-     */
+
     private String checkIncident(Bolid bolid) {
         for (Component c : bolid.getComponents().values()) {
             if (c.isWornOut() && RandomUtil.nextDouble(0.0, 1.0) < INCIDENT_CHANCE) {

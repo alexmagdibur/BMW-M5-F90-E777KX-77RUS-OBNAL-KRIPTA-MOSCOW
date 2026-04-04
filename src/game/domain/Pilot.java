@@ -2,8 +2,8 @@ package domain;
 
 public class Pilot extends TeamMember {
 
-    private int skill; // 1–100
-    private boolean isWerewolf; // hidden flag, used during solar eclipse
+    private int skill;
+    private boolean isWerewolf;
 
     public Pilot(String name, int salary, int skill) {
         super(name, salary);

@@ -11,11 +11,15 @@ public class Main {
         System.out.println(Ansi.bold("———————— ZOV AUTO: МОЖНО, А ЗАЧЕМ ————————"));
 
         String name = ConsoleInput.readLine("Введите имя вашей команды: ");
-        Team playerTeam = GameInitializer.createPlayerTeam(name);
+        Team playerTeam = createPlayerTeam(name);
 
         GameMenu menu = new GameMenu(playerTeam);
         menu.run();
 
         ConsoleInput.close();
+    }
+
+    public static Team createPlayerTeam(String teamName) {
+        return new Team(teamName, 10_000_000);
     }
 }

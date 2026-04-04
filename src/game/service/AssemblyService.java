@@ -53,7 +53,6 @@ public class AssemblyService {
 
         List<Component> selected = new ArrayList<>();
 
-        // Required slots
         for (int i = 0; i < REQUIRED.length; i++) {
             Component choice = pickFromInventory(REQUIRED[i], REQUIRED_NAMES[i], false);
             if (choice == null) {
@@ -63,7 +62,6 @@ public class AssemblyService {
             selected.add(choice);
         }
 
-        // Compatibility check for ENGINE, TRANSMISSION, SUSPENSION, CHASSIS
         String incompatibility = checkCompatibility(selected);
         if (incompatibility != null) {
             System.out.println(Ansi.bold("\nСборка отменена: несовместимые компоненты."));
@@ -71,7 +69,6 @@ public class AssemblyService {
             return;
         }
 
-        // Optional EXTRA slots (multiple allowed)
         System.out.println(Ansi.bold("\n———— Экстра (необязательно, можно несколько) ————"));
         List<Component> chosenExtras = new ArrayList<>();
         while (true) {
@@ -97,7 +94,6 @@ public class AssemblyService {
             System.out.printf("Добавлено: %s%n", picked.getName());
         }
 
-        // Assemble
         Bolid bolid = new Bolid(bolidName);
         for (Component c : selected) {
             bolid.installComponent(c);
@@ -124,10 +120,7 @@ public class AssemblyService {
         ComponentType.CHASSIS
     );
 
-    /**
-     * Checks pairwise compatibility among ENGINE, TRANSMISSION, SUSPENSION, CHASSIS.
-     * Returns a human-readable error string if incompatible, or null if all OK.
-     */
+
     private String checkCompatibility(List<Component> components) {
         List<Component> relevant = components.stream()
             .filter(c -> COMPATIBILITY_TYPES.contains(c.getType()))

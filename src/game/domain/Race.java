@@ -4,30 +4,30 @@ import java.util.List;
 
 public class Race {
 
-    private final Track            track;
+    private final Track track;
     private final List<RaceResult> results;
-    private final int              playerPosition;
-    private final long             prizeAwarded;
-    private final Weather          weather;
-    private final String           incidentComponent; // null if no incident
+    private final int playerPosition;
+    private final long prizeAwarded;
+    private final Weather weather;
+    private final String incidentComponent;
 
     public Race(Track track, List<RaceResult> results, int playerPosition, long prizeAwarded,
                 Weather weather, String incidentComponent) {
-        this.track              = track;
-        this.results            = List.copyOf(results);
-        this.playerPosition     = playerPosition;
-        this.prizeAwarded       = prizeAwarded;
-        this.weather            = weather;
-        this.incidentComponent  = incidentComponent;
+        this.track = track;
+        this.results = List.copyOf(results);
+        this.playerPosition = playerPosition;
+        this.prizeAwarded = prizeAwarded;
+        this.weather = weather;
+        this.incidentComponent = incidentComponent;
     }
 
-    public Track            getTrack()              { return track; }
-    public List<RaceResult> getResults()            { return results; }
-    public int              getPlayerPosition()     { return playerPosition; }
-    public long             getPrizeAwarded()       { return prizeAwarded; }
-    public Weather          getWeather()            { return weather; }
-    public boolean          isPlayerDNF()           { return incidentComponent != null; }
-    public String           getIncidentComponent()  { return incidentComponent; }
+    public Track getTrack() { return track; }
+    public List<RaceResult> getResults() { return results; }
+    public int getPlayerPosition() { return playerPosition; }
+    public long getPrizeAwarded() { return prizeAwarded; }
+    public Weather getWeather() { return weather; }
+    public boolean isPlayerDNF() { return incidentComponent != null; }
+    public String getIncidentComponent() { return incidentComponent; }
 
     @Override
     public String toString() {

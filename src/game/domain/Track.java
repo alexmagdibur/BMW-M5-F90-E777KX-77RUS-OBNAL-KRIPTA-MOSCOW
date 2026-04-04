@@ -21,7 +21,6 @@ public class Track {
         return sections.stream().mapToInt(TrackSection::getLength).sum();
     }
 
-    /** Суммарная длина секций каждого типа. */
     public Map<SectionType, Integer> getLengthByType() {
         return sections.stream().collect(
             Collectors.groupingBy(TrackSection::getType,
@@ -29,7 +28,6 @@ public class Track {
         );
     }
 
-    /** Количество секций каждого типа. */
     public Map<SectionType, Long> getCountByType() {
         return sections.stream().collect(
             Collectors.groupingBy(TrackSection::getType, Collectors.counting())

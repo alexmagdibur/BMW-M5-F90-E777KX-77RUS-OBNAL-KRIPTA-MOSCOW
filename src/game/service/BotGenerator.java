@@ -23,12 +23,7 @@ public class BotGenerator {
 
     private static final int BOT_COUNT = 3;
 
-    /**
-     * Generates BOT_COUNT bots with random times distributed around the
-     * reference time for the given track (all-average crew, factor = 1.0).
-     * Weather slows bots the same way it slows the player.
-     * Multiplier range: [0.80, 1.25] × weatherAdjustedReferenceTime.
-     */
+
     public static List<RaceResult> generate(Track track, Weather weather) {
         double ref = referenceTime(track, weather);
 
@@ -43,18 +38,15 @@ public class BotGenerator {
         return bots;
     }
 
-    /**
-     * Reference time = sum of (sectionLength / (baseSpeed * weatherMultiplier)) per section,
-     * assuming the average performance factor of 1.0.
-     */
+
     private static double referenceTime(Track track, Weather weather) {
         double time = 0.0;
         for (TrackSection s : track.getSections()) {
             double baseSpeed = switch (s.getType()) {
                 case STRAIGHT -> 70.0;
-                case TURN     -> 28.0;
-                case CLIMB    -> 40.0;
-                case DESCENT  -> 55.0;
+                case TURN -> 28.0;
+                case CLIMB -> 40.0;
+                case DESCENT -> 55.0;
             };
             time += s.getLength() / (baseSpeed * weather.getMultiplier(s.getType()));
         }
@@ -70,18 +62,15 @@ public class BotGenerator {
         return name;
     }
 
-    /**
-     * Fixed league profiles for display (informational only).
-     * Bolid / pilot / engineer skill levels reflect how competitive each team is.
-     */
+
     public static String getLeagueTable() {
         Object[][] teams = {
-            {"Чуваки на АвтоВАЗе",    312, 42, 35},
-            {"M5 Asphalt 8",           445, 78, 71},
-            {"Распил Владивосток",     380, 55, 60},
-            {"JDM Racing Club",        510, 88, 82},
+            {"Чуваки на АвтоВАЗе", 312, 42, 35},
+            {"M5 Asphalt 8", 445, 78, 71},
+            {"Распил Владивосток", 380, 55, 60},
+            {"JDM Racing Club", 510, 88, 82},
             {"Клуб дядек на Крузаках", 290, 30, 25},
-            {"Можно, а зачем?",        460, 72, 68},
+            {"Можно, а зачем?", 460, 72, 68},
         };
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%-26s | Болид | Пилот | Инженер%n", "Команда"));
