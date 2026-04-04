@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ConsoleInput {
 
-    private static final Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     public static int readInt(String prompt) {
         System.out.print(prompt);
@@ -24,5 +24,9 @@ public class ConsoleInput {
 
     public static void close() {
         scanner.close();
+    }
+
+    public static void resetScanner() {
+        scanner = new Scanner(System.in);
     }
 }
