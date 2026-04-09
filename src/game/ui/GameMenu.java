@@ -7,6 +7,7 @@ import domain.ComponentType;
 import domain.Engineer;
 import domain.Pilot;
 import domain.Race;
+import domain.RaceResult;
 import domain.Team;
 import domain.Track;
 import domain.Weather;
@@ -17,6 +18,7 @@ import service.RaceService;
 import service.WearService;
 import service.WerewolfService;
 
+import service.SaveService;
 import service.ShopService;
 import util.Ansi;
 
@@ -26,22 +28,29 @@ import java.util.List;
 public class GameMenu {
 
     private final Team playerTeam;
+    private final String playerName;
     private boolean running;
     private final ShopService      shopService;
     private final HireService      hireService;
     private final AssemblyService  assemblyService;
     private final RaceService      raceService;
     private final WerewolfService  werewolfService;
-    private final List<Race>       raceHistory = new ArrayList<>();
+    private final SaveService      saveService;
+    private final List<Race>       raceHistory   = new ArrayList<>();
+    /** Плоская история результатов игрока — используется для сохранения. */
+    private final List<RaceResult> raceResults;
     private Weather                currentWeather;
 
-    public GameMenu(Team playerTeam) {
+    public GameMenu(Team playerTeam, String playerName, List<RaceResult> history) {
         this.playerTeam      = playerTeam;
+        this.playerName      = playerName;
+        this.raceResults     = new ArrayList<>(history);
         this.running         = true;
+        this.saveService     = new SaveService();
         this.shopService     = new ShopService(playerTeam);
         this.hireService     = new HireService(playerTeam);
-        this.assemblyService = new AssemblyService(playerTeam);
-        this.raceService     = new RaceService();
+        this.assemblyService = new AssemblyService(playerTeam, saveService, playerName, raceResults);
+        this.raceService     = new RaceService(saveService, playerName, raceResults);
         this.werewolfService = new WerewolfService(playerTeam);
         this.currentWeather  = Weather.random();
     }
@@ -72,11 +81,12 @@ public class GameMenu {
         System.out.println("11. Посмотреть другие команды");
         System.out.println("12. Посмотреть другие результаты");
         System.out.println("13. Обслуживание болида");
+        System.out.println("14. Сохранить игру");
         if (currentWeather == Weather.SOLAR_ECLIPSE) {
-            System.out.println("14. Вычислить оборотней");
-            System.out.println("15. Выход");
+            System.out.println("15. Вычислить оборотней");
+            System.out.println("16. Выход");
         } else {
-            System.out.println("14. Выход");
+            System.out.println("15. Выход");
         }
     }
 
@@ -95,7 +105,8 @@ public class GameMenu {
             case 11 -> showOtherTeams();
             case 12 -> showOtherResults();
             case 13 -> maintenanceBolid();
-            case 14 -> {
+            case 14 -> saveGame();
+            case 15 -> {
                 if (currentWeather == Weather.SOLAR_ECLIPSE) {
                     werewolfService.werewolfHunt();
                 } else {
@@ -103,7 +114,7 @@ public class GameMenu {
                     running = false;
                 }
             }
-            case 15 -> {
+            case 16 -> {
                 if (currentWeather == Weather.SOLAR_ECLIPSE) {
                     System.out.println("До встречи!");
                     running = false;
@@ -152,6 +163,9 @@ public class GameMenu {
 
         WearService.applyWear(bolid, track);
         printWearReport(bolid);
+
+        // Автосохранение ПОСЛЕ износа — wear компонентов уже актуален
+        saveService.autoSave(playerTeam, raceResults, playerName);
 
         Weather nextWeather = Weather.random();
         if (nextWeather != currentWeather) {
@@ -408,38 +422,51 @@ public class GameMenu {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // Сохранение
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void saveGame() {
+        saveService.saveGame(playerTeam, raceResults, playerName);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Статистика гонок
     // ─────────────────────────────────────────────────────────────────────────
 
     private void showRaceStats() {
         System.out.println(Ansi.bold("\n———————— СТАТИСТИКА ГОНОК ————————"));
 
-        if (raceHistory.isEmpty()) {
+        if (raceResults.isEmpty()) {
             System.out.println("Гонок ещё не было.");
             return;
         }
 
-        int    total       = raceHistory.size();
-        int    wins        = 0;
-        int    podiums     = 0;
-        int    dnfs        = 0;
-        long   totalPrize  = 0;
-        int    bestPos     = Integer.MAX_VALUE;
-        int    posSum      = 0;
-        int    finished    = 0;
+        // Позиции и результаты — из raceResults (включает историю из сохранения)
+        int total    = raceResults.size();
+        int wins     = 0;
+        int podiums  = 0;
+        int dnfs     = 0;
+        int bestPos  = Integer.MAX_VALUE;
+        int posSum   = 0;
+        int finished = 0;
 
-        for (Race r : raceHistory) {
-            totalPrize += r.getPrizeAwarded();
-            if (r.isPlayerDNF()) {
+        for (RaceResult r : raceResults) {
+            if (r.isIncident()) {
                 dnfs++;
             } else {
-                int pos = r.getPlayerPosition();
+                int pos = r.getPosition();
                 posSum += pos;
                 finished++;
                 if (pos == 1) wins++;
                 if (pos <= 3) podiums++;
                 if (pos < bestPos) bestPos = pos;
             }
+        }
+
+        // Призовые — только из Race объектов текущей сессии (RaceResult не хранит приз)
+        long sessionPrize = 0;
+        for (Race r : raceHistory) {
+            sessionPrize += r.getPrizeAwarded();
         }
 
         System.out.printf("Гонок сыграно:       %d%n", total);
@@ -450,7 +477,9 @@ public class GameMenu {
             System.out.printf("Лучшая позиция:      %d%n",   bestPos);
             System.out.printf("Средняя позиция:     %.1f%n", (double) posSum / finished);
         }
-        System.out.printf("Заработано призовых: %,d руб.%n", totalPrize);
+        if (sessionPrize > 0) {
+            System.out.printf("Призовые за сессию:  %,d руб.%n", sessionPrize);
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

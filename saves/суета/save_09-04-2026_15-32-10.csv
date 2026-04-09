@@ -1,0 +1,19 @@
+#TEAM
+суета;9160000
+#COMPONENTS
+Lada Priora 16-кл.;ENGINE;300000;60;19
+МКПП ВАЗ 2115 5-ст.;TRANSMISSION;150000;55;13
+Стандартная подвеска;SUSPENSION;100000;50;22
+Стальное шасси;CHASSIS;200000;55;7
+Стоковые обвесы;AERO_PACKAGE;80000;50;9
+Pirelli P Zero Hard;TIRES;60000;55;33
+#BOLIDS
+бэха;Lada Priora 16-кл.,МКПП ВАЗ 2115 5-ст.,Стандартная подвеска,Стальное шасси,Стоковые обвесы,Pirelli P Zero Hard;
+#PILOTS
+Руслан Ахтямов;750000;91;false
+#ENGINEERS
+Елизавета Тихомирова;700000;90;false
+#RACE_HISTORY
+суета;1.7976931348623157E308;true;true;4
+суета;99.28742250697451;true;false;3
+суета;114.284938013883;true;false;2

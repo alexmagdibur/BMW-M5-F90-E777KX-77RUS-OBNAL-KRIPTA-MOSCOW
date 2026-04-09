@@ -12,6 +12,7 @@ public enum Weather {
     private final double straightMult;
     private final double turnMult;
     private final double climbMult;
+
     private final double descentMult;
 
     Weather(String displayName, int weight, double straightMult, double turnMult,

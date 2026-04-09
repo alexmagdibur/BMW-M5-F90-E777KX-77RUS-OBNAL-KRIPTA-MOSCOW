@@ -3,6 +3,7 @@ package service;
 import domain.Bolid;
 import domain.Component;
 import domain.ComponentType;
+import domain.RaceResult;
 import domain.Team;
 import ui.ConsoleInput;
 import util.Ansi;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 public class AssemblyService {
+
+    // ── автосохранение ────────────────────────────────────────────────────────
 
     private static final ComponentType[] REQUIRED = {
         ComponentType.ENGINE,
@@ -31,10 +34,23 @@ public class AssemblyService {
         "Шины"
     };
 
-    private final Team team;
+    private final Team             team;
+    private final SaveService      saveService;
+    private final String           playerName;
+    private final List<RaceResult> raceResults;
 
+    /** Конструктор без автосохранения — для обратной совместимости и тестов. */
     public AssemblyService(Team team) {
-        this.team = team;
+        this(team, null, null, null);
+    }
+
+    /** Конструктор с автосохранением — используется из GameMenu. */
+    public AssemblyService(Team team, SaveService saveService,
+                           String playerName, List<RaceResult> raceResults) {
+        this.team        = team;
+        this.saveService = saveService;
+        this.playerName  = playerName;
+        this.raceResults = raceResults;
     }
 
     public void assembleBolid() {
@@ -104,6 +120,10 @@ public class AssemblyService {
             team.removeComponent(c);
         }
         team.addBolid(bolid);
+
+        if (saveService != null) {
+            saveService.autoSave(team, raceResults, playerName);
+        }
 
         System.out.println(Ansi.bold("\nБолид собран!"));
         System.out.printf("  %-27s | Перфоманс: %3d%n", bolid.getName(), bolid.getPerformanceScore());
