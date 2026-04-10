@@ -5,8 +5,6 @@ import domain.Component;
 import domain.ComponentType;
 import domain.RaceResult;
 import domain.Team;
-import domain.Weapon;
-import domain.WeaponType;
 import ui.ConsoleInput;
 import util.Ansi;
 
@@ -112,8 +110,6 @@ public class AssemblyService {
             System.out.printf("Добавлено: %s%n", picked.getName());
         }
 
-        List<Weapon> chosenWeapons = pickWeapons();
-
         Bolid bolid = new Bolid(bolidName);
         for (Component c : selected) {
             bolid.installComponent(c);
@@ -123,17 +119,7 @@ public class AssemblyService {
             bolid.addExtra(c);
             team.removeComponent(c);
         }
-        for (Weapon w : chosenWeapons) {
-            bolid.installWeapon(w);
-            team.removeWeapon(w);
-        }
         team.addBolid(bolid);
-
-        if (!chosenWeapons.isEmpty()) {
-            int weaponBonus = chosenWeapons.stream().mapToInt(Weapon::getDamage).sum();
-            System.out.printf("  Оружие: %d ед. урона (%d единиц(ы))%n",
-                weaponBonus, chosenWeapons.size());
-        }
 
         if (saveService != null) {
             saveService.autoSave(team, raceResults, playerName);
@@ -170,50 +156,6 @@ public class AssemblyService {
             }
         }
         return null;
-    }
-
-    /** Предлагает установить до 2 единиц оружия (1 MELEE + 1 RANGED) из инвентаря команды. */
-    private List<Weapon> pickWeapons() {
-        List<Weapon> result = new ArrayList<>();
-
-        for (WeaponType wt : WeaponType.values()) {
-            List<Weapon> available = team.getWeaponInventory().stream()
-                .filter(w -> w.getType() == wt && !result.contains(w))
-                .toList();
-
-            if (available.isEmpty()) continue;
-
-            System.out.printf("%n  %s:%n", Ansi.bold("Оружие — " + wt.getDisplayName()));
-            for (int i = 0; i < available.size(); i++) {
-                Weapon w = available.get(i);
-                System.out.printf("   %d. [Ур.%d] %-27s | Урон: %d%n",
-                    i + 1, w.getLevel(), w.getName(), w.getDamage());
-            }
-            System.out.println("   0. Не устанавливать");
-
-            int choice = ConsoleInput.readInt("Ваш выбор: ");
-            if (choice < 1 || choice > available.size()) continue;
-
-            Weapon picked = available.get(choice - 1);
-
-            // Проверяем совместимость с уже выбранным оружием
-            boolean compatible = true;
-            for (Weapon already : result) {
-                if (!picked.isCompatibleWith(already)) {
-                    System.out.printf("Оружие «%s» (ур.%d) несовместимо с «%s» (ур.%d). Пропущено.%n",
-                        picked.getName(), picked.getLevel(),
-                        already.getName(), already.getLevel());
-                    compatible = false;
-                    break;
-                }
-            }
-            if (compatible) {
-                result.add(picked);
-                System.out.printf("Установлено: %s%n", picked.getName());
-            }
-        }
-
-        return result;
     }
 
     private Component pickFromInventory(ComponentType type, String typeName, boolean skippable) {

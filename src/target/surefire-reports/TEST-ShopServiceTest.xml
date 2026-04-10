@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="ShopServiceTest" time="0.041" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="ShopServiceTest" time="0.057" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="RU"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-25\bin"/>
-    <property name="sun.java.command" value="C:\Users\Alexander\AppData\Local\Temp\surefire4550264597593847089\surefirebooter-20260410190228622_3.jar C:\Users\Alexander\AppData\Local\Temp\surefire4550264597593847089 2026-04-10T19-02-28_460-jvmRun1 surefire-20260410190228622_1tmp surefire_0-20260410190228622_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Alexander\AppData\Local\Temp\surefire10645755805815518229\surefirebooter-20260410201215081_3.jar C:\Users\Alexander\AppData\Local\Temp\surefire10645755805815518229 2026-04-10T20-12-14_896-jvmRun1 surefire-20260410201215081_1tmp surefire_0-20260410201215081_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\test-classes;D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\classes;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\Alexander\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Alexander\AppData\Local\Temp\surefire4550264597593847089\surefirebooter-20260410190228622_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Alexander\AppData\Local\Temp\surefire10645755805815518229\surefirebooter-20260410201215081_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.1+8-LTS-27"/>
@@ -59,7 +59,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="componentAddedToInventoryAfterPurchase" classname="ShopServiceTest" time="0.018">
+  <testcase name="componentAddedToInventoryAfterPurchase" classname="ShopServiceTest" time="0.017">
     <system-out><![CDATA[&amp#27;[1m
 ———————— МАГАЗИН КОМПОНЕНТОВ ————————&amp#27;[0m
 Ваш бюджет: 1 000 000 руб.
@@ -116,24 +116,10 @@
  3. Автозвук Pride Car Audio    | Перфоманс: 30 | Цена: 80 000 руб.
  0. Пропустить / Продолжить
 Ваш выбор: Бюджет: 700 000 руб.
-&amp#27;[1m
-———— Оружие ————&amp#27;[0m
-  Ур.1 — ближний и дальний бой (базовые)
-  Ур.2 — улучшенное вооружение
-  Ур.3 — экзотическое (несовместимо с ур.1)
-
-Бюджет: 700 000 руб.
- 1. [Ур.1] Кастет ВАЗ                  | Урон: 25 | Цена: 50 000 руб.
- 2. [Ур.1] Рогатка-М                   | Урон: 20 | Цена: 40 000 руб.
- 3. [Ур.2] Цепь BMW                    | Урон: 55 | Цена: 180 000 руб.
- 4. [Ур.2] Пистолет Макарова           | Урон: 48 | Цена: 150 000 руб.
- 5. [Ур.3] Плазменный кулак            | Урон: 95 | Цена: 600 000 руб.
- 6. [Ур.3] Рельсотрон Porsche          | Урон: 90 | Цена: 550 000 руб.
- 0. Пропустить / Продолжить
-Ваш выбор: Покупка завершена. Компоненты добавлены в инвентарь.
+Покупка завершена. Компоненты добавлены в инвентарь.
 ]]></system-out>
   </testcase>
-  <testcase name="budgetDeductedAfterPurchase" classname="ShopServiceTest" time="0.013">
+  <testcase name="budgetDeductedAfterPurchase" classname="ShopServiceTest" time="0.008">
     <system-out><![CDATA[&amp#27;[1m
 ———————— МАГАЗИН КОМПОНЕНТОВ ————————&amp#27;[0m
 Ваш бюджет: 1 000 000 руб.
@@ -190,24 +176,10 @@
  3. Автозвук Pride Car Audio    | Перфоманс: 30 | Цена: 80 000 руб.
  0. Пропустить / Продолжить
 Ваш выбор: Бюджет: 700 000 руб.
-&amp#27;[1m
-———— Оружие ————&amp#27;[0m
-  Ур.1 — ближний и дальний бой (базовые)
-  Ур.2 — улучшенное вооружение
-  Ур.3 — экзотическое (несовместимо с ур.1)
-
-Бюджет: 700 000 руб.
- 1. [Ур.1] Кастет ВАЗ                  | Урон: 25 | Цена: 50 000 руб.
- 2. [Ур.1] Рогатка-М                   | Урон: 20 | Цена: 40 000 руб.
- 3. [Ур.2] Цепь BMW                    | Урон: 55 | Цена: 180 000 руб.
- 4. [Ур.2] Пистолет Макарова           | Урон: 48 | Цена: 150 000 руб.
- 5. [Ур.3] Плазменный кулак            | Урон: 95 | Цена: 600 000 руб.
- 6. [Ур.3] Рельсотрон Porsche          | Урон: 90 | Цена: 550 000 руб.
- 0. Пропустить / Продолжить
-Ваш выбор: Покупка завершена. Компоненты добавлены в инвентарь.
+Покупка завершена. Компоненты добавлены в инвентарь.
 ]]></system-out>
   </testcase>
-  <testcase name="purchaseFailsWhenNotEnoughMoney" classname="ShopServiceTest" time="0.008">
+  <testcase name="purchaseFailsWhenNotEnoughMoney" classname="ShopServiceTest" time="0.026">
     <system-out><![CDATA[&amp#27;[1m
 ———————— МАГАЗИН КОМПОНЕНТОВ ————————&amp#27;[0m
 Ваш бюджет: 100 000 руб.
@@ -262,21 +234,7 @@
  3. Автозвук Pride Car Audio    | Перфоманс: 30 | Цена: 80 000 руб.
  0. Пропустить / Продолжить
 Ваш выбор: Бюджет: 100 000 руб.
-&amp#27;[1m
-———— Оружие ————&amp#27;[0m
-  Ур.1 — ближний и дальний бой (базовые)
-  Ур.2 — улучшенное вооружение
-  Ур.3 — экзотическое (несовместимо с ур.1)
-
-Бюджет: 100 000 руб.
- 1. [Ур.1] Кастет ВАЗ                  | Урон: 25 | Цена: 50 000 руб.
- 2. [Ур.1] Рогатка-М                   | Урон: 20 | Цена: 40 000 руб.
- 3. [Ур.2] Цепь BMW                    | Урон: 55 | Цена: 180 000 руб.
- 4. [Ур.2] Пистолет Макарова           | Урон: 48 | Цена: 150 000 руб.
- 5. [Ур.3] Плазменный кулак            | Урон: 95 | Цена: 600 000 руб.
- 6. [Ур.3] Рельсотрон Porsche          | Урон: 90 | Цена: 550 000 руб.
- 0. Пропустить / Продолжить
-Ваш выбор: Покупка завершена. Компоненты добавлены в инвентарь.
+Покупка завершена. Компоненты добавлены в инвентарь.
 ]]></system-out>
   </testcase>
 </testsuite>

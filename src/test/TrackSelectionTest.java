@@ -96,9 +96,9 @@ public class TrackSelectionTest {
      */
     @Test
     void trackIsAskedBeforeEachRace() {
-        feedInput("1\n1\n" +   // гонка 1: меню→гонка, выбор трассы 1
-                  "1\n1\n" +   // гонка 2: меню→гонка, выбор трассы 1
-                  "16\n15\n"); // выход при любой погоде
+        feedInput("1\n1\n1\n" +   // гонка 1: меню→гонка, режим→Обычный, трасса 1
+                  "1\n1\n1\n" +   // гонка 2: меню→гонка, режим→Обычный, трасса 1
+                  "16\n15\n");    // выход при любой погоде
 
         GameMenu menu = new GameMenu(readyTeam(), TEST_PLAYER, new ArrayList<>(), new ArrayList<>());
         menu.run();
@@ -132,7 +132,7 @@ public class TrackSelectionTest {
         assertEquals(1, custom.size(), "Должен быть один пользовательский трек");
 
         // Используем каталожный трек (пункт 1) чтобы не считать индекс
-        feedInput("1\n1\n16\n15\n"); // гонка, выбор трассы 1, выход
+        feedInput("1\n1\n1\n16\n15\n"); // гонка, режим→Обычный, трасса 1, выход
 
         GameMenu menu = new GameMenu(readyTeam(), TEST_PLAYER, new ArrayList<>(), custom);
         menu.run();

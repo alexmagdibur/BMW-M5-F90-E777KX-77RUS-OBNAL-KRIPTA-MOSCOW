@@ -1,12 +1,9 @@
 package service;
 
 import data.ComponentCatalog;
-import data.WeaponCatalog;
 import domain.Component;
 import domain.ComponentType;
 import domain.Team;
-import domain.Weapon;
-import domain.WeaponType;
 import ui.ConsoleInput;
 import util.Ansi;
 
@@ -52,45 +49,7 @@ public class ShopService {
             System.out.printf("Бюджет: %,d руб.%n", team.getBudget());
         }
 
-        System.out.println(Ansi.bold("\n———— Оружие ————"));
-        buyWeapons();
-
         System.out.println("Покупка завершена. Компоненты добавлены в инвентарь.");
-    }
-
-    private void buyWeapons() {
-        List<Weapon> all = WeaponCatalog.getAll();
-        System.out.println("  Ур.1 — ближний и дальний бой (базовые)");
-        System.out.println("  Ур.2 — улучшенное вооружение");
-        System.out.println("  Ур.3 — экзотическое (несовместимо с ур.1)");
-
-        while (true) {
-            System.out.printf("%nБюджет: %,d руб.%n", team.getBudget());
-            for (int i = 0; i < all.size(); i++) {
-                Weapon w = all.get(i);
-                System.out.printf(" %d. [Ур.%d] %-27s | Урон: %2d | Цена: %,d руб.%n",
-                    i + 1, w.getLevel(), w.getName(), w.getDamage(), w.getPrice());
-            }
-            System.out.println(" 0. Пропустить / Продолжить");
-
-            int choice = ConsoleInput.readInt("Ваш выбор: ");
-            if (choice == 0) return;
-            if (choice < 1 || choice > all.size()) {
-                System.out.println("Неверный выбор.");
-                continue;
-            }
-
-            Weapon selected = all.get(choice - 1);
-            if (!team.canAfford(selected.getPrice())) {
-                System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
-                    selected.getPrice(), team.getBudget());
-                continue;
-            }
-
-            team.spend(selected.getPrice());
-            team.addWeapon(selected.copy());
-            System.out.printf("Куплено: %s за %,d руб.%n", selected.getName(), selected.getPrice());
-        }
     }
 
     private void buyCategory(ComponentType type) {

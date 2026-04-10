@@ -1,6 +1,7 @@
 package ui;
 
 import data.TrackCatalog;
+import data.WeaponCatalog;
 import domain.Bolid;
 import domain.Component;
 import domain.ComponentType;
@@ -10,11 +11,16 @@ import domain.Race;
 import domain.RaceResult;
 import domain.Team;
 import domain.Track;
+import domain.Weapon;
+import domain.WeaponType;
 import domain.Weather;
+import domain.SurvivalParticipant;
+import domain.SurvivalRaceState;
 import service.AssemblyService;
 import service.BotGenerator;
 import service.HireService;
 import service.RaceService;
+import service.SurvivalRaceService;
 import service.WearService;
 import service.WerewolfService;
 
@@ -138,6 +144,20 @@ public class GameMenu {
             return;
         }
 
+        System.out.println(Ansi.bold("\nВыберите режим гонки:"));
+        System.out.println("  1. Обычный");
+        System.out.println("  2. Выживание");
+        System.out.println("  0. Отмена");
+        int mode = ConsoleInput.readInt("Ваш выбор: ");
+
+        switch (mode) {
+            case 1 -> startNormalRace();
+            case 2 -> startSurvivalMode();
+            default -> System.out.println("Отмена.");
+        }
+    }
+
+    private void startNormalRace() {
         Track    track    = selectTrack();    if (track    == null) return;
         Bolid    bolid    = selectBolid();    if (bolid    == null) return;
         Pilot    pilot    = selectPilot();    if (pilot    == null) return;
@@ -166,7 +186,6 @@ public class GameMenu {
         WearService.applyWear(bolid, track);
         printWearReport(bolid);
 
-        // Автосохранение ПОСЛЕ износа — wear компонентов уже актуален
         saveService.autoSave(playerTeam, raceResults, playerName);
 
         Weather nextWeather = Weather.random();
@@ -174,6 +193,278 @@ public class GameMenu {
             System.out.println("Погода изменилась: " + currentWeather + " → " + nextWeather);
         }
         currentWeather = nextWeather;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Режим выживания
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private void startSurvivalMode() {
+        System.out.println(Ansi.bold("\n———————— РЕЖИМ ВЫЖИВАНИЯ ————————"));
+
+        Track track = selectTrack();
+        if (track == null) return;
+
+        Bolid bolid = selectBolid();
+        if (bolid == null) return;
+
+        survivalBuyWeapons();
+        survivalInstallWeapons(bolid);
+
+        System.out.println(Ansi.bold("\nОружие установлено. Боевая готовность!"));
+        ConsoleInput.readLine("Нажмите Enter для старта...");
+
+        SurvivalRaceService svc = new SurvivalRaceService();
+        SurvivalRaceState state = svc.createRace(bolid, track.getTotalLength());
+        runSurvivalRaceLoop(state, svc);
+    }
+
+    // ── Пошаговый цикл гонки выживания ───────────────────────────────────────
+
+    private void runSurvivalRaceLoop(SurvivalRaceState state, SurvivalRaceService svc) {
+        while (!state.isRaceOver()) {
+            state.advanceStep();
+            System.out.printf("%n%s (Шаг %d / %d — каждый шаг = 1 000 м)%n",
+                Ansi.bold("═══ ВЫЖИВАНИЕ"), state.getCurrentStep(), state.getTotalSteps());
+
+            printSurvivalStandings(state);
+
+            SurvivalParticipant player = state.getPlayer();
+            if (player != null && !player.isEliminated()) {
+                survivalPlayerTurn(state, svc, player);
+            }
+
+            if (state.isRaceOver()) break;
+
+            List<String> botEvents = svc.processBotActions(state);
+            if (!botEvents.isEmpty()) {
+                System.out.println(Ansi.bold("\nДействия соперников:"));
+                botEvents.forEach(System.out::println);
+            }
+        }
+
+        printSurvivalResult(state);
+    }
+
+    private void printSurvivalStandings(SurvivalRaceState state) {
+        System.out.println(Ansi.bold("\nТаблица позиций:"));
+        List<SurvivalParticipant> active = state.getActiveParticipants();
+        for (int i = 0; i < active.size(); i++) {
+            SurvivalParticipant p = active.get(i);
+            String weapons = "";
+            if (p.getMeleeWeaponLevel() > 0)   weapons += " [Б.ур." + p.getMeleeWeaponLevel() + "]";
+            if (p.getRangedWeaponLevel() > 0)   weapons += " [Д.ур." + p.getRangedWeaponLevel() + "]";
+            String marker = p.isPlayer() ? " ◄ ВЫ" : "";
+            System.out.printf("  %d. %-20s | Перф: %3d%s%s%n",
+                i + 1, p.getName(), p.getPerformanceScore(), weapons, marker);
+        }
+
+        // Выбывшие
+        List<SurvivalParticipant> out = state.getOrder().stream()
+            .filter(SurvivalParticipant::isEliminated).toList();
+        if (!out.isEmpty()) {
+            System.out.print("  Выбыли: ");
+            System.out.println(out.stream().map(SurvivalParticipant::getName)
+                .reduce((a, b) -> a + ", " + b).orElse(""));
+        }
+    }
+
+    private void survivalPlayerTurn(SurvivalRaceState state, SurvivalRaceService svc,
+                                     SurvivalParticipant player) {
+        List<SurvivalParticipant> active = state.getActiveParticipants();
+        int playerIdx = active.indexOf(player);
+
+        System.out.println(Ansi.bold("\nВаше действие:"));
+        System.out.printf("  1. Обогнать    (~%d%% успех)%n",
+            svc.overtakeChancePct(player.getPerformanceScore()));
+
+        boolean hasMelee  = player.getMeleeWeaponLevel()  > 0;
+        boolean hasRanged = player.getRangedWeaponLevel()  > 0;
+        if (hasMelee || hasRanged) {
+            if (hasMelee)  System.out.printf("  2. Атаковать ближним боем  [Ур.%d, ~%d%% попадание]%n",
+                player.getMeleeWeaponLevel(),
+                svc.attackChancePct(player.getMeleeWeaponLevel()));
+            if (hasRanged) System.out.printf("  3. Атаковать дальним боем  [Ур.%d, ~%d%% попадание]%n",
+                player.getRangedWeaponLevel(),
+                svc.attackChancePct(player.getRangedWeaponLevel()));
+        }
+        System.out.println("  0. Пропустить ход");
+
+        int choice = ConsoleInput.readInt("Ваш выбор: ");
+
+        switch (choice) {
+            case 1 -> {
+                if (playerIdx == 0) {
+                    System.out.println("Вы уже на первом месте — некого обгонять.");
+                } else {
+                    boolean ok = svc.tryOvertake(state, player);
+                    if (ok) {
+                        System.out.println(Ansi.bold("Обгон удался! Вы переместились вперёд."));
+                    } else {
+                        System.out.println("Обгон не удался.");
+                    }
+                }
+            }
+            case 2 -> {
+                if (!hasMelee) { System.out.println("Нет оружия ближнего боя."); break; }
+                survivalAttack(state, svc, player, true);
+            }
+            case 3 -> {
+                if (!hasRanged) { System.out.println("Нет оружия дальнего боя."); break; }
+                survivalAttack(state, svc, player, false);
+            }
+            default -> System.out.println("Пропускаете ход.");
+        }
+    }
+
+    private void survivalAttack(SurvivalRaceState state, SurvivalRaceService svc,
+                                 SurvivalParticipant player, boolean melee) {
+        List<SurvivalParticipant> active = state.getActiveParticipants();
+        int playerIdx = active.indexOf(player);
+
+        List<SurvivalParticipant> targets = new ArrayList<>();
+        if (melee) {
+            // Ближний бой: только передний или задний
+            if (playerIdx > 0)               targets.add(active.get(playerIdx - 1));
+            if (playerIdx < active.size()-1) targets.add(active.get(playerIdx + 1));
+        } else {
+            // Дальний бой: любой противник
+            for (SurvivalParticipant p : active) {
+                if (!p.isPlayer()) targets.add(p);
+            }
+        }
+
+        if (targets.isEmpty()) {
+            System.out.println("Нет доступных целей.");
+            return;
+        }
+
+        System.out.println("Выберите цель:");
+        for (int i = 0; i < targets.size(); i++) {
+            SurvivalParticipant t = targets.get(i);
+            System.out.printf("  %d. %s (позиция %d, перф: %d)%n",
+                i + 1, t.getName(), state.getActivePosition(t), t.getPerformanceScore());
+        }
+        System.out.println("  0. Отмена");
+
+        int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+        if (idx < 0 || idx >= targets.size()) {
+            System.out.println("Отмена атаки.");
+            return;
+        }
+
+        SurvivalParticipant target = targets.get(idx);
+        int wLevel = melee ? player.getMeleeWeaponLevel() : player.getRangedWeaponLevel();
+        boolean hit = svc.tryAttack(state, player, target, wLevel);
+
+        if (hit) {
+            System.out.println(Ansi.bold("Попадание! " + target.getName() + " выбывает из гонки!"));
+        } else {
+            System.out.println("Промах — " + target.getName() + " уклонился.");
+        }
+    }
+
+    private void printSurvivalResult(SurvivalRaceState state) {
+        System.out.println(Ansi.bold("\n═══ ГОНКА ЗАВЕРШЕНА ═══"));
+        SurvivalParticipant player = state.getPlayer();
+
+        if (player == null) return;
+
+        if (player.isEliminated()) {
+            System.out.println(Ansi.bold("Вы выбыли из гонки. Лучше в следующий раз!"));
+        } else {
+            List<SurvivalParticipant> active = state.getActiveParticipants();
+            int pos = state.getActivePosition(player);
+            int survived = active.size();
+            System.out.printf("Вы финишировали на %d-м месте из %d оставшихся участников.%n",
+                pos, survived);
+            if (pos == 1) {
+                System.out.println(Ansi.bold("ПОБЕДА!"));
+            }
+        }
+
+        System.out.println("\nИтоговая таблица:");
+        printSurvivalStandings(state);
+    }
+
+    /** Покупка оружия из каталога — только в режиме выживания. */
+    private void survivalBuyWeapons() {
+        System.out.println(Ansi.bold("\n— Купить оружие —"));
+        System.out.printf("Бюджет: %,d руб.%n", playerTeam.getBudget());
+        System.out.println("Ур.1 и Ур.3 несовместимы между собой.");
+
+        List<Weapon> catalog = WeaponCatalog.getAll();
+        while (true) {
+            System.out.printf("%nБюджет: %,d руб.%n", playerTeam.getBudget());
+            for (int i = 0; i < catalog.size(); i++) {
+                Weapon w = catalog.get(i);
+                System.out.printf(" %d. [Ур.%d][%s] %-27s | Урон: %2d | %,d руб.%n",
+                    i + 1, w.getLevel(), w.getType(), w.getName(), w.getDamage(), w.getPrice());
+            }
+            System.out.println(" 0. Продолжить");
+
+            int choice = ConsoleInput.readInt("Ваш выбор: ");
+            if (choice == 0) break;
+            if (choice < 1 || choice > catalog.size()) { System.out.println("Неверный выбор."); continue; }
+
+            Weapon selected = catalog.get(choice - 1);
+            if (!playerTeam.canAfford(selected.getPrice())) {
+                System.out.printf("Недостаточно средств. Нужно %,d руб., есть %,d руб.%n",
+                    selected.getPrice(), playerTeam.getBudget());
+                continue;
+            }
+            playerTeam.spend(selected.getPrice());
+            playerTeam.addWeapon(selected.copy());
+            System.out.printf("Куплено: %s за %,d руб.%n", selected.getName(), selected.getPrice());
+        }
+    }
+
+    /** Установка оружия в болид из инвентаря — только в режиме выживания. */
+    private void survivalInstallWeapons(Bolid bolid) {
+        System.out.println(Ansi.bold("\n— Установить оружие в болид —"));
+
+        List<Weapon> installed = new ArrayList<>();
+
+        for (WeaponType wt : WeaponType.values()) {
+            List<Weapon> available = playerTeam.getWeaponInventory().stream()
+                .filter(w -> w.getType() == wt)
+                .toList();
+
+            if (available.isEmpty()) {
+                System.out.printf("Нет оружия типа «%s» в инвентаре.%n", wt.getDisplayName());
+                continue;
+            }
+
+            System.out.printf("%n  %s:%n", Ansi.bold(wt.getDisplayName()));
+            for (int i = 0; i < available.size(); i++) {
+                Weapon w = available.get(i);
+                System.out.printf("   %d. [Ур.%d] %-27s | Урон: %d%n",
+                    i + 1, w.getLevel(), w.getName(), w.getDamage());
+            }
+            System.out.println("   0. Не устанавливать");
+
+            int choice = ConsoleInput.readInt("Ваш выбор: ");
+            if (choice < 1 || choice > available.size()) continue;
+
+            Weapon picked = available.get(choice - 1);
+
+            boolean compatible = true;
+            for (Weapon already : installed) {
+                if (!picked.isCompatibleWith(already)) {
+                    System.out.printf("«%s» (ур.%d) несовместимо с «%s» (ур.%d). Пропущено.%n",
+                        picked.getName(), picked.getLevel(),
+                        already.getName(), already.getLevel());
+                    compatible = false;
+                    break;
+                }
+            }
+            if (compatible) {
+                bolid.installWeapon(picked);
+                playerTeam.removeWeapon(picked);
+                installed.add(picked);
+                System.out.printf("Установлено: %s%n", picked.getName());
+            }
+        }
     }
 
     private void printNotReadyReason() {

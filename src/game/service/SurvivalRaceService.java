@@ -1,0 +1,183 @@
+package service;
+
+import domain.Bolid;
+import domain.SurvivalParticipant;
+import domain.SurvivalRaceState;
+import domain.WeaponType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+public class SurvivalRaceService {
+
+    private static final Random RANDOM = new Random();
+
+    private static final String[] BOT_NAMES = {
+        "Джей Слик", "Борис Шумахер", "Макс Ударников", "Алёна Дрифт",
+        "Виктор Газ", "Игорь Апекс", "Дарья Форсаж", "Паша Турбо"
+    };
+
+    // ── Создание гонки ────────────────────────────────────────────────────────
+
+    public SurvivalRaceState createRace(Bolid bolid, int trackLength) {
+        int playerPerf   = bolid.getPerformanceScore();
+        int meleeLevel   = bolid.getWeapons().containsKey(WeaponType.MELEE)
+                           ? bolid.getWeapons().get(WeaponType.MELEE).getLevel() : 0;
+        int rangedLevel  = bolid.getWeapons().containsKey(WeaponType.RANGED)
+                           ? bolid.getWeapons().get(WeaponType.RANGED).getLevel() : 0;
+
+        SurvivalParticipant player = new SurvivalParticipant(
+            "Вы", true, playerPerf, meleeLevel, rangedLevel);
+
+        List<SurvivalParticipant> participants = new ArrayList<>();
+        participants.add(player);
+
+        List<String> names = new ArrayList<>(List.of(BOT_NAMES));
+        Collections.shuffle(names);
+        for (int i = 0; i < 5; i++) {
+            int perf      = 200 + RANDOM.nextInt(301); // 200–500
+            int botMelee  = RANDOM.nextInt(3);          // 0, 1, 2
+            int botRanged = RANDOM.nextInt(3);          // 0, 1, 2
+            participants.add(new SurvivalParticipant(
+                names.get(i), false, perf, botMelee, botRanged));
+        }
+
+        Collections.shuffle(participants); // случайный стартовый порядок
+
+        int steps = Math.max(5, trackLength / 1000);
+        return new SurvivalRaceState(participants, steps);
+    }
+
+    // ── Обгон ────────────────────────────────────────────────────────────────
+
+    /**
+     * Попытка обгонщика переместиться на одну позицию вперёд.
+     * @return true если обгон удался
+     */
+    public boolean tryOvertake(SurvivalRaceState state, SurvivalParticipant attacker) {
+        List<SurvivalParticipant> active = state.getActiveParticipants();
+        int idx = active.indexOf(attacker);
+        if (idx <= 0) return false; // уже первый
+
+        double chance = overtakeChance(attacker.getPerformanceScore(), attacker.isPlayer());
+        if (RANDOM.nextDouble() < chance) {
+            SurvivalParticipant ahead = active.get(idx - 1);
+            List<SurvivalParticipant> order = state.getOrder();
+            Collections.swap(order, order.indexOf(attacker), order.indexOf(ahead));
+            return true;
+        }
+        return false;
+    }
+
+    // ── Атака ────────────────────────────────────────────────────────────────
+
+    /**
+     * Попытка атаки на цель с указанным уровнем оружия.
+     * @return true если попадание (target помечается как eliminated)
+     */
+    public boolean tryAttack(SurvivalRaceState state, SurvivalParticipant attacker,
+                              SurvivalParticipant target, int weaponLevel) {
+        if (weaponLevel <= 0 || target.isEliminated()) return false;
+        if (RANDOM.nextDouble() < attackChance(weaponLevel)) {
+            target.eliminate();
+            return true;
+        }
+        return false;
+    }
+
+    // ── Ходы ботов ───────────────────────────────────────────────────────────
+
+    /**
+     * Обрабатывает действия всех активных ботов за один шаг.
+     * @return список строк-событий для вывода игроку
+     */
+    public List<String> processBotActions(SurvivalRaceState state) {
+        List<String> events = new ArrayList<>();
+
+        // Копия — боты могут выбывать в процессе
+        for (SurvivalParticipant bot : new ArrayList<>(state.getActiveParticipants())) {
+            if (bot.isPlayer() || bot.isEliminated()) continue;
+            if (RANDOM.nextDouble() >= 0.35) continue; // 35% шанс что-то делать
+
+            List<SurvivalParticipant> currentActive = state.getActiveParticipants();
+            if (!currentActive.contains(bot)) continue;
+
+            boolean hasWeapon = bot.hasWeapon();
+
+            if (hasWeapon && RANDOM.nextBoolean()) {
+                // Атака
+                SurvivalParticipant target = pickBotTarget(state, bot);
+                if (target != null) {
+                    int wLevel = Math.max(bot.getMeleeWeaponLevel(), bot.getRangedWeaponLevel());
+                    boolean hit = tryAttack(state, bot, target, wLevel);
+                    if (hit) {
+                        String suffix = target.isPlayer() ? " (это вы!)" : "";
+                        events.add(String.format("  [БОТ] %s атаковал %s — ПОПАДАНИЕ!%s %s выбывает.",
+                            bot.getName(), target.getName(), suffix, target.getName()));
+                    } else {
+                        events.add(String.format("  [БОТ] %s атаковал %s — промах.",
+                            bot.getName(), target.getName()));
+                    }
+                }
+            } else {
+                // Обгон
+                int before = state.getActivePosition(bot);
+                boolean success = tryOvertake(state, bot);
+                if (success) {
+                    events.add(String.format("  [БОТ] %s совершил обгон! (%d → %d)",
+                        bot.getName(), before, state.getActivePosition(bot)));
+                }
+            }
+        }
+        return events;
+    }
+
+    // ── Вспомогательные ──────────────────────────────────────────────────────
+
+    private SurvivalParticipant pickBotTarget(SurvivalRaceState state, SurvivalParticipant bot) {
+        List<SurvivalParticipant> active = state.getActiveParticipants();
+        int idx = active.indexOf(bot);
+        if (idx < 0) return null;
+
+        List<SurvivalParticipant> targets = new ArrayList<>();
+        if (bot.getRangedWeaponLevel() > 0) {
+            // Дальний бой — любой противник
+            for (SurvivalParticipant p : active) {
+                if (p != bot) targets.add(p);
+            }
+        } else {
+            // Ближний бой — соседние позиции
+            if (idx > 0)               targets.add(active.get(idx - 1));
+            if (idx < active.size()-1) targets.add(active.get(idx + 1));
+        }
+
+        return targets.isEmpty() ? null : targets.get(RANDOM.nextInt(targets.size()));
+    }
+
+    private double overtakeChance(int perf, boolean isPlayer) {
+        double chance = 0.3 + perf / 600.0;
+        if (!isPlayer) chance -= 0.10; // боты чуть слабее
+        return Math.max(0.15, Math.min(0.75, chance));
+    }
+
+    private double attackChance(int level) {
+        return switch (level) {
+            case 1 -> 0.40;
+            case 2 -> 0.65;
+            case 3 -> 0.85;
+            default -> 0.0;
+        };
+    }
+
+    /** Публичный метод для отображения шанса обгона игроку (в процентах). */
+    public int overtakeChancePct(int perf) {
+        return (int) Math.round(overtakeChance(perf, true) * 100);
+    }
+
+    /** Публичный метод для отображения шанса атаки игроку (в процентах). */
+    public int attackChancePct(int level) {
+        return (int) Math.round(attackChance(level) * 100);
+    }
+}

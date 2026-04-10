@@ -13,11 +13,13 @@ service\AssemblyService.class
 service\RaceCalculator.class
 service\WerewolfService.class
 service\HireService.class
+service\SurvivalRaceService.class
 data\WeaponCatalog.class
 service\BotGenerator$1.class
 ui\ConsoleInput.class
 util\RandomUtil.class
 domain\TeamMember.class
+domain\SurvivalRaceState.class
 service\BotGenerator.class
 service\SaveService.class
 domain\WeaponType.class
@@ -37,6 +39,7 @@ ui\TrackEditor.class
 saving\EntitySerializer.class
 domain\Bolid.class
 domain\Team.class
+domain\SurvivalParticipant.class
 domain\Weather.class
 saving\TrackFileManager.class
 data\TrackCatalog.class
