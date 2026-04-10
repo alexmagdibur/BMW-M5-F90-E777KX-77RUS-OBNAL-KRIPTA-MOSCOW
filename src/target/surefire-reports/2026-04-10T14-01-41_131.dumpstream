@@ -1,0 +1,5 @@
+# Created at 2026-04-10T14:01:41.273
+Boot Manifest-JAR contains absolute paths in classpath 'E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

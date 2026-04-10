@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(powershell.exe:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(mvn test:*)",
+      "Bash(cmd /c \"mvn test -Dtest=TrackEditorTest -q 2>&1\")",
+      "Bash(cmd /c \"mvn test -Dtest=TrackEditorTest 2>&1\")",
+      "Bash(ls *.xml *.gradle)",
+      "Bash(mvn.cmd test:*)",
+      "Bash(where mvn:*)",
+      "Bash(where mvn.cmd)",
+      "Bash(\"/c/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn\" test -Dtest=TrackEditorTest)",
+      "Bash(\"/c/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn\" test -Dsurefire.failIfNoSpecifiedTests=false)",
+      "Bash(javac:*)"
     ]
   }
 }

@@ -1,0 +1,76 @@
+-------------------------------------------------------------------------------
+Test set: AutoSaveTest
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 5, Errors: 1, Skipped: 0, Time elapsed: 0.118 s <<< FAILURE! -- in AutoSaveTest
+AutoSaveTest.scenario3_loadAfterRace_pilotsPreserved -- Time elapsed: 0.053 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Пилот должен быть в загруженной команде ==> expected: <false> but was: <true>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertFalse.failNotFalse(AssertFalse.java:63)
+	at org.junit.jupiter.api.AssertFalse.assertFalse(AssertFalse.java:36)
+	at org.junit.jupiter.api.Assertions.assertFalse(Assertions.java:239)
+	at AutoSaveTest.scenario3_loadAfterRace_pilotsPreserved(AutoSaveTest.java:217)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+AutoSaveTest.scenario2_afterRace_raceResultBelongsToPlayer -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+	at java.base/java.util.Objects.checkIndex(Objects.java:365)
+	at java.base/java.util.ArrayList.get(ArrayList.java:428)
+	at AutoSaveTest.scenario2_afterRace_raceResultBelongsToPlayer(AutoSaveTest.java:149)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+AutoSaveTest.scenario3_loadAfterRace_historyPreserved -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: История гонок должна быть на месте после загрузки ==> expected: <1> but was: <0>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at AutoSaveTest.scenario3_loadAfterRace_historyPreserved(AutoSaveTest.java:230)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+AutoSaveTest.scenario2_afterRace_autoSaveContainsRaceResult -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: После гонки в автосохранении должна быть 1 запись истории ==> expected: <1> but was: <0>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at AutoSaveTest.scenario2_afterRace_autoSaveContainsRaceResult(AutoSaveTest.java:139)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+AutoSaveTest.scenario2_afterRace_budgetUpdatedInAutoSave -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Бюджет в автосохранении должен совпадать с текущим бюджетом команды ==> expected: <11000000> but was: <10000000>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:166)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:664)
+	at AutoSaveTest.scenario2_afterRace_budgetUpdatedInAutoSave(AutoSaveTest.java:173)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+AutoSaveTest.scenario2_autoSave_overwritesPreviousOnSecondRace -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: После двух гонок в автосохранении должно быть 2 записи ==> expected: <2> but was: <0>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at AutoSaveTest.scenario2_autoSave_overwritesPreviousOnSecondRace(AutoSaveTest.java:160)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
