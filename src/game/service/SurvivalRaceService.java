@@ -1,6 +1,7 @@
 package service;
 
 import domain.Bolid;
+import domain.PlayerChoice;
 import domain.SurvivalParticipant;
 import domain.SurvivalRaceState;
 import domain.WeaponType;
@@ -12,7 +13,10 @@ import java.util.Random;
 
 public class SurvivalRaceService {
 
-    private static final Random RANDOM = new Random();
+    private static Random RANDOM = new Random();
+
+    /** Только для тестов: позволяет задать детерминированный генератор. */
+    public static void setRandom(Random random) { RANDOM = random; }
 
     private static final String[] BOT_NAMES = {
         "Джей Слик", "Борис Шумахер", "Макс Ударников", "Алёна Дрифт",
@@ -87,6 +91,25 @@ public class SurvivalRaceService {
         return false;
     }
 
+    // ── Выбор действия игрока ────────────────────────────────────────────────
+
+    /**
+     * Выполняет ровно одно действие игрока за ход — обгон и атака взаимоисключающи.
+     * @param target цель атаки; null при обгоне или пропуске хода
+     * @return true если действие принесло результат (обгон удался / атака попала)
+     */
+    public boolean applyPlayerChoice(SurvivalRaceState state, SurvivalParticipant player,
+                                      PlayerChoice choice, SurvivalParticipant target) {
+        return switch (choice) {
+            case OVERTAKE      -> tryOvertake(state, player);
+            case MELEE_ATTACK  -> target != null
+                                   && tryAttack(state, player, target, player.getMeleeWeaponLevel());
+            case RANGED_ATTACK -> target != null
+                                   && tryAttack(state, player, target, player.getRangedWeaponLevel());
+            case PASS          -> false;
+        };
+    }
+
     // ── Ходы ботов ───────────────────────────────────────────────────────────
 
     /**
@@ -136,23 +159,29 @@ public class SurvivalRaceService {
 
     // ── Вспомогательные ──────────────────────────────────────────────────────
 
-    private SurvivalParticipant pickBotTarget(SurvivalRaceState state, SurvivalParticipant bot) {
+    /**
+     * Допустимые цели для атаки.
+     * melee=true — только непосредственные соседи; melee=false — любой участник кроме атакующего.
+     */
+    public List<SurvivalParticipant> getValidTargets(
+            SurvivalRaceState state, SurvivalParticipant attacker, boolean melee) {
         List<SurvivalParticipant> active = state.getActiveParticipants();
-        int idx = active.indexOf(bot);
-        if (idx < 0) return null;
-
+        int idx = active.indexOf(attacker);
         List<SurvivalParticipant> targets = new ArrayList<>();
-        if (bot.getRangedWeaponLevel() > 0) {
-            // Дальний бой — любой противник
-            for (SurvivalParticipant p : active) {
-                if (p != bot) targets.add(p);
-            }
-        } else {
-            // Ближний бой — соседние позиции
+        if (melee) {
             if (idx > 0)               targets.add(active.get(idx - 1));
             if (idx < active.size()-1) targets.add(active.get(idx + 1));
+        } else {
+            for (SurvivalParticipant p : active) {
+                if (p != attacker) targets.add(p);
+            }
         }
+        return targets;
+    }
 
+    private SurvivalParticipant pickBotTarget(SurvivalRaceState state, SurvivalParticipant bot) {
+        boolean ranged = bot.getRangedWeaponLevel() > 0;
+        List<SurvivalParticipant> targets = getValidTargets(state, bot, !ranged);
         return targets.isEmpty() ? null : targets.get(RANDOM.nextInt(targets.size()));
     }
 

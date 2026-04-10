@@ -12,7 +12,13 @@
       "Bash(where mvn.cmd)",
       "Bash(\"/c/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn\" test -Dtest=TrackEditorTest)",
       "Bash(\"/c/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn\" test -Dsurefire.failIfNoSpecifiedTests=false)",
-      "Bash(javac:*)"
+      "Bash(javac:*)",
+      "Read(//c/ProgramData/chocolatey/**)",
+      "Read(//c/Users/Alexander/AppData/Local/Programs/**)",
+      "Bash(cmd.exe /c \"cd /d E:\\\\techprog\\\\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\\\\src && mvn test -Dtest=WeaponTest -q 2>&1\")",
+      "Bash(cmd.exe:*)",
+      "Read(//c/Users/Alexander/.m2/wrapper/**)",
+      "Read(//c/Users/Alexander/AppData/Local/JetBrains/**)"
     ]
   }
 }

@@ -46,4 +46,22 @@ public class SurvivalRaceState {
         if (active.size() <= 1) return true;
         return currentStep >= totalSteps;
     }
+
+    /**
+     * Победа: игрок не выбыл и занимает 1-е место среди активных участников.
+     */
+    public boolean isPlayerVictory() {
+        SurvivalParticipant player = getPlayer();
+        if (player == null || player.isEliminated()) return false;
+        return getActivePosition(player) == 1;
+    }
+
+    /**
+     * Поражение: игрок выбыл или не занимает 1-е место.
+     */
+    public boolean isPlayerDefeat() {
+        SurvivalParticipant player = getPlayer();
+        if (player == null || player.isEliminated()) return true;
+        return getActivePosition(player) != 1;
+    }
 }

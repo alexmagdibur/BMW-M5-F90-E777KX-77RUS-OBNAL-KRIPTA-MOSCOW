@@ -14,6 +14,7 @@ import domain.Track;
 import domain.Weapon;
 import domain.WeaponType;
 import domain.Weather;
+import domain.PlayerChoice;
 import domain.SurvivalParticipant;
 import domain.SurvivalRaceState;
 import service.AssemblyService;
@@ -297,42 +298,28 @@ public class GameMenu {
                 if (playerIdx == 0) {
                     System.out.println("Вы уже на первом месте — некого обгонять.");
                 } else {
-                    boolean ok = svc.tryOvertake(state, player);
-                    if (ok) {
-                        System.out.println(Ansi.bold("Обгон удался! Вы переместились вперёд."));
-                    } else {
-                        System.out.println("Обгон не удался.");
-                    }
+                    boolean ok = svc.applyPlayerChoice(state, player, PlayerChoice.OVERTAKE, null);
+                    System.out.println(ok
+                        ? Ansi.bold("Обгон удался! Вы переместились вперёд.")
+                        : "Обгон не удался.");
                 }
             }
             case 2 -> {
                 if (!hasMelee) { System.out.println("Нет оружия ближнего боя."); break; }
-                survivalAttack(state, svc, player, true);
+                survivalAttack(state, svc, player, PlayerChoice.MELEE_ATTACK);
             }
             case 3 -> {
                 if (!hasRanged) { System.out.println("Нет оружия дальнего боя."); break; }
-                survivalAttack(state, svc, player, false);
+                survivalAttack(state, svc, player, PlayerChoice.RANGED_ATTACK);
             }
             default -> System.out.println("Пропускаете ход.");
         }
     }
 
     private void survivalAttack(SurvivalRaceState state, SurvivalRaceService svc,
-                                 SurvivalParticipant player, boolean melee) {
-        List<SurvivalParticipant> active = state.getActiveParticipants();
-        int playerIdx = active.indexOf(player);
-
-        List<SurvivalParticipant> targets = new ArrayList<>();
-        if (melee) {
-            // Ближний бой: только передний или задний
-            if (playerIdx > 0)               targets.add(active.get(playerIdx - 1));
-            if (playerIdx < active.size()-1) targets.add(active.get(playerIdx + 1));
-        } else {
-            // Дальний бой: любой противник
-            for (SurvivalParticipant p : active) {
-                if (!p.isPlayer()) targets.add(p);
-            }
-        }
+                                 SurvivalParticipant player, PlayerChoice choice) {
+        boolean melee = (choice == PlayerChoice.MELEE_ATTACK);
+        List<SurvivalParticipant> targets = svc.getValidTargets(state, player, melee);
 
         if (targets.isEmpty()) {
             System.out.println("Нет доступных целей.");
@@ -354,8 +341,7 @@ public class GameMenu {
         }
 
         SurvivalParticipant target = targets.get(idx);
-        int wLevel = melee ? player.getMeleeWeaponLevel() : player.getRangedWeaponLevel();
-        boolean hit = svc.tryAttack(state, player, target, wLevel);
+        boolean hit = svc.applyPlayerChoice(state, player, choice, target);
 
         if (hit) {
             System.out.println(Ansi.bold("Попадание! " + target.getName() + " выбывает из гонки!"));
@@ -370,17 +356,18 @@ public class GameMenu {
 
         if (player == null) return;
 
-        if (player.isEliminated()) {
+        if (state.isPlayerVictory()) {
+            int survived = state.getActiveParticipants().size();
+            System.out.printf("Вы финишировали на 1-м месте из %d оставшихся участников.%n",
+                survived);
+            System.out.println(Ansi.bold("ПОБЕДА!"));
+        } else if (player.isEliminated()) {
             System.out.println(Ansi.bold("Вы выбыли из гонки. Лучше в следующий раз!"));
         } else {
-            List<SurvivalParticipant> active = state.getActiveParticipants();
             int pos = state.getActivePosition(player);
-            int survived = active.size();
+            int survived = state.getActiveParticipants().size();
             System.out.printf("Вы финишировали на %d-м месте из %d оставшихся участников.%n",
                 pos, survived);
-            if (pos == 1) {
-                System.out.println(Ansi.bold("ПОБЕДА!"));
-            }
         }
 
         System.out.println("\nИтоговая таблица:");
