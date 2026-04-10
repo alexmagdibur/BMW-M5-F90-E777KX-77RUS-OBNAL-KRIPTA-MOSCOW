@@ -16,10 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Тест: создать трек в редакторе, «перезапустить» (новый TrackEditor),
- * открыть редактор — трек на месте.
- */
+// Тест: создать трек в редакторе, «перезапустить» (новый TrackEditor), открыть редактор — трек на месте.
 public class TrackPersistenceTest {
 
     private static final String TEST_PLAYER = "__test_persistence_player__";
@@ -47,16 +44,16 @@ public class TrackPersistenceTest {
     void trackSurvivesEditorRestart() {
         // Шаг 1: создаём трек через редактор с playerName
         String createInput = String.join("\n",
-            "1",              // меню: создать трек
+            "1", // меню: создать трек
             "Трасса Ужаса",  // название
-            "3",              // количество секций
-            "1",              // секция 1 тип: STRAIGHT
-            "500",            // секция 1 длина
-            "2",              // секция 2 тип: TURN
-            "200",            // секция 2 длина
-            "3",              // секция 3 тип: CLIMB
-            "300",            // секция 3 длина
-            "5"               // меню: выйти
+            "3", // количество секций
+            "1", // секция 1 тип: STRAIGHT
+            "500", // секция 1 длина
+            "2", // секция 2 тип: TURN
+            "200", // секция 2 длина
+            "3", // секция 3 тип: CLIMB
+            "300", // секция 3 длина
+            "5" // меню: выйти
         ) + "\n";
 
         System.setIn(new ByteArrayInputStream(createInput.getBytes()));

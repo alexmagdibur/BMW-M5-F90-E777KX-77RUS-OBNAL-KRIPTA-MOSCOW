@@ -11,18 +11,10 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Тесты взаимного исключения действий за ход в режиме выживания.
- *
- * Правило: за один ход игрок выполняет ровно одно действие — обгон ИЛИ атаку.
- * Выбрал обгон → атака в этом ходу не происходит (цели не выбывают).
- * Выбрал атаку → обгон не происходит (позиции из-за атаки не меняются).
- *
- * Фиксированный seed=0: nextDouble() ≈ 0.7309 — гарантирует попадание при ур.3 (порог 0.85)
- * и обгон при перф.≥270 (шанс 0.75).
- */
+// обгон и атака взаимоисключающи — за ход выполняется ровно одно действие
 public class BattleChoiceTest {
 
+    // seed=0: nextDouble() ≈ 0.7309 → гарантирует обгон (< 0.75) и попадание ур.3 (< 0.85)
     private static final long SEED = 0L;
 
     private final SurvivalRaceService service = new SurvivalRaceService();
@@ -37,9 +29,7 @@ public class BattleChoiceTest {
         SurvivalRaceService.setRandom(new Random());
     }
 
-    // ── Фабрики участников ────────────────────────────────────────────────────
-
-    /** Игрок с ближним и дальним оружием ур.3, перф.300 — гарантирован обгон и попадание. */
+    // игрок с ближним и дальним ур.3, перф.300 — обгон и попадание гарантированы
     private static SurvivalParticipant armedPlayer() {
         return new SurvivalParticipant("Вы", true, 300, 3, 3);
     }
@@ -48,152 +38,114 @@ public class BattleChoiceTest {
         return new SurvivalParticipant(name, false, 300, 0, 0);
     }
 
-    // ════════════════════════════════════════════════════════════════════════════
-    // 1. Выбрал OVERTAKE — атака в этом ходу не происходит
-    // ════════════════════════════════════════════════════════════════════════════
+    // ─── OVERTAKE: атаки не происходит ───────────────────────────────────────
 
     @Test
     void chooseOvertake_playerMovesForward_noTargetEliminated() {
         SurvivalParticipant leader   = bot("Лидер");
         SurvivalParticipant player   = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
-        // Порядок: [Лидер(1), Игрок(2), Следующий(3)]
-        SurvivalRaceState state = new SurvivalRaceState(
-            List.of(leader, player, follower), 10);
+        // [Лидер(1), Игрок(2), Следующий(3)]
+        SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 
         service.applyPlayerChoice(state, player, PlayerChoice.OVERTAKE, null);
 
-        // Позиция изменилась — обгон сработал
-        assertEquals(1, state.getActivePosition(player), "После обгона игрок на 1-м месте");
-
-        // Атака не происходила — никто не выбыл
-        assertFalse(leader.isEliminated(),   "Лидер не должен выбыть — атаки не было");
-        assertFalse(follower.isEliminated(), "Следующий не должен выбыть — атаки не было");
-        assertEquals(3, state.getActiveParticipants().size(),
-            "Все участники остаются активными");
+        assertEquals(1, state.getActivePosition(player), "обгон сработал");
+        assertFalse(leader.isEliminated(),   "атаки не было");
+        assertFalse(follower.isEliminated(), "атаки не было");
+        assertEquals(3, state.getActiveParticipants().size());
     }
 
     @Test
-    void chooseOvertake_onlyPositionEffectOccurs_attackEffectAbsent() {
+    void chooseOvertake_onlyPositionChanges_noneEliminated() {
         SurvivalParticipant leader = bot("Лидер");
         SurvivalParticipant player = armedPlayer();
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player), 10);
 
-        int positionBefore = state.getActivePosition(player);
+        int before = state.getActivePosition(player);
         service.applyPlayerChoice(state, player, PlayerChoice.OVERTAKE, null);
-        int positionAfter = state.getActivePosition(player);
 
-        // Единственный эффект — смена позиции
-        assertTrue(positionAfter < positionBefore, "Позиция должна улучшиться");
-        assertFalse(leader.isEliminated(),
-            "Обгон не является атакой — цель не выбывает");
+        assertTrue(state.getActivePosition(player) < before, "позиция улучшилась");
+        assertFalse(leader.isEliminated(), "обгон не атакует");
     }
 
     @Test
-    void chooseOvertake_withTargetArgument_targetStillNotEliminated() {
-        // Даже если передать цель вместе с OVERTAKE — атака не выполняется
+    void chooseOvertake_targetArgumentIgnored() {
+        // даже если передать цель — OVERTAKE её игнорирует
         SurvivalParticipant leader = bot("Лидер");
         SurvivalParticipant player = armedPlayer();
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player), 10);
 
-        // Передаём leader как «цель» — но OVERTAKE её игнорирует
         service.applyPlayerChoice(state, player, PlayerChoice.OVERTAKE, leader);
 
-        assertFalse(leader.isEliminated(),
-            "OVERTAKE не должен атаковать цель, даже если она передана");
+        assertFalse(leader.isEliminated());
     }
 
-    // ════════════════════════════════════════════════════════════════════════════
-    // 2. Выбрал MELEE_ATTACK — обгон в этом ходу не происходит
-    // ════════════════════════════════════════════════════════════════════════════
+    // ─── MELEE_ATTACK: обгона не происходит ──────────────────────────────────
 
     @Test
-    void chooseMeleeAttack_targetEliminated_positionUnchanged() {
+    void chooseMeleeAttack_targetEliminated_onlyOneEffect() {
         SurvivalParticipant leader = bot("Лидер");
         SurvivalParticipant player = armedPlayer();
-        // Порядок: [Лидер(1), Игрок(2)] — Лидер сосед, допустимая цель ближнего
+        // [Лидер(1), Игрок(2)] — лидер сосед
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player), 10);
 
         service.applyPlayerChoice(state, player, PlayerChoice.MELEE_ATTACK, leader);
 
-        // Атака сработала — цель выбыла
-        assertTrue(leader.isEliminated(), "Цель должна выбыть после ближней атаки");
-
-        // Обгона не было — позиция изменилась только из-за выбывания лидера, а не из-за обгона
-        // (игрок стал 1-м, потому что соперник выбыл, а не потому что было два действия)
-        assertEquals(1, state.getActiveParticipants().size(),
-            "В активных остался только игрок — лидер выбыл");
+        assertTrue(leader.isEliminated(), "атака сработала");
+        // игрок стал 1-м из-за выбывания лидера, а не из-за обгона
+        assertEquals(1, state.getActiveParticipants().size());
         assertSame(player, state.getActiveParticipants().get(0));
     }
 
     @Test
-    void chooseMeleeAttack_in3ParticipantRace_onlyTargetEliminated_otherPositionsIntact() {
+    void chooseMeleeAttack_in3ParticipantRace_onlyTargetEliminated() {
         SurvivalParticipant leader   = bot("Лидер");
         SurvivalParticipant player   = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
-        // Порядок: [Лидер(1), Игрок(2), Следующий(3)]
-        SurvivalRaceState state = new SurvivalRaceState(
-            List.of(leader, player, follower), 10);
+        SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 
         service.applyPlayerChoice(state, player, PlayerChoice.MELEE_ATTACK, leader);
 
-        // Цель выбыла
-        assertTrue(leader.isEliminated(), "Лидер выбыл после атаки");
-
-        // Обгона не было: до атаки игрок был 2-м; лидер выбыл и игрок стал 1-м,
-        // но это эффект выбывания, а не дополнительного обгона
-        assertFalse(follower.isEliminated(),
-            "Третий участник не должен пострадать");
-        assertEquals(2, state.getActiveParticipants().size(),
-            "Активных двое: игрок и следующий");
+        assertTrue(leader.isEliminated());
+        assertFalse(follower.isEliminated(), "третий не задет");
+        assertEquals(2, state.getActiveParticipants().size());
     }
 
-    // ════════════════════════════════════════════════════════════════════════════
-    // 3. Выбрал RANGED_ATTACK — обгон в этом ходу не происходит
-    // ════════════════════════════════════════════════════════════════════════════
+    // ─── RANGED_ATTACK: обгона не происходит ─────────────────────────────────
 
     @Test
-    void chooseRangedAttack_farTargetEliminated_positionEffectIsOnlyFromElimination() {
+    void chooseRangedAttack_farTargetEliminated_othersUntouched() {
         SurvivalParticipant far    = bot("Далёкий");
         SurvivalParticipant mid    = bot("Средний");
         SurvivalParticipant player = armedPlayer();
-        // Порядок: [Далёкий(1), Средний(2), Игрок(3)]
-        SurvivalRaceState state = new SurvivalRaceState(
-            List.of(far, mid, player), 10);
+        // [Далёкий(1), Средний(2), Игрок(3)]
+        SurvivalRaceState state = new SurvivalRaceState(List.of(far, mid, player), 10);
 
         service.applyPlayerChoice(state, player, PlayerChoice.RANGED_ATTACK, far);
 
-        // Дальняя цель выбыла
-        assertTrue(far.isEliminated(), "Далёкая цель должна выбыть от дальней атаки");
-
-        // Игрок не обгонял — Средний впереди, не затронут
-        assertFalse(mid.isEliminated(), "Средний не атакован и не должен выбыть");
+        assertTrue(far.isEliminated());
+        assertFalse(mid.isEliminated(), "средний не атакован");
         assertEquals(2, state.getActiveParticipants().size());
     }
 
     @Test
-    void chooseRangedAttack_doesNotMovePlayerPosition_beyondEliminationEffect() {
+    void chooseRangedAttack_onlyTargetGone_othersStayActive() {
         SurvivalParticipant p1 = bot("1-й");
         SurvivalParticipant p2 = bot("2-й");
         SurvivalParticipant p3 = bot("3-й");
         SurvivalParticipant player = armedPlayer(); // 4-я позиция
-        SurvivalRaceState state = new SurvivalRaceState(
-            List.of(p1, p2, p3, player), 10);
+        SurvivalRaceState state = new SurvivalRaceState(List.of(p1, p2, p3, player), 10);
 
-        // Атакуем p1 (далёкого лидера) дальним оружием
         service.applyPlayerChoice(state, player, PlayerChoice.RANGED_ATTACK, p1);
 
-        assertTrue(p1.isEliminated(), "Лидер выбыл");
-        // p2 и p3 не затронуты
+        assertTrue(p1.isEliminated());
         assertFalse(p2.isEliminated());
         assertFalse(p3.isEliminated());
-        assertEquals(3, state.getActiveParticipants().size(),
-            "Три участника остаются активными");
+        assertEquals(3, state.getActiveParticipants().size());
     }
 
-    // ════════════════════════════════════════════════════════════════════════════
-    // 4. PASS — ни обгона, ни атаки
-    // ════════════════════════════════════════════════════════════════════════════
+    // ─── PASS: ничего не происходит ──────────────────────────────────────────
 
     @Test
     void choosePass_nothingHappens() {
@@ -203,55 +155,41 @@ public class BattleChoiceTest {
 
         boolean result = service.applyPlayerChoice(state, player, PlayerChoice.PASS, null);
 
-        assertFalse(result, "Пропуск хода не имеет результата");
-        assertFalse(leader.isEliminated(), "При пропуске никто не выбывает");
-        assertEquals(2, state.getActivePosition(player), "Позиция не изменилась");
+        assertFalse(result);
+        assertFalse(leader.isEliminated());
+        assertEquals(2, state.getActivePosition(player));
     }
 
-    // ════════════════════════════════════════════════════════════════════════════
-    // 5. Одно действие = ровно один эффект (не оба одновременно)
-    // ════════════════════════════════════════════════════════════════════════════
+    // ─── одно действие = ровно один эффект ───────────────────────────────────
 
     @Test
-    void singleCallToApplyPlayerChoice_producesExactlyOneEffect() {
+    void singleChoice_overtake_noEliminationsOccur() {
         SurvivalParticipant leader   = bot("Лидер");
         SurvivalParticipant player   = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
-        SurvivalRaceState state = new SurvivalRaceState(
-            List.of(leader, player, follower), 10);
+        SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 
-        // Выбираем обгон — только один вызов applyPlayerChoice
         service.applyPlayerChoice(state, player, PlayerChoice.OVERTAKE, null);
 
-        // Эффект обгона есть
-        assertEquals(1, state.getActivePosition(player), "Обгон произошёл");
-        // Эффекта атаки нет
-        assertFalse(leader.isEliminated(), "Атаки не было — лидер активен");
-        assertFalse(follower.isEliminated(), "Атаки не было — следующий активен");
+        assertEquals(1, state.getActivePosition(player), "обгон произошёл");
+        assertFalse(leader.isEliminated(),   "никто не выбыл");
+        assertFalse(follower.isEliminated(), "никто не выбыл");
     }
 
     @Test
-    void singleCallToApplyPlayerChoice_meleeHit_noSimultaneousOvertake() {
+    void singleChoice_meleeHit_noSimultaneousOvertake() {
         SurvivalParticipant leader   = bot("Лидер");
         SurvivalParticipant player   = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
-        SurvivalRaceState state = new SurvivalRaceState(
-            List.of(leader, player, follower), 10);
+        SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 
-        // Запоминаем позицию до
-        int posBefore = state.getActivePosition(player);
+        int posBefore = state.getActivePosition(player); // 2
 
-        // Выбираем ближнюю атаку — один вызов applyPlayerChoice
         service.applyPlayerChoice(state, player, PlayerChoice.MELEE_ATTACK, leader);
 
-        // Атака произошла
-        assertTrue(leader.isEliminated(), "Атака ближним — лидер выбыл");
-
-        // Обгона НЕ было: позиция игрока до вызова была 2; после выбывания лидера
-        // он стал 1-м только потому что лидер выбыл — за ход выполнено ровно 1 действие
-        assertEquals(posBefore - 1, state.getActivePosition(player),
-            "Позиция сдвинулась ровно на 1 из-за выбывания соперника, а не из-за обгона");
-        assertFalse(follower.isEliminated(),
-            "Второй противник не был атакован — атака была лишь одна");
+        assertTrue(leader.isEliminated(), "атака сработала");
+        // позиция сдвинулась на 1 только из-за выбывания лидера, обгона не было
+        assertEquals(posBefore - 1, state.getActivePosition(player));
+        assertFalse(follower.isEliminated(), "второй противник не атакован");
     }
 }

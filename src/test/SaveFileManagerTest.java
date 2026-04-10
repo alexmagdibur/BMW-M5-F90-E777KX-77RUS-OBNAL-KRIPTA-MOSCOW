@@ -24,7 +24,7 @@ public class SaveFileManagerTest {
         deleteDir(new File("saves" + File.separator + PLAYER));
     }
 
-    // ── write + read ──────────────────────────────────────────────────────────
+    // write + read
 
     @Test
     void writeAndReadRoundTrip() {
@@ -54,7 +54,7 @@ public class SaveFileManagerTest {
         assertEquals("second", manager.readFromFile(PLAYER, "save.csv"));
     }
 
-    // ── read edge cases ───────────────────────────────────────────────────────
+    // read edge cases
 
     @Test
     void readNonExistentFileReturnsEmpty() {
@@ -62,7 +62,7 @@ public class SaveFileManagerTest {
         assertEquals("", result, "Несуществующий файл должен вернуть пустую строку");
     }
 
-    // ── listSaveFiles ─────────────────────────────────────────────────────────
+    // listSaveFiles
 
     @Test
     void listSaveFilesReturnsWrittenFiles() {
@@ -93,7 +93,7 @@ public class SaveFileManagerTest {
         assertEquals(2, manager.listSaveFiles(PLAYER).size());
     }
 
-    // ── saveExists ────────────────────────────────────────────────────────────
+    // saveExists
 
     @Test
     void saveExistsReturnsTrueAfterWrite() {
@@ -111,7 +111,7 @@ public class SaveFileManagerTest {
         assertFalse(manager.saveExists("no_such_player_xyz", "file.csv"));
     }
 
-    // ── helper ────────────────────────────────────────────────────────────────
+    // helper
 
     private void deleteDir(File dir) {
         if (!dir.exists()) return;

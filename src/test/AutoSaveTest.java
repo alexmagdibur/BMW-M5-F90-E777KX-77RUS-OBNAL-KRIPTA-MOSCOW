@@ -28,7 +28,7 @@ public class AutoSaveTest {
     private List<RaceResult> raceResults;
     private Team             team;
 
-    // ── setup / teardown ──────────────────────────────────────────────────────
+    // setup / teardown
 
     @BeforeEach
     void setUp() {
@@ -42,9 +42,8 @@ public class AutoSaveTest {
         deleteDir(new File("saves" + File.separator + PLAYER));
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    // helpers
 
-    /** Создаёт AssemblyService с автосохранением и возвращает полностью собранный болид. */
     private Bolid buildAndAssembleBolid(String bolidName) {
         // Кладём компоненты в инвентарь
         Component engine = new Component("Двигатель",   ComponentType.ENGINE,       0, 80);
@@ -80,7 +79,7 @@ public class AutoSaveTest {
         return bolid;
     }
 
-    /** Запускает гонку через RaceService с автосохранением (зеркалирует порядок GameMenu). */
+
     private Race runRaceWithAutoSave(Bolid bolid) {
         if (team.getPilots().isEmpty())    team.addPilot(new Pilot("Тест-пилот", 0, 80));
         if (team.getEngineers().isEmpty()) team.addEngineer(new Engineer("Тест-инженер", 0, 75));
@@ -110,7 +109,7 @@ public class AutoSaveTest {
         return race;
     }
 
-    // ── Сценарий 1: сборка болида → autosave.csv появился ────────────────────
+    // Сценарий 1: сборка болида → autosave.csv появился
 
     @Test
     void scenario1_afterAssembly_autoSaveFileExists() {
@@ -138,7 +137,7 @@ public class AutoSaveTest {
         assertEquals(10_000_000L, save.getTeam().getBudget());
     }
 
-    // ── Сценарий 2: гонка → autosave.csv обновился ───────────────────────────
+    // Сценарий 2: гонка → autosave.csv обновился
 
     @Test
     void scenario2_afterRace_autoSaveContainsRaceResult() {
@@ -187,7 +186,7 @@ public class AutoSaveTest {
                 "После гонки бюджет не может стать меньше (штрафов нет)");
     }
 
-    // ── Сценарий 3: загрузить autosave → всё на месте ────────────────────────
+    // Сценарий 3: загрузить autosave → всё на месте
 
     @Test
     void scenario3_loadAfterRace_teamNamePreserved() {
@@ -241,7 +240,7 @@ public class AutoSaveTest {
                 "История гонок должна быть на месте после загрузки");
     }
 
-    // ── Wear сохраняется корректно ─────────────────────────────────────────────
+    // Wear сохраняется корректно
 
     @Test
     void wearIsPersistedAfterRace() {
@@ -300,7 +299,7 @@ public class AutoSaveTest {
         assertTrue(str.contains("1"),    "toString должен содержать количество гонок");
     }
 
-    // ── helper ────────────────────────────────────────────────────────────────
+    // helper
 
     private void deleteDir(File dir) {
         if (!dir.exists()) return;

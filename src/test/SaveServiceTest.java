@@ -8,28 +8,27 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Создаём команду с полным набором данных, сохраняем, загружаем, сравниваем.
- */
+
+// создаём команду с полным набором данных, сохраняем, загружаем, сравниваем.
 public class SaveServiceTest {
 
     private static final String PLAYER = "test_save_service_player";
 
     private SaveService service;
 
-    // ── инициализация тестовой команды ────────────────────────────────────────
+    // инициализация тестовой команды
 
     private static Team buildTeam() {
         Team team = new Team("Scuderia Ferrari", 8_000_000L);
 
         // Болид с 6 основными компонентами
         Bolid sf24 = new Bolid("SF-24");
-        sf24.installComponent(new Component("Двигатель Ferrari",  ComponentType.ENGINE,       180_000, 88));
-        sf24.installComponent(new Component("Трансмиссия F8",     ComponentType.TRANSMISSION, 90_000,  75));
-        sf24.installComponent(new Component("Подвеска Pro",       ComponentType.SUSPENSION,   60_000,  70));
-        sf24.installComponent(new Component("Шасси Carbon",       ComponentType.CHASSIS,      120_000, 80));
-        sf24.installComponent(new Component("Обвес Aero-X",       ComponentType.AERO_PACKAGE, 75_000,  72));
-        sf24.installComponent(new Component("Шины Soft",          ComponentType.TIRES,        40_000,  65));
+        sf24.installComponent(new Component("Двигатель Ferrari", ComponentType.ENGINE, 180_000, 88));
+        sf24.installComponent(new Component("Трансмиссия F8", ComponentType.TRANSMISSION, 90_000, 75));
+        sf24.installComponent(new Component("Подвеска Pro", ComponentType.SUSPENSION, 60_000, 70));
+        sf24.installComponent(new Component("Шасси Carbon", ComponentType.CHASSIS, 120_000, 80));
+        sf24.installComponent(new Component("Обвес Aero-X", ComponentType.AERO_PACKAGE, 75_000, 72));
+        sf24.installComponent(new Component("Шины Soft", ComponentType.TIRES, 40_000, 65));
         team.addBolid(sf24);
 
         // Компонент в инвентаре (не установлен в болид)
@@ -54,14 +53,14 @@ public class SaveServiceTest {
     private static List<RaceResult> buildHistory() {
         RaceResult r1 = new RaceResult("Scuderia Ferrari", 87.342, true);
         r1.setPosition(1);
-        RaceResult r2 = new RaceResult("Red Bull",         88.015, false);
+        RaceResult r2 = new RaceResult("Red Bull", 88.015, false);
         r2.setPosition(2);
         RaceResult r3 = RaceResult.dnf("Alpine", false);
         r3.setPosition(10);
         return List.of(r1, r2, r3);
     }
 
-    // ── setup / teardown ──────────────────────────────────────────────────────
+    // setup / teardown
 
     @BeforeEach
     void setUp() {
@@ -73,14 +72,13 @@ public class SaveServiceTest {
         deleteDir(new File("saves" + File.separator + PLAYER));
     }
 
-    // ── autoSave round-trip ───────────────────────────────────────────────────
+    // autoSave round-trip
 
     @Test
     void autoSaveAndLoadPreservesTeamName() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
-        System.out.println(save);          // вывод через toString
+        System.out.println(save); // вывод через toString
         assertEquals("Scuderia Ferrari", save.getTeamName());
     }
 
@@ -88,7 +86,6 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesBudget() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         assertEquals(8_000_000L, save.getTeam().getBudget());
     }
 
@@ -96,7 +93,6 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesBolidCount() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         assertEquals(1, save.getTeam().getBolids().size());
     }
 
@@ -104,11 +100,10 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesBolidComponents() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         Bolid loadedBolid = save.getTeam().getBolids().get(0);
         assertEquals("SF-24", loadedBolid.getName());
-        assertNotNull(loadedBolid.getComponent(ComponentType.ENGINE),       "ENGINE должен присутствовать");
-        assertNotNull(loadedBolid.getComponent(ComponentType.TIRES),        "TIRES должен присутствовать");
+        assertNotNull(loadedBolid.getComponent(ComponentType.ENGINE), "ENGINE должен присутствовать");
+        assertNotNull(loadedBolid.getComponent(ComponentType.TIRES), "TIRES должен присутствовать");
         assertNotNull(loadedBolid.getComponent(ComponentType.TRANSMISSION), "TRANSMISSION должен присутствовать");
         assertTrue(loadedBolid.isComplete(), "Болид должен быть полностью собран");
     }
@@ -117,7 +112,6 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesInventory() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         List<Component> inventory = save.getTeam().getInventory();
         assertEquals(1, inventory.size(), "В инвентаре должен быть 1 запасной компонент");
         assertEquals("Запасной двигатель", inventory.get(0).getName());
@@ -128,7 +122,6 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesPilots() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         List<Pilot> pilots = save.getTeam().getPilots();
         assertEquals(2, pilots.size());
         assertTrue(pilots.stream().anyMatch(p -> p.getName().equals("Шарль Леклер")));
@@ -139,11 +132,9 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesPilotStats() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         Pilot leclercq = save.getTeam().getPilots().stream()
                 .filter(p -> p.getName().equals("Шарль Леклер"))
                 .findFirst().orElseThrow();
-
         assertEquals(500_000, leclercq.getSalary());
         assertEquals(92,      leclercq.getSkill());
     }
@@ -152,7 +143,6 @@ public class SaveServiceTest {
     void autoSaveAndLoadPreservesEngineers() {
         service.autoSave(buildTeam(), buildHistory(), PLAYER);
         GameSave save = service.loadGame(PLAYER, "autosave.csv");
-
         List<Engineer> engineers = save.getTeam().getEngineers();
         assertEquals(2, engineers.size());
         assertTrue(engineers.stream().anyMatch(e -> e.getName().equals("Росс Браун")));
@@ -193,7 +183,7 @@ public class SaveServiceTest {
         assertEquals(1, player.getPosition());
     }
 
-    // ── saveGame (с timestamp) round-trip ─────────────────────────────────────
+    // saveGame (с timestamp) round-trip
 
     @Test
     void saveGameCreatesFileListedInAvailableSaves() {
@@ -220,7 +210,7 @@ public class SaveServiceTest {
         assertEquals(3, save.getRaceHistory().size());
     }
 
-    // ── autoSave overwrite ────────────────────────────────────────────────────
+    // autoSave overwrite
 
     @Test
     void autoSaveOverwritesPreviousFile() {
@@ -234,7 +224,7 @@ public class SaveServiceTest {
         assertEquals(0, save.getRaceHistory().size(), "История должна быть пустой после перезаписи");
     }
 
-    // ── toString smoke-test ───────────────────────────────────────────────────
+    // toString smoke-test
 
     @Test
     void toStringContainsExpectedFields() {
@@ -248,7 +238,7 @@ public class SaveServiceTest {
         assertTrue(str.contains("3"),                "toString должен содержать количество гонок");
     }
 
-    // ── helper ────────────────────────────────────────────────────────────────
+    // helper
 
     private void deleteDir(File dir) {
         if (!dir.exists()) return;

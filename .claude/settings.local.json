@@ -18,7 +18,8 @@
       "Bash(cmd.exe /c \"cd /d E:\\\\techprog\\\\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\\\\src && mvn test -Dtest=WeaponTest -q 2>&1\")",
       "Bash(cmd.exe:*)",
       "Read(//c/Users/Alexander/.m2/wrapper/**)",
-      "Read(//c/Users/Alexander/AppData/Local/JetBrains/**)"
+      "Read(//c/Users/Alexander/AppData/Local/JetBrains/**)",
+      "Bash(grep -E \"\\\\.java$\")"
     ]
   }
 }

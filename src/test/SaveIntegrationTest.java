@@ -8,14 +8,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Интеграционный тест полного цикла сохранений.
- *
- * Сценарии:
- *   1. Новая игра → купить компоненты → сохранить → выйти.
- *   2. То же имя → загрузить → проверить бюджет и инвентарь.
- *   3. Другое имя → убедиться, что чужих сохранений не видно.
- */
+
+// Сценарии
+    // 1. новая игра - купить компоненты - сохранить - выйти
+    // 2. то же имя - загрузить - проверить бюджет и инвентврб
+    // 3. другое имя - убедиться, что чужих сохранений не видео
+    // ну хз как то так
 public class SaveIntegrationTest {
 
     private static final String PLAYER_A = "integration_player_a";
@@ -34,18 +32,16 @@ public class SaveIntegrationTest {
         deleteDir(new File("saves" + File.separator + PLAYER_B));
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Сценарий 1 + 2: сохранить → загрузить → сверить состояние
-    // ─────────────────────────────────────────────────────────────────────────
+    // Сценарий 1 + 2: сохранить - загрузить - сверить состояние
 
     @Test
     void scenario_newGame_buyComponents_save_thenLoad_budgetPreserved() {
-        // === Сессия 1: новая игра, покупаем компоненты, сохраняем ===
+        // Сессия 1: новая игра, покупаем компоненты, сохраняем
         Team team = new Team(PLAYER_A, 10_000_000L);
 
         // Симулируем покупку двух компонентов (ShopService тратит деньги)
-        Component engine = new Component("Двигатель RS",  ComponentType.ENGINE, 500_000, 85);
-        Component tires  = new Component("Шины Pirelli",  ComponentType.TIRES,  200_000, 65);
+        Component engine = new Component("Двигатель RS", ComponentType.ENGINE, 500_000, 85);
+        Component tires  = new Component("Шины Pirelli", ComponentType.TIRES, 200_000, 65);
         team.spend(500_000 + 200_000);    // как это делает ShopService
         team.addComponent(engine);
         team.addComponent(tires);
@@ -56,7 +52,7 @@ public class SaveIntegrationTest {
 
         saveService.saveGame(team, List.of(), PLAYER_A);
 
-        // === Сессия 2: находим сохранение и загружаем ===
+        // Сессия 2: находим сохранение и загружаем
         List<String> saves = saveService.getAvailableSaves(PLAYER_A);
         assertFalse(saves.isEmpty(), "Список сохранений не должен быть пустым");
 
@@ -77,7 +73,7 @@ public class SaveIntegrationTest {
         Team team = new Team(PLAYER_A, 10_000_000L);
 
         Component engine = new Component("Двигатель V8", ComponentType.ENGINE, 400_000, 88);
-        Component trans  = new Component("Коробка GT",   ComponentType.TRANSMISSION, 200_000, 72);
+        Component trans  = new Component("Коробка GT", ComponentType.TRANSMISSION, 200_000, 72);
         engine.setWear(20);
         team.spend(600_000);
         team.addComponent(engine);
@@ -117,12 +113,12 @@ public class SaveIntegrationTest {
         Team team = new Team(PLAYER_A, 10_000_000L);
 
         Bolid bolid = new Bolid("McLaren MCL38");
-        bolid.installComponent(new Component("Двигатель",    ComponentType.ENGINE,       0, 80));
-        bolid.installComponent(new Component("Трансмиссия",  ComponentType.TRANSMISSION, 0, 75));
-        bolid.installComponent(new Component("Подвеска",     ComponentType.SUSPENSION,   0, 70));
-        bolid.installComponent(new Component("Шасси",        ComponentType.CHASSIS,      0, 70));
-        bolid.installComponent(new Component("Аэропакет",    ComponentType.AERO_PACKAGE, 0, 65));
-        bolid.installComponent(new Component("Шины Hard",    ComponentType.TIRES,        0, 60));
+        bolid.installComponent(new Component("Двигатель", ComponentType.ENGINE, 0, 80));
+        bolid.installComponent(new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 75));
+        bolid.installComponent(new Component("Подвеска", ComponentType.SUSPENSION, 0, 70));
+        bolid.installComponent(new Component("Шасси", ComponentType.CHASSIS, 0, 70));
+        bolid.installComponent(new Component("Аэропакет", ComponentType.AERO_PACKAGE, 0, 65));
+        bolid.installComponent(new Component("Шины Hard", ComponentType.TIRES,        0, 60));
         team.addBolid(bolid);
         team.addEngineer(new Engineer("Браун", 200_000, 85));
 
@@ -156,9 +152,8 @@ public class SaveIntegrationTest {
         assertEquals(91.5,     lr.getTime(), 1e-9);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // Сценарий 3: другой игрок не видит чужих сохранений
-    // ─────────────────────────────────────────────────────────────────────────
 
     @Test
     void scenario_differentPlayer_seesNoSaves() {
@@ -192,7 +187,7 @@ public class SaveIntegrationTest {
 
         // Три ручных сохранения в разные моменты
         saveService.saveGame(team, List.of(), PLAYER_A);
-        try { Thread.sleep(1100); } catch (InterruptedException ignored) {}  // разные временны́е метки
+        try { Thread.sleep(1100); } catch (InterruptedException ignored) {}  // разные временные метки
         saveService.saveGame(team, List.of(), PLAYER_A);
         try { Thread.sleep(1100); } catch (InterruptedException ignored) {}
         saveService.saveGame(team, List.of(), PLAYER_A);
@@ -202,9 +197,7 @@ public class SaveIntegrationTest {
         assertEquals(3, manualCount, "Должно быть 3 ручных сохранения");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
     // toString итогового GameSave
-    // ─────────────────────────────────────────────────────────────────────────
 
     @Test
     void loadedGameSave_toStringShowsCorrectData() {
@@ -222,9 +215,7 @@ public class SaveIntegrationTest {
         assertTrue(str.contains("1"),             "toString должен содержать количество гонок");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
     // helper
-    // ─────────────────────────────────────────────────────────────────────────
 
     private void deleteDir(File dir) {
         if (!dir.exists()) return;

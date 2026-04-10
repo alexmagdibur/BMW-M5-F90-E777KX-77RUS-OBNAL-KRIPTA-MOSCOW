@@ -16,7 +16,7 @@ public class EntitySerializerTest {
         s = new EntitySerializer();
     }
 
-    // ── Team ──────────────────────────────────────────────────────────────────
+    // Team
 
     @Test
     void teamRoundTrip() {
@@ -34,7 +34,7 @@ public class EntitySerializerTest {
         assertEquals("Red Bull Racing", s.deserializeTeam(s.serializeTeam(team)).getName());
     }
 
-    // ── Component ─────────────────────────────────────────────────────────────
+    // Component
 
     @Test
     void componentRoundTrip() {
@@ -64,7 +64,7 @@ public class EntitySerializerTest {
         assertEquals(100, s.deserializeComponent(s.serializeComponent(c)).getWear());
     }
 
-    // ── Bolid ─────────────────────────────────────────────────────────────────
+    // Bolid
 
     @Test
     void bolidRoundTripMainComponents() {
@@ -114,7 +114,7 @@ public class EntitySerializerTest {
         assertTrue(result.getExtras().isEmpty());
     }
 
-    // ── Pilot ─────────────────────────────────────────────────────────────────
+    // Pilot
 
     @Test
     void pilotRoundTrip() {
@@ -137,7 +137,7 @@ public class EntitySerializerTest {
         assertTrue(result.isWerewolf(), "Флаг isWerewolf должен сохраняться");
     }
 
-    // ── Engineer ──────────────────────────────────────────────────────────────
+    // Engineer
 
     @Test
     void engineerRoundTrip() {
@@ -158,7 +158,7 @@ public class EntitySerializerTest {
         assertTrue(s.deserializeEngineer(s.serializeEngineer(eng)).isWerewolf());
     }
 
-    // ── RaceResult ────────────────────────────────────────────────────────────
+    // RaceResult
 
     @Test
     void raceResultNormalRoundTrip() {
@@ -188,7 +188,7 @@ public class EntitySerializerTest {
         assertEquals(10, result.getPosition());
     }
 
-    // ── serialized string format smoke-tests ──────────────────────────────────
+    // serialized string format smoke-tests
 
     @Test
     void teamSerializedLineContainsSeparator() {

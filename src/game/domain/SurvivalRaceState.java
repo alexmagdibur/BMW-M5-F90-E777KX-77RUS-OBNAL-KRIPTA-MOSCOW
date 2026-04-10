@@ -15,14 +15,14 @@ public class SurvivalRaceState {
         this.currentStep = 0;
     }
 
-    /** Полный список участников (включая выбывших). */
+    // все участники, включая выбывших
     public List<SurvivalParticipant> getOrder() { return order; }
 
     public int getCurrentStep() { return currentStep; }
     public int getTotalSteps()  { return totalSteps; }
     public void advanceStep()   { currentStep++; }
 
-    /** Только активные (не выбывшие) в порядке позиций. */
+    // только активные (не выбывшие) в порядке позиций
     public List<SurvivalParticipant> getActiveParticipants() {
         return order.stream().filter(p -> !p.isEliminated()).toList();
     }
@@ -31,7 +31,7 @@ public class SurvivalRaceState {
         return order.stream().filter(SurvivalParticipant::isPlayer).findFirst().orElse(null);
     }
 
-    /** 1-based позиция среди активных, −1 если не найден / выбыл. */
+    // 1-based позиция среди активных; -1 если выбыл или не найден
     public int getActivePosition(SurvivalParticipant p) {
         List<SurvivalParticipant> active = getActiveParticipants();
         int idx = active.indexOf(p);
@@ -41,24 +41,18 @@ public class SurvivalRaceState {
     public boolean isRaceOver() {
         SurvivalParticipant player = getPlayer();
         if (player != null && player.isEliminated()) return true;
-        List<SurvivalParticipant> active = getActiveParticipants();
-        // Гонка кончается, если остался только игрок или все выбыли
-        if (active.size() <= 1) return true;
+        if (getActiveParticipants().size() <= 1) return true;
         return currentStep >= totalSteps;
     }
 
-    /**
-     * Победа: игрок не выбыл и занимает 1-е место среди активных участников.
-     */
+    // победа: игрок не выбыл и на 1-м месте
     public boolean isPlayerVictory() {
         SurvivalParticipant player = getPlayer();
         if (player == null || player.isEliminated()) return false;
         return getActivePosition(player) == 1;
     }
 
-    /**
-     * Поражение: игрок выбыл или не занимает 1-е место.
-     */
+    // поражение: выбыл или не первый
     public boolean isPlayerDefeat() {
         SurvivalParticipant player = getPlayer();
         if (player == null || player.isEliminated()) return true;

@@ -12,17 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Тесты выбора трассы перед каждой гонкой.
- *
- * Надёжная последовательность выхода: "16\n15\n"
- *   SOLAR_ECLIPSE (вес 45%) → пункт 16 = Выход  ✓
- *   иная погода             → 16 = «неверный»,  15 = Выход  ✓
- *   Пункт «1» («Начать гонку») работает при любой погоде.
- *
- * Изоляция: setUp сбрасывает ConsoleInput.scanner через пустой поток,
- * исключая «протечку» состояния от предыдущих тест-классов.
- */
+
 public class TrackSelectionTest {
 
     private static final String TEST_PLAYER = "__test_track_selection__";
@@ -50,7 +40,7 @@ public class TrackSelectionTest {
         cleanupTestDirs();
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    // helpers
 
     private static Team readyTeam() {
         Team team = new Team(TEST_PLAYER, 10_000_000L);
@@ -84,21 +74,13 @@ public class TrackSelectionTest {
         ConsoleInput.resetScanner();
     }
 
-    // ── Сценарий 1: трасса спрашивается перед каждой гонкой ──────────────────
+    // Сценарий 1: трасса спрашивается перед каждой гонкой
 
-    /**
-     * Две гонки с выбором первой каталожной трассы (пункт 1) перед каждой.
-     *
-     * "1\n" → Начать гонку
-     * "1\n" → выбрать трассу (пункт 1 из списка)
-     * — болид/пилот/инженер авто (по одному)
-     * Повторяем дважды. Выход: "16\n15\n".
-     */
     @Test
     void trackIsAskedBeforeEachRace() {
-        feedInput("1\n1\n1\n" +   // гонка 1: меню→гонка, режим→Обычный, трасса 1
-                  "1\n1\n1\n" +   // гонка 2: меню→гонка, режим→Обычный, трасса 1
-                  "16\n15\n");    // выход при любой погоде
+        feedInput("1\n1\n1\n" + // гонка 1: меню→гонка, режим→Обычный, трасса 1
+                  "1\n1\n1\n" + // гонка 2: меню→гонка, режим→Обычный, трасса 1
+                  "16\n15\n"); // выход при любой погоде
 
         GameMenu menu = new GameMenu(readyTeam(), TEST_PLAYER, new ArrayList<>(), new ArrayList<>());
         menu.run();
@@ -109,7 +91,7 @@ public class TrackSelectionTest {
         assertTrue(asks >= 2, "Трасса должна запрашиваться перед каждой гонкой, нашлось запросов: " + asks);
     }
 
-    // ── Сценарий 2: пользовательский трек виден в списке трасс ──────────────
+    // Сценарий 2: пользовательский трек виден в списке трасс
 
     @Test
     void customTrackAppearsInTrackList() {
@@ -143,17 +125,17 @@ public class TrackSelectionTest {
             "Пользовательский трек должен быть виден в списке трасс");
     }
 
-    // ── Сценарий 3: трек из редактора сохраняется и загружается ─────────────
+    // Сценарий 3: трек из редактора сохраняется и загружается
 
     @Test
     void customTrackCreatedInEditorSurvivesRestart() {
         feedInput(String.join("\n",
-            "1",                    // создать трек
-            "Трасса из редактора",  // название
-            "2",                    // 2 секции
-            "1", "800",             // STRAIGHT 800
-            "3", "400",             // CLIMB 400
-            "5"                     // выйти
+            "1", // создать трек
+            "Трасса из редактора", // название
+            "2", // 2 секции
+            "1", "800", // STRAIGHT 800
+            "3", "400", // CLIMB 400
+            "5" // выйти
         ) + "\n");
 
         TrackEditor editor1 = new TrackEditor(TEST_PLAYER);
