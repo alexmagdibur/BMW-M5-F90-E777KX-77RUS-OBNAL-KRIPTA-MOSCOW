@@ -26,6 +26,8 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/game</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

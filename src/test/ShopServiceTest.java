@@ -27,7 +27,7 @@ public class ShopServiceTest {
 
     @Test
     void budgetDeductedAfterPurchase() {
-        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n");
+        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n0\n");
 
         Team team = new Team("Тест", 1_000_000);
         new ShopService(team).openShop();
@@ -37,7 +37,7 @@ public class ShopServiceTest {
 
     @Test
     void componentAddedToInventoryAfterPurchase() {
-        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n");
+        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n0\n");
 
         Team team = new Team("Тест", 1_000_000);
         int inventoryBefore = team.getInventory().size();
@@ -49,7 +49,7 @@ public class ShopServiceTest {
 
     @Test
     void purchaseFailsWhenNotEnoughMoney() {
-        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n");
+        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n0\n");
 
         Team team = new Team("Тест", 100_000);
         int budgetBefore = Math.toIntExact(team.getBudget());

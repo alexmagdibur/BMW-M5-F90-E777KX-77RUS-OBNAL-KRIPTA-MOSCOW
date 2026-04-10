@@ -4,6 +4,7 @@ import data.TrackCatalog;
 import domain.SectionType;
 import domain.Track;
 import domain.TrackSection;
+import saving.TrackFileManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,21 @@ import java.util.List;
 public class TrackEditor {
 
     private final List<Track> customTracks = new ArrayList<>();
+    private final String playerName;
+    private final TrackFileManager trackFileManager;
+
+    /** Конструктор без сохранения — для обратной совместимости. */
+    public TrackEditor() {
+        this.playerName = null;
+        this.trackFileManager = null;
+    }
+
+    /** Конструктор с поддержкой сохранения/загрузки треков для игрока. */
+    public TrackEditor(String playerName) {
+        this.playerName = playerName;
+        this.trackFileManager = new TrackFileManager();
+        customTracks.addAll(trackFileManager.loadCustomTracks(playerName));
+    }
 
     public void open() {
         System.out.println("\n=== Редактор трасс ===");
@@ -38,6 +54,7 @@ public class TrackEditor {
         List<TrackSection> sections = readSections(count);
         customTracks.add(new Track(name, sections));
         System.out.println("Трек «" + name + "» создан.");
+        save();
     }
 
     public void showAllTracks(List<Track> catalog, List<Track> custom) {
@@ -69,6 +86,7 @@ public class TrackEditor {
         Track old = customTracks.get(idx);
         customTracks.set(idx, new Track(old.getName(), sections));
         System.out.println("Трек «" + old.getName() + "» обновлён.");
+        save();
     }
 
     public void deleteTrack() {
@@ -80,6 +98,7 @@ public class TrackEditor {
         if (idx < 0) return;
         Track removed = customTracks.remove(idx);
         System.out.println("Трек «" + removed.getName() + "» удалён.");
+        save();
     }
 
     public List<Track> getCustomTracks() {
@@ -97,6 +116,12 @@ public class TrackEditor {
             return -1;
         }
         return choice;
+    }
+
+    private void save() {
+        if (playerName != null && trackFileManager != null) {
+            trackFileManager.saveCustomTracks(customTracks, playerName);
+        }
     }
 
     private List<TrackSection> readSections(int count) {

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn test:*)",
+      "Bash(where mvn:*)",
+      "Bash(find /c /d -name \"mvn\" -type f)",
+      "Bash(cmd:*)",
+      "Bash(powershell:*)",
+      "Bash('C:/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn.cmd' -f D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml test)",
+      "Bash('C:/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn.cmd' -f D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml test -Dtest=TrackSelectionTest)",
+      "Bash('C:/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn.cmd' -f D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml clean test)",
+      "Bash('C:/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3\\\\bin/mvn.cmd' -f D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml clean test)"
+    ]
+  }
+}

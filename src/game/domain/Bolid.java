@@ -10,11 +10,13 @@ public class Bolid {
     private String name;
     private Map<ComponentType, Component> components;
     private List<Component> extras;
+    private Map<WeaponType, Weapon> weapons;
 
     public Bolid(String name) {
-        this.name = name;
+        this.name       = name;
         this.components = new EnumMap<>(ComponentType.class);
-        this.extras = new ArrayList<>();
+        this.extras     = new ArrayList<>();
+        this.weapons    = new EnumMap<>(WeaponType.class);
     }
 
     public String getName() { return name; }
@@ -37,6 +39,14 @@ public class Bolid {
 
     public List<Component> getExtras() {
         return extras;
+    }
+
+    public void installWeapon(Weapon weapon) {
+        weapons.put(weapon.getType(), weapon);
+    }
+
+    public Map<WeaponType, Weapon> getWeapons() {
+        return weapons;
     }
 
     public List<Component> getAllComponents() {

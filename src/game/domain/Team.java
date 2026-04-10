@@ -9,22 +9,25 @@ public class Team {
     private String name;
     private long budget;
     private List<Component> inventory;
+    private List<Weapon> weaponInventory;
     private List<Bolid> bolids;
     private List<Pilot> pilots;
     private List<Engineer> engineers;
 
     public Team(String name, long budget) {
-        this.name = name;
-        this.budget = budget;
-        this.inventory = new ArrayList<>();
-        this.bolids = new ArrayList<>();
-        this.pilots = new ArrayList<>();
-        this.engineers = new ArrayList<>();
+        this.name            = name;
+        this.budget          = budget;
+        this.inventory       = new ArrayList<>();
+        this.weaponInventory = new ArrayList<>();
+        this.bolids          = new ArrayList<>();
+        this.pilots          = new ArrayList<>();
+        this.engineers       = new ArrayList<>();
     }
 
     public String getName() { return name; }
     public long getBudget() { return budget; }
     public List<Component> getInventory() { return inventory; }
+    public List<Weapon> getWeaponInventory() { return weaponInventory; }
     public List<Bolid> getBolids() { return bolids; }
     public List<Pilot> getPilots() { return pilots; }
     public List<Engineer> getEngineers() { return engineers; }
@@ -50,6 +53,14 @@ public class Team {
 
     public void removeComponent(Component component) {
         inventory.remove(component);
+    }
+
+    public void addWeapon(Weapon weapon) {
+        weaponInventory.add(weapon);
+    }
+
+    public void removeWeapon(Weapon weapon) {
+        weaponInventory.remove(weapon);
     }
 
     public void addBolid(Bolid bolid) {

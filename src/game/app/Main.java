@@ -6,6 +6,7 @@ import saving.GameSave;
 import service.SaveService;
 import ui.ConsoleInput;
 import ui.GameMenu;
+import ui.TrackEditor;
 import util.Ansi;
 
 import java.util.ArrayList;
@@ -38,7 +39,14 @@ public class Main {
             team = createPlayerTeam(name);
         }
 
-        GameMenu menu = new GameMenu(team, name, history);
+        // Редактор треков
+        String editorAnswer = ConsoleInput.readLine("Запустить редактор треков? (да/нет): ").trim().toLowerCase();
+        TrackEditor editor = new TrackEditor(name);
+        if (editorAnswer.equals("да")) {
+            editor.open();
+        }
+
+        GameMenu menu = new GameMenu(team, name, history, editor.getCustomTracks());
         menu.run();
 
         ConsoleInput.close();

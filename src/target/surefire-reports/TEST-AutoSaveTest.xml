@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="AutoSaveTest" time="0.118" tests="12" errors="1" skipped="0" failures="5">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="AutoSaveTest" time="0.177" tests="14" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1251"/>
-    <property name="java.class.path" value="E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\test-classes;E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\classes;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\Alexander\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
+    <property name="java.class.path" value="D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\test-classes;D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\classes;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\Alexander\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -15,9 +15,9 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="RU"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-25\bin"/>
-    <property name="sun.java.command" value="C:\Users\Alexander\AppData\Local\Temp\surefire421403465132763586\surefirebooter-20260410140003948_3.jar C:\Users\Alexander\AppData\Local\Temp\surefire421403465132763586 2026-04-10T14-00-02_668-jvmRun1 surefire-20260410140003948_1tmp surefire_0-20260410140003948_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Alexander\AppData\Local\Temp\surefire4550264597593847089\surefirebooter-20260410190228622_3.jar C:\Users\Alexander\AppData\Local\Temp\surefire4550264597593847089 2026-04-10T19-02-28_460-jvmRun1 surefire-20260410190228622_1tmp surefire_0-20260410190228622_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\test-classes;E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\classes;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\Alexander\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
+    <property name="surefire.test.class.path" value="D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\test-classes;D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src\target\classes;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\Alexander\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\Alexander\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\Alexander"/>
     <property name="user.language" value="ru"/>
@@ -25,12 +25,12 @@
     <property name="java.version.date" value="2025-10-21"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-25"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src"/>
-    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="basedir" value="D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src"/>
+    <property name="java.vm.compressedOopsMode" value="32-bit"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Alexander\AppData\Local\Temp\surefire421403465132763586\surefirebooter-20260410140003948_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Alexander\AppData\Local\Temp\surefire4550264597593847089\surefirebooter-20260410190228622_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.1+8-LTS-27"/>
@@ -40,18 +40,17 @@
     <property name="os.version" value="10.0"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="file.encoding" value="UTF-8"/>
-    <property name="surefire.failIfNoSpecifiedTests" value="false"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="localRepository" value="C:\Users\Alexander\.m2\repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="C:\Users\ALEXAN~1\AppData\Local\Temp\"/>
     <property name="java.version" value="25.0.1"/>
-    <property name="user.dir" value="E:\techprog\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src"/>
+    <property name="user.dir" value="D:\BMSTU\BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW\src"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
     <property name="native.encoding" value="Cp1251"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk-25\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Users\Alexander\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Alexander\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\dotnet;C:\Program Files\nodejs;C:\Program Files\Git\cmd;C:\Users\Alexander\AppData\Local\Programs\Python\Launcher;C:\Users\Alexander\AppData\Local\Microsoft\WindowsApps;C:\Users\Alexander\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Alexander\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-25\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Users\Alexander\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Alexander\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Users\Alexander\AppData\Local\Programs\Python\Launcher;C:\Users\Alexander\AppData\Local\Microsoft\WindowsApps;C:\Users\Alexander\.local\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
     <property name="stderr.encoding" value="Cp1251"/>
     <property name="java.vendor" value="Oracle Corporation"/>
@@ -60,119 +59,74 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="scenario3_loadAfterRace_pilotsPreserved" classname="AutoSaveTest" time="0.053">
-    <failure message="Пилот должен быть в загруженной команде ==&gt; expected: &lt;false&gt; but was: &lt;true&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Пилот должен быть в загруженной команде ==> expected: <false> but was: <true>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertFalse.failNotFalse(AssertFalse.java:63)
-	at org.junit.jupiter.api.AssertFalse.assertFalse(AssertFalse.java:36)
-	at org.junit.jupiter.api.Assertions.assertFalse(Assertions.java:239)
-	at AutoSaveTest.scenario3_loadAfterRace_pilotsPreserved(AutoSaveTest.java:217)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-]]></failure>
+  <testcase name="scenario3_loadAfterRace_pilotsPreserved" classname="AutoSaveTest" time="0.061">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="scenario1_afterAssembly_teamBudgetInAutoSave" classname="AutoSaveTest" time="0.005">
     <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
 ]]></system-out>
   </testcase>
-  <testcase name="scenario1_afterAssembly_teamBudgetInAutoSave" classname="AutoSaveTest" time="0.004">
+  <testcase name="scenario2_afterRace_raceResultBelongsToPlayer" classname="AutoSaveTest" time="0.006">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="scenario3_loadAfterRace_bolidIsComplete" classname="AutoSaveTest" time="0.006">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="scenario3_loadAfterRace_historyPreserved" classname="AutoSaveTest" time="0.006">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="wearIsPersistedAfterRace" classname="AutoSaveTest" time="0.007">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="scenario1_afterAssembly_bolidInAutoSave" classname="AutoSaveTest" time="0.005">
     <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
 ]]></system-out>
   </testcase>
-  <testcase name="scenario2_afterRace_raceResultBelongsToPlayer" classname="AutoSaveTest" time="0.003">
-    <error message="Index 0 out of bounds for length 0" type="java.lang.IndexOutOfBoundsException"><![CDATA[java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
-	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
-	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
-	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
-	at java.base/java.util.Objects.checkIndex(Objects.java:365)
-	at java.base/java.util.ArrayList.get(ArrayList.java:428)
-	at AutoSaveTest.scenario2_afterRace_raceResultBelongsToPlayer(AutoSaveTest.java:149)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-]]></error>
+  <testcase name="scenario2_afterRace_autoSaveContainsRaceResult" classname="AutoSaveTest" time="0.006">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="wearAccumulatesAcrossMultipleRaces" classname="AutoSaveTest" time="0.006">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="scenario3_loadAfterRace_teamNamePreserved" classname="AutoSaveTest" time="0.005">
+    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+]]></system-out>
+  </testcase>
+  <testcase name="scenario1_afterAssembly_autoSaveFileExists" classname="AutoSaveTest" time="0.004">
     <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
 ]]></system-out>
   </testcase>
-  <testcase name="scenario3_loadAfterRace_bolidIsComplete" classname="AutoSaveTest" time="0.003">
+  <testcase name="scenario2_afterRace_budgetUpdatedInAutoSave" classname="AutoSaveTest" time="0.005">
     <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
 ]]></system-out>
   </testcase>
-  <testcase name="scenario3_loadAfterRace_historyPreserved" classname="AutoSaveTest" time="0.004">
-    <failure message="История гонок должна быть на месте после загрузки ==&gt; expected: &lt;1&gt; but was: &lt;0&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: История гонок должна быть на месте после загрузки ==> expected: <1> but was: <0>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
-	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
-	at AutoSaveTest.scenario3_loadAfterRace_historyPreserved(AutoSaveTest.java:230)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-]]></failure>
+  <testcase name="scenario2_autoSave_overwritesPreviousOnSecondRace" classname="AutoSaveTest" time="0.006">
     <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
 ]]></system-out>
   </testcase>
-  <testcase name="scenario1_afterAssembly_bolidInAutoSave" classname="AutoSaveTest" time="0.002">
+  <testcase name="scenario3_toString_showsExpectedInfo" classname="AutoSaveTest" time="0.004">
     <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-]]></system-out>
-  </testcase>
-  <testcase name="scenario2_afterRace_autoSaveContainsRaceResult" classname="AutoSaveTest" time="0.003">
-    <failure message="После гонки в автосохранении должна быть 1 запись истории ==&gt; expected: &lt;1&gt; but was: &lt;0&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: После гонки в автосохранении должна быть 1 запись истории ==> expected: <1> but was: <0>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
-	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
-	at AutoSaveTest.scenario2_afterRace_autoSaveContainsRaceResult(AutoSaveTest.java:139)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-]]></failure>
-    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-]]></system-out>
-  </testcase>
-  <testcase name="scenario3_loadAfterRace_teamNamePreserved" classname="AutoSaveTest" time="0.003">
-    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-]]></system-out>
-  </testcase>
-  <testcase name="scenario1_afterAssembly_autoSaveFileExists" classname="AutoSaveTest" time="0.003">
-    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-]]></system-out>
-  </testcase>
-  <testcase name="scenario2_afterRace_budgetUpdatedInAutoSave" classname="AutoSaveTest" time="0.003">
-    <failure message="Бюджет в автосохранении должен совпадать с текущим бюджетом команды ==&gt; expected: &lt;11000000&gt; but was: &lt;10000000&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Бюджет в автосохранении должен совпадать с текущим бюджетом команды ==> expected: <11000000> but was: <10000000>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:166)
-	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:664)
-	at AutoSaveTest.scenario2_afterRace_budgetUpdatedInAutoSave(AutoSaveTest.java:173)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-]]></failure>
-    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-]]></system-out>
-  </testcase>
-  <testcase name="scenario2_autoSave_overwritesPreviousOnSecondRace" classname="AutoSaveTest" time="0.003">
-    <failure message="После двух гонок в автосохранении должно быть 2 записи ==&gt; expected: &lt;2&gt; but was: &lt;0&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: После двух гонок в автосохранении должно быть 2 записи ==> expected: <2> but was: <0>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
-	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
-	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
-	at AutoSaveTest.scenario2_autoSave_overwritesPreviousOnSecondRace(AutoSaveTest.java:160)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-]]></failure>
-    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-]]></system-out>
-  </testcase>
-  <testcase name="scenario3_toString_showsExpectedInfo" classname="AutoSaveTest" time="0.002">
-    <system-out><![CDATA[[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
-toString: GameSave[команда='autosave_test_player', гонок=0, сохранено=10-04-2026_14-00-04]
+[SaveService] Автосохранение: saves/autosave_test_player/autosave.csv
+toString: GameSave[команда='autosave_test_player', гонок=1, сохранено=10-04-2026_19-02-29]
 ]]></system-out>
   </testcase>
 </testsuite>

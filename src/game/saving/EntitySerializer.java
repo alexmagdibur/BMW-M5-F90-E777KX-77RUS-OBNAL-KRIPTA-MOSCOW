@@ -2,6 +2,7 @@ package saving;
 
 import domain.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntitySerializer {
@@ -136,6 +137,37 @@ public class EntitySerializer {
                 : new RaceResult(teamName, time, isPlayer);
         r.setPosition(position);
         return r;
+    }
+
+    // ── Track ─────────────────────────────────────────────────────────────────
+
+    /**
+     * Формат: Название;STRAIGHT:500,TURN:200,CLIMB:300
+     */
+    public String serializeTrack(Track track) {
+        StringBuilder sb = new StringBuilder();
+        for (TrackSection s : track.getSections()) {
+            if (sb.length() > 0) sb.append(LIST_SEP);
+            sb.append(s.getType().name()).append(":").append(s.getLength());
+        }
+        return track.getName() + SEP + sb;
+    }
+
+    public Track deserializeTrack(String line) {
+        int idx = line.indexOf(SEP);
+        if (idx < 0) throw new IllegalArgumentException("Неверный формат трека: \"" + line + "\"");
+        String name = line.substring(0, idx);
+        String sectionsStr = line.substring(idx + 1);
+        List<TrackSection> sections = new ArrayList<>();
+        if (!sectionsStr.isEmpty()) {
+            for (String part : sectionsStr.split(LIST_SEP, -1)) {
+                String[] sp = part.split(":", 2);
+                SectionType type = SectionType.valueOf(sp[0].trim());
+                int length = Integer.parseInt(sp[1].trim());
+                sections.add(new TrackSection(type, length));
+            }
+        }
+        return new Track(name, sections);
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────

@@ -29,6 +29,7 @@ public class GameMenu {
 
     private final Team playerTeam;
     private final String playerName;
+    private final List<Track> customTracks;
     private boolean running;
     private final ShopService      shopService;
     private final HireService      hireService;
@@ -41,9 +42,10 @@ public class GameMenu {
     private final List<RaceResult> raceResults;
     private Weather                currentWeather;
 
-    public GameMenu(Team playerTeam, String playerName, List<RaceResult> history) {
+    public GameMenu(Team playerTeam, String playerName, List<RaceResult> history, List<Track> customTracks) {
         this.playerTeam      = playerTeam;
         this.playerName      = playerName;
+        this.customTracks    = new ArrayList<>(customTracks);
         this.raceResults     = new ArrayList<>(history);
         this.running         = true;
         this.saveService     = new SaveService();
@@ -187,19 +189,20 @@ public class GameMenu {
     }
 
     private Track selectTrack() {
-        List<Track> tracks = TrackCatalog.getAll();
+        List<Track> all = new ArrayList<>(TrackCatalog.getAll());
+        all.addAll(customTracks);
         System.out.println(Ansi.bold("\nВыберите трассу:"));
-        for (int i = 0; i < tracks.size(); i++) {
-            Track t = tracks.get(i);
+        for (int i = 0; i < all.size(); i++) {
+            Track t = all.get(i);
             System.out.printf("  %d. %-20s | %,d м | %d секций%n",
                 i + 1, t.getName(), t.getTotalLength(), t.getSections().size());
         }
         int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
-        if (idx < 0 || idx >= tracks.size()) {
+        if (idx < 0 || idx >= all.size()) {
             System.out.println("Неверный выбор трассы.");
             return null;
         }
-        return tracks.get(idx);
+        return all.get(idx);
     }
 
     private Bolid selectBolid() {

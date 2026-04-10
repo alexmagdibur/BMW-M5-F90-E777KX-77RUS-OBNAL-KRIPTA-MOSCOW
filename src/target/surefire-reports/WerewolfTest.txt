@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: WerewolfTest
 -------------------------------------------------------------------------------
-Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in WerewolfTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in WerewolfTest
