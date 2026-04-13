@@ -13,10 +13,10 @@ public class Bolid {
     private Map<WeaponType, Weapon> weapons;
 
     public Bolid(String name) {
-        this.name       = name;
+        this.name = name;
         this.components = new EnumMap<>(ComponentType.class);
-        this.extras     = new ArrayList<>();
-        this.weapons    = new EnumMap<>(WeaponType.class);
+        this.extras = new ArrayList<>();
+        this.weapons = new EnumMap<>(WeaponType.class);
     }
 
     public String getName() { return name; }

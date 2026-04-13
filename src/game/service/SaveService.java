@@ -13,42 +13,38 @@ public class SaveService {
 
     private static final DateTimeFormatter TS = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
 
-    private static final String SEC_TEAM    = "#TEAM";
-    private static final String SEC_COMPS   = "#COMPONENTS";
-    private static final String SEC_BOLIDS  = "#BOLIDS";
-    private static final String SEC_PILOTS  = "#PILOTS";
-    private static final String SEC_ENG     = "#ENGINEERS";
+    private static final String SEC_TEAM = "#TEAM";
+    private static final String SEC_COMPS = "#COMPONENTS";
+    private static final String SEC_BOLIDS = "#BOLIDS";
+    private static final String SEC_PILOTS = "#PILOTS";
+    private static final String SEC_ENG = "#ENGINEERS";
     private static final String SEC_HISTORY = "#RACE_HISTORY";
 
-    private final EntitySerializer serializer   = new EntitySerializer();
-    private final SaveFileManager  fileManager  = new SaveFileManager();
+    private final EntitySerializer serializer = new EntitySerializer();
+    private final SaveFileManager fileManager = new SaveFileManager();
 
-    // ── save ──────────────────────────────────────────────────────────────────
+    // save
 
-    /**
-     * Ручное сохранение. Файл: save_{timestamp}.csv
-     */
+    // ручное сохранение
     public void saveGame(Team team, List<RaceResult> history, String playerName) {
         String fileName = "save_" + LocalDateTime.now().format(TS) + ".csv";
         fileManager.writeToFile(playerName, fileName, buildContent(team, history));
         System.out.println("[SaveService] Игра сохранена: saves/" + playerName + "/" + fileName);
     }
 
-    /**
-     * Автосохранение. Всегда перезаписывает autosave.csv.
-     */
+    // автосохранение
     public void autoSave(Team team, List<RaceResult> history, String playerName) {
         fileManager.writeToFile(playerName, "autosave.csv", buildContent(team, history));
         System.out.println("[SaveService] Автосохранение: saves/" + playerName + "/autosave.csv");
     }
 
-    // ── list ──────────────────────────────────────────────────────────────────
+    // list
 
     public List<String> getAvailableSaves(String playerName) {
         return fileManager.listSaveFiles(playerName);
     }
 
-    // ── load ──────────────────────────────────────────────────────────────────
+    // load
 
     public GameSave loadGame(String playerName, String fileName) {
         String raw = fileManager.readFromFile(playerName, fileName);
@@ -59,16 +55,16 @@ public class SaveService {
 
         Map<String, List<String>> sections = parseSections(raw);
 
-        // 1. Команда (имя + бюджет)
+        // 1. команда (имя + бюджет)
         Team team = serializer.deserializeTeam(singleLine(sections, SEC_TEAM));
 
-        // 2. Пул всех компонентов (инвентарь + компоненты болидов)
+        // 2. пул всех компонентов (инвентарь + компоненты болидов)
         List<Component> pool = new ArrayList<>();
         for (String line : linesOf(sections, SEC_COMPS)) {
             pool.add(serializer.deserializeComponent(line));
         }
 
-        // 3. Болиды — ссылаются на компоненты из пула по имени
+        // 3. болиды — ссылаются на компоненты из пула по имени
         Set<String> usedByBolids = new HashSet<>();
         for (String line : linesOf(sections, SEC_BOLIDS)) {
             Bolid bolid = serializer.deserializeBolid(line, pool);
@@ -76,24 +72,24 @@ public class SaveService {
             bolid.getAllComponents().forEach(c -> usedByBolids.add(c.getName()));
         }
 
-        // 4. Оставшиеся компоненты (не в болидах) → инвентарь команды
+        // 4. оставшиеся компоненты (не в болидах) → инвентарь команды
         for (Component c : pool) {
             if (!usedByBolids.contains(c.getName())) {
                 team.addComponent(c);
             }
         }
 
-        // 5. Пилоты
+        // 5. пилоты
         for (String line : linesOf(sections, SEC_PILOTS)) {
             team.addPilot(serializer.deserializePilot(line));
         }
 
-        // 6. Инженеры
+        // 6. инженеры
         for (String line : linesOf(sections, SEC_ENG)) {
             team.addEngineer(serializer.deserializeEngineer(line));
         }
 
-        // 7. История гонок
+        // 7. история гонок
         List<RaceResult> history = new ArrayList<>();
         for (String line : linesOf(sections, SEC_HISTORY)) {
             history.add(serializer.deserializeRaceResult(line));
@@ -102,7 +98,7 @@ public class SaveService {
         return new GameSave(team, history);
     }
 
-    // ── формирование содержимого файла ────────────────────────────────────────
+    // формирование содержимого файла
 
     private String buildContent(Team team, List<RaceResult> history) {
         StringBuilder sb = new StringBuilder();
@@ -110,7 +106,7 @@ public class SaveService {
         append(sb, SEC_TEAM);
         sb.append(serializer.serializeTeam(team)).append("\n");
 
-        // Все компоненты: инвентарь + компоненты болидов (без дублей по имени)
+        // все компоненты: инвентарь + компоненты болидов (без дублей по имени)
         append(sb, SEC_COMPS);
         Set<String> seen = new LinkedHashSet<>();
         for (Component c : collectAllComponents(team)) {
@@ -146,7 +142,7 @@ public class SaveService {
         sb.append(section).append("\n");
     }
 
-    /** Собирает все компоненты команды: инвентарь + компоненты всех болидов. */
+    // собирает все компоненты команды
     private List<Component> collectAllComponents(Team team) {
         List<Component> all = new ArrayList<>(team.getInventory());
         for (Bolid b : team.getBolids()) {
@@ -155,7 +151,7 @@ public class SaveService {
         return all;
     }
 
-    // ── парсинг секций ────────────────────────────────────────────────────────
+    // парсинг секций
 
     private Map<String, List<String>> parseSections(String content) {
         Map<String, List<String>> sections = new LinkedHashMap<>();

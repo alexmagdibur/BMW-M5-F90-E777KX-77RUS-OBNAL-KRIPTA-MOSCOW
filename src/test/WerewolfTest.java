@@ -33,7 +33,7 @@ public class WerewolfTest {
     }
 
 
-    // ─── Флаги оборотня ───────────────────────────────────────────────────────
+    // флаги оборотня
 
     @Test
     void pilotIsNotWerewolfByDefault() {
@@ -63,7 +63,7 @@ public class WerewolfTest {
         assertFalse(engineer.isWerewolf());
     }
 
-    // ─── Гонка при солнечном затмении ─────────────────────────────────────────
+    // гонка при солнечном затмении
 
     @Test
     void solarEclipseWithChance1AlwaysMakesWerewolf() {
@@ -121,7 +121,7 @@ public class WerewolfTest {
         assertFalse(race.isPlayerDNF(), "При обычной погоде инженер-оборотень не должен давать DNF");
     }
 
-    // ─── Ван Хельсинг ─────────────────────────────────────────────────────────
+    // Ван Хельсинг
 
     @Test
     void vanHelsingRemovesWerewolfPilotFromTeam() {
@@ -179,7 +179,7 @@ public class WerewolfTest {
         assertTrue(team.getEngineers().contains(engineer), "Ван Хельсинг не должен удалять обычного инженера");
     }
 
-    // ─── Баффи ────────────────────────────────────────────────────────────────
+    // Баффи
 
     @Test
     void buffyHealsWerewolfPilot() {
@@ -214,12 +214,12 @@ public class WerewolfTest {
 
     private static Bolid buildBolid() {
         Bolid b = new Bolid("Болид");
-        b.installComponent(new Component("Двигатель",   ComponentType.ENGINE,       0, 60));
+        b.installComponent(new Component("Двигатель", ComponentType.ENGINE, 0, 60));
         b.installComponent(new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 55));
-        b.installComponent(new Component("Подвеска",    ComponentType.SUSPENSION,   0, 50));
-        b.installComponent(new Component("Шасси",       ComponentType.CHASSIS,       0, 50));
-        b.installComponent(new Component("Обвесы",      ComponentType.AERO_PACKAGE, 0, 50));
-        b.installComponent(new Component("Шины",        ComponentType.TIRES,         0, 60));
+        b.installComponent(new Component("Подвеска", ComponentType.SUSPENSION, 0, 50));
+        b.installComponent(new Component("Шасси", ComponentType.CHASSIS, 0, 50));
+        b.installComponent(new Component("Обвесы", ComponentType.AERO_PACKAGE, 0, 50));
+        b.installComponent(new Component("Шины", ComponentType.TIRES, 0, 60));
         return b;
     }
 

@@ -12,23 +12,13 @@ import java.util.List;
 public class ShopService {
 
     private static final ComponentType[] ORDER = {
-        ComponentType.ENGINE,
-        ComponentType.TRANSMISSION,
-        ComponentType.SUSPENSION,
-        ComponentType.CHASSIS,
-        ComponentType.AERO_PACKAGE,
-        ComponentType.TIRES,
-        ComponentType.EXTRA
+        ComponentType.ENGINE, ComponentType.TRANSMISSION, ComponentType.SUSPENSION,
+        ComponentType.CHASSIS, ComponentType.AERO_PACKAGE, ComponentType.TIRES, ComponentType.EXTRA
     };
 
     private static final String[] TYPE_NAMES = {
-        "Двигатель",
-        "Трансмиссия",
-        "Подвеска",
-        "Шасси",
-        "Обвесы",
-        "Шины",
-        "Дополнително"
+        "Двигатель", "Трансмиссия", "Подвеска",
+        "Шасси", "Обвесы", "Шины", "Дополнително"
     };
 
     private final Team team;

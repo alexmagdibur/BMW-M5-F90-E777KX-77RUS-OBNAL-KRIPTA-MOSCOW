@@ -23,14 +23,14 @@ public class SurvivalRaceService {
         "Виктор Газ", "Игорь Апекс", "Дарья Форсаж", "Паша Турбо"
     };
 
-    // Создание гонки
+    // создание гонки
 
     public SurvivalRaceState createRace(Bolid bolid, int trackLength) {
-        int playerPerf  = bolid.getPerformanceScore();
-        int meleeLevel  = bolid.getWeapons().containsKey(WeaponType.MELEE)
-                          ? bolid.getWeapons().get(WeaponType.MELEE).getLevel() : 0;
+        int playerPerf = bolid.getPerformanceScore();
+        int meleeLevel = bolid.getWeapons().containsKey(WeaponType.MELEE)
+                ? bolid.getWeapons().get(WeaponType.MELEE).getLevel() : 0;
         int rangedLevel = bolid.getWeapons().containsKey(WeaponType.RANGED)
-                          ? bolid.getWeapons().get(WeaponType.RANGED).getLevel() : 0;
+                ? bolid.getWeapons().get(WeaponType.RANGED).getLevel() : 0;
 
         SurvivalParticipant player = new SurvivalParticipant(
             "Вы", true, playerPerf, meleeLevel, rangedLevel);
@@ -41,8 +41,8 @@ public class SurvivalRaceService {
         List<String> names = new ArrayList<>(List.of(BOT_NAMES));
         Collections.shuffle(names);
         for (int i = 0; i < 5; i++) {
-            int perf      = 200 + RANDOM.nextInt(301); // 200–500
-            int botMelee  = RANDOM.nextInt(3);
+            int perf = 200 + RANDOM.nextInt(301); // 200–500
+            int botMelee = RANDOM.nextInt(3);
             int botRanged = RANDOM.nextInt(3);
             participants.add(new SurvivalParticipant(names.get(i), false, perf, botMelee, botRanged));
         }
@@ -51,7 +51,7 @@ public class SurvivalRaceService {
         return new SurvivalRaceState(participants, Math.max(5, trackLength / 1000));
     }
 
-    // Обгон
+    // обгон
 
     // перемещает атакующего на одну позицию вперёд; возвращает true если удалось
     public boolean tryOvertake(SurvivalRaceState state, SurvivalParticipant attacker) {
@@ -68,11 +68,11 @@ public class SurvivalRaceService {
         return false;
     }
 
-    // Атака
+    // атака
 
     // возвращает true если попадание (target помечается eliminated)
     public boolean tryAttack(SurvivalRaceState state, SurvivalParticipant attacker,
-                              SurvivalParticipant target, int weaponLevel) {
+                             SurvivalParticipant target, int weaponLevel) {
         if (weaponLevel <= 0 || target.isEliminated()) return false;
         if (RANDOM.nextDouble() < attackChance(weaponLevel)) {
             target.eliminate();
@@ -81,22 +81,22 @@ public class SurvivalRaceService {
         return false;
     }
 
-    // Выбор действия игрока
+    // выбор действия игрока
 
     // одно действие за ход: обгон и атака взаимоисключающи
     public boolean applyPlayerChoice(SurvivalRaceState state, SurvivalParticipant player,
                                       PlayerChoice choice, SurvivalParticipant target) {
         return switch (choice) {
-            case OVERTAKE      -> tryOvertake(state, player);
-            case MELEE_ATTACK  -> target != null
-                                   && tryAttack(state, player, target, player.getMeleeWeaponLevel());
-            case RANGED_ATTACK -> target != null
-                                   && tryAttack(state, player, target, player.getRangedWeaponLevel());
-            case PASS          -> false;
+            case OVERTAKE -> tryOvertake(state, player);
+            case MELEE_ATTACK -> target != null && tryAttack(state, player,
+                    target, player.getMeleeWeaponLevel());
+            case RANGED_ATTACK -> target != null && tryAttack(state, player,
+                    target, player.getRangedWeaponLevel());
+            case PASS -> false;
         };
     }
 
-    // Ходы ботов
+    // ходы ботов
 
     // обрабатывает все боты за один шаг; возвращает список событий для вывода
     public List<String> processBotActions(SurvivalRaceState state) {
@@ -134,7 +134,7 @@ public class SurvivalRaceService {
         return events;
     }
 
-    // Вспомогательные
+    // вспомогательные
 
     // melee=true — только соседи; melee=false — все кроме атакующего
     public List<SurvivalParticipant> getValidTargets(
@@ -143,7 +143,7 @@ public class SurvivalRaceService {
         int idx = active.indexOf(attacker);
         List<SurvivalParticipant> targets = new ArrayList<>();
         if (melee) {
-            if (idx > 0)               targets.add(active.get(idx - 1));
+            if (idx > 0) targets.add(active.get(idx - 1));
             if (idx < active.size()-1) targets.add(active.get(idx + 1));
         } else {
             for (SurvivalParticipant p : active) {
@@ -161,7 +161,7 @@ public class SurvivalRaceService {
 
     private double overtakeChance(int perf, boolean isPlayer) {
         double chance = 0.3 + perf / 600.0; // чем выше перф, тем лучше шанс
-        if (!isPlayer) chance -= 0.10;       // боты чуть слабее
+        if (!isPlayer) chance -= 0.10; // боты чуть слабее
         return Math.max(0.15, Math.min(0.75, chance));
     }
 
@@ -175,6 +175,6 @@ public class SurvivalRaceService {
     }
 
     // для отображения шансов в UI
-    public int overtakeChancePct(int perf)  { return (int) Math.round(overtakeChance(perf, true) * 100); }
-    public int attackChancePct(int level)   { return (int) Math.round(attackChance(level) * 100); }
+    public int overtakeChancePct(int perf) { return (int) Math.round(overtakeChance(perf, true) * 100); }
+    public int attackChancePct(int level) { return (int) Math.round(attackChance(level) * 100); }
 }

@@ -8,16 +8,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IncidentTest {
 
-    // Собирает болид со всеми обязательными компонентами.
-    // Возвращает компонент ENGINE, чтобы можно было проверить его износ после гонки.
+    // собирает болид со всеми обязательными компонентами.
+    // возвращает компонент ENGINE, чтобы можно было проверить его износ после гонки.
     private static Component buildBolid(Bolid bolid) {
         Component engine = new Component("Двигатель", ComponentType.ENGINE, 0, 50);
         bolid.installComponent(engine);
         bolid.installComponent(new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 50));
-        bolid.installComponent(new Component("Подвеска",    ComponentType.SUSPENSION,   0, 50));
-        bolid.installComponent(new Component("Шасси",       ComponentType.CHASSIS,       0, 50));
-        bolid.installComponent(new Component("Обвесы",      ComponentType.AERO_PACKAGE,  0, 50));
-        bolid.installComponent(new Component("Шины",        ComponentType.TIRES,         0, 50));
+        bolid.installComponent(new Component("Подвеска", ComponentType.SUSPENSION, 0, 50));
+        bolid.installComponent(new Component("Шасси", ComponentType.CHASSIS, 0, 50));
+        bolid.installComponent(new Component("Обвесы", ComponentType.AERO_PACKAGE, 0, 50));
+        bolid.installComponent(new Component("Шины", ComponentType.TIRES, 0, 50));
         return engine;
     }
 
@@ -32,12 +32,8 @@ public class IncidentTest {
         engine.setWear(75);
 
         Race race = new RaceService().runRace(
-            new Team("Тест", 0),
-            bolid,
-            new Pilot("Пилот", 0, 50),
-            new Engineer("Инженер", 0, 50),
-            simpleTrack(),
-            Weather.DRY
+            new Team("Тест", 0), bolid, new Pilot("Пилот", 0, 50),
+            new Engineer("Инженер", 0, 50), simpleTrack(), Weather.DRY
         );
 
         assertTrue(race.isPlayerDNF(), "Изношенный компонент должен вызвать DNF");
@@ -50,12 +46,8 @@ public class IncidentTest {
         engine.setWear(75);
 
         new RaceService().runRace(
-            new Team("Тест", 0),
-            bolid,
-            new Pilot("Пилот", 0, 50),
-            new Engineer("Инженер", 0, 50),
-            simpleTrack(),
-            Weather.DRY
+            new Team("Тест", 0), bolid, new Pilot("Пилот", 0, 50),
+            new Engineer("Инженер", 0, 50), simpleTrack(), Weather.DRY
         );
 
         assertEquals(100, engine.getWear(), "После инцидента компонент должен иметь износ 100%");
@@ -67,12 +59,8 @@ public class IncidentTest {
         buildBolid(bolid); // все компоненты с wear=0
 
         Race race = new RaceService().runRace(
-            new Team("Тест", 0),
-            bolid,
-            new Pilot("Пилот", 0, 50),
-            new Engineer("Инженер", 0, 50),
-            simpleTrack(),
-            Weather.DRY
+            new Team("Тест", 0), bolid, new Pilot("Пилот", 0, 50),
+            new Engineer("Инженер", 0, 50), simpleTrack(), Weather.DRY
         );
 
         assertFalse(race.isPlayerDNF(), "Новые компоненты не должны вызывать DNF");

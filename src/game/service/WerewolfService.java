@@ -13,7 +13,7 @@ import java.util.List;
 public class WerewolfService {
 
     private static final long VAN_HELSING_COST = 100_000L;
-    private static final long BUFFY_COST        =  75_000L;
+    private static final long BUFFY_COST = 75_000L;
 
     private final Team team;
 

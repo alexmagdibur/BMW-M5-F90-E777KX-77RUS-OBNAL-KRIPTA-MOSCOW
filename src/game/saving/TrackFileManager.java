@@ -13,9 +13,7 @@ public class TrackFileManager {
 
     private final EntitySerializer serializer = new EntitySerializer();
 
-    /**
-     * Сохраняет все пользовательские треки в tracks/{playerName}/custom_tracks.csv.
-     */
+    // сохраняет все пользовательские треки в tracks/{playerName}/custom_tracks.csv
     public void saveCustomTracks(List<Track> tracks, String playerName) {
         File dir = playerDir(playerName);
         if (!dir.exists() && !dir.mkdirs()) {
@@ -32,10 +30,9 @@ public class TrackFileManager {
         }
     }
 
-    /**
-     * Загружает пользовательские треки из tracks/{playerName}/custom_tracks.csv.
-     * Если файла нет — возвращает пустой список.
-     */
+
+    // загружает пользовательские треки из tracks/{playerName}/custom_tracks.csv
+    // если файла нет — возвращает пустой список
     public List<Track> loadCustomTracks(String playerName) {
         List<Track> result = new ArrayList<>();
         File file = new File(playerDir(playerName), FILE_NAME);

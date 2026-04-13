@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// Тест: создать трек в редакторе, «перезапустить» (новый TrackEditor), открыть редактор — трек на месте.
+// тест: создать трек в редакторе, «перезапустить» (новый TrackEditor), открыть редактор — трек на месте.
 public class TrackPersistenceTest {
 
     private static final String TEST_PLAYER = "__test_persistence_player__";
@@ -42,7 +42,7 @@ public class TrackPersistenceTest {
 
     @Test
     void trackSurvivesEditorRestart() {
-        // Шаг 1: создаём трек через редактор с playerName
+        // шаг 1: создаём трек через редактор с playerName
         String createInput = String.join("\n",
             "1", // меню: создать трек
             "Трасса Ужаса",  // название
@@ -64,7 +64,7 @@ public class TrackPersistenceTest {
 
         assertEquals(1, editor1.getCustomTracks().size(), "Трек должен быть создан в первом редакторе");
 
-        // Шаг 2: «перезапуск» — новый экземпляр TrackEditor с тем же playerName
+        // шаг 2: «перезапуск» — новый экземпляр TrackEditor с тем же playerName
         ConsoleInput.resetScanner();
         System.setIn(originalIn); // пустой ввод не нужен — только конструктор
 

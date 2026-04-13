@@ -1,7 +1,7 @@
 package domain;
 
 public enum WeaponType {
-    MELEE  ("Ближний бой"),
+    MELEE ("Ближний бой"),
     RANGED ("Дальний бой");
 
     private final String displayName;

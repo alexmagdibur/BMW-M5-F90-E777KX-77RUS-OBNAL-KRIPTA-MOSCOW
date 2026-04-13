@@ -14,43 +14,33 @@ import java.util.Set;
 
 public class AssemblyService {
 
-    // ── автосохранение ────────────────────────────────────────────────────────
+    // автосохранение
 
     private static final ComponentType[] REQUIRED = {
-        ComponentType.ENGINE,
-        ComponentType.TRANSMISSION,
-        ComponentType.SUSPENSION,
-        ComponentType.CHASSIS,
-        ComponentType.AERO_PACKAGE,
-        ComponentType.TIRES
+        ComponentType.ENGINE, ComponentType.TRANSMISSION,
+        ComponentType.SUSPENSION, ComponentType.CHASSIS,
+        ComponentType.AERO_PACKAGE, ComponentType.TIRES
     };
 
     private static final String[] REQUIRED_NAMES = {
-        "Двигатель",
-        "Трансмиссия",
-        "Подвеска",
-        "Шасси",
-        "Обвесы",
-        "Шины"
+        "Двигатель", "Трансмиссия", "Подвеска", "Шасси", "Обвесы", "Шины"
     };
 
-    private final Team             team;
-    private final SaveService      saveService;
-    private final String           playerName;
+    private final Team team;
+    private final SaveService saveService;
+    private final String playerName;
     private final List<RaceResult> raceResults;
 
-    /** Конструктор без автосохранения — для обратной совместимости и тестов. */
+    // конструктор без автосохранения — для обратной совместимости и тестов
     public AssemblyService(Team team) {
         this(team, null, null, null);
     }
 
-    /** Конструктор с автосохранением — используется из GameMenu. */
+    // конструктор с автосохранением
     public AssemblyService(Team team, SaveService saveService,
                            String playerName, List<RaceResult> raceResults) {
-        this.team        = team;
-        this.saveService = saveService;
-        this.playerName  = playerName;
-        this.raceResults = raceResults;
+        this.team = team; this.saveService = saveService;
+        this.playerName = playerName; this.raceResults = raceResults;
     }
 
     public void assembleBolid() {
@@ -134,10 +124,8 @@ public class AssemblyService {
     }
 
     private static final Set<ComponentType> COMPATIBILITY_TYPES = Set.of(
-        ComponentType.ENGINE,
-        ComponentType.TRANSMISSION,
-        ComponentType.SUSPENSION,
-        ComponentType.CHASSIS
+        ComponentType.ENGINE, ComponentType.TRANSMISSION,
+        ComponentType.SUSPENSION, ComponentType.CHASSIS
     );
 
 

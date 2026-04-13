@@ -15,13 +15,13 @@ public class Team {
     private List<Engineer> engineers;
 
     public Team(String name, long budget) {
-        this.name            = name;
-        this.budget          = budget;
-        this.inventory       = new ArrayList<>();
+        this.name = name;
+        this.budget = budget;
+        this.inventory = new ArrayList<>();
         this.weaponInventory = new ArrayList<>();
-        this.bolids          = new ArrayList<>();
-        this.pilots          = new ArrayList<>();
-        this.engineers       = new ArrayList<>();
+        this.bolids = new ArrayList<>();
+        this.pilots = new ArrayList<>();
+        this.engineers = new ArrayList<>();
     }
 
     public String getName() { return name; }

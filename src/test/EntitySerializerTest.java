@@ -21,10 +21,10 @@ public class EntitySerializerTest {
     @Test
     void teamRoundTrip() {
         Team original = new Team("Ferrari", 5_000_000L);
-        String line   = s.serializeTeam(original);
-        Team   result = s.deserializeTeam(line);
+        String line = s.serializeTeam(original);
+        Team result = s.deserializeTeam(line);
 
-        assertEquals(original.getName(),   result.getName());
+        assertEquals(original.getName(), result.getName());
         assertEquals(original.getBudget(), result.getBudget());
     }
 
@@ -41,14 +41,14 @@ public class EntitySerializerTest {
         Component original = new Component("V8 Двигатель", ComponentType.ENGINE, 150_000, 85);
         original.setWear(30);
 
-        String    line   = s.serializeComponent(original);
+        String line = s.serializeComponent(original);
         Component result = s.deserializeComponent(line);
 
-        assertEquals(original.getName(),             result.getName());
-        assertEquals(original.getType(),             result.getType());
-        assertEquals(original.getPrice(),            result.getPrice());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getType(), result.getType());
+        assertEquals(original.getPrice(), result.getPrice());
         assertEquals(original.getPerformanceValue(), result.getPerformanceValue());
-        assertEquals(original.getWear(),             result.getWear());
+        assertEquals(original.getWear(), result.getWear());
     }
 
     @Test
@@ -68,9 +68,9 @@ public class EntitySerializerTest {
 
     @Test
     void bolidRoundTripMainComponents() {
-        Component engine = new Component("Двигатель", ComponentType.ENGINE,       0, 80);
-        Component tires  = new Component("Шины",      ComponentType.TIRES,        0, 60);
-        Component trans  = new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 70);
+        Component engine = new Component("Двигатель", ComponentType.ENGINE, 0, 80);
+        Component tires = new Component("Шины", ComponentType.TIRES, 0, 60);
+        Component trans = new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 70);
 
         Bolid original = new Bolid("SF-24");
         original.installComponent(engine);
@@ -78,12 +78,12 @@ public class EntitySerializerTest {
         original.installComponent(trans);
 
         List<Component> pool = List.of(engine, tires, trans);
-        String line          = s.serializeBolid(original);
-        Bolid  result        = s.deserializeBolid(line, pool);
+        String line = s.serializeBolid(original);
+        Bolid result = s.deserializeBolid(line, pool);
 
         assertEquals("SF-24", result.getName());
-        assertNotNull(result.getComponent(ComponentType.ENGINE),       "ENGINE должен присутствовать");
-        assertNotNull(result.getComponent(ComponentType.TIRES),        "TIRES должен присутствовать");
+        assertNotNull(result.getComponent(ComponentType.ENGINE), "ENGINE должен присутствовать");
+        assertNotNull(result.getComponent(ComponentType.TIRES), "TIRES должен присутствовать");
         assertNotNull(result.getComponent(ComponentType.TRANSMISSION), "TRANSMISSION должен присутствовать");
         assertEquals("Двигатель", result.getComponent(ComponentType.ENGINE).getName());
     }
@@ -91,7 +91,7 @@ public class EntitySerializerTest {
     @Test
     void bolidRoundTripWithExtras() {
         Component engine = new Component("Двигатель", ComponentType.ENGINE, 0, 80);
-        Component spoiler = new Component("Спойлер",  ComponentType.EXTRA,  0, 10);
+        Component spoiler = new Component("Спойлер", ComponentType.EXTRA, 0, 10);
 
         Bolid original = new Bolid("RB20");
         original.installComponent(engine);
@@ -119,13 +119,13 @@ public class EntitySerializerTest {
     @Test
     void pilotRoundTrip() {
         Pilot original = new Pilot("Леклер", 500_000, 90);
-        String line    = s.serializePilot(original);
-        Pilot  result  = s.deserializePilot(line);
+        String line = s.serializePilot(original);
+        Pilot result = s.deserializePilot(line);
 
-        assertEquals(original.getName(),   result.getName());
+        assertEquals(original.getName(), result.getName());
         assertEquals(original.getSalary(), result.getSalary());
-        assertEquals(original.getSkill(),  result.getSkill());
-        assertFalse(result.isWerewolf(),   "По умолчанию не оборотень");
+        assertEquals(original.getSkill(), result.getSkill());
+        assertFalse(result.isWerewolf(), "По умолчанию не оборотень");
     }
 
     @Test
@@ -142,10 +142,10 @@ public class EntitySerializerTest {
     @Test
     void engineerRoundTrip() {
         Engineer original = new Engineer("Браун", 300_000, 85);
-        Engineer result   = s.deserializeEngineer(s.serializeEngineer(original));
+        Engineer result = s.deserializeEngineer(s.serializeEngineer(original));
 
-        assertEquals(original.getName(),          result.getName());
-        assertEquals(original.getSalary(),        result.getSalary());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getSalary(), result.getSalary());
         assertEquals(original.getQualification(), result.getQualification());
         assertFalse(result.isWerewolf());
     }
@@ -165,11 +165,11 @@ public class EntitySerializerTest {
         RaceResult original = new RaceResult("Ferrari", 95.347, true);
         original.setPosition(2);
 
-        String     line   = s.serializeRaceResult(original);
+        String line = s.serializeRaceResult(original);
         RaceResult result = s.deserializeRaceResult(line);
 
         assertEquals("Ferrari", result.getTeamName());
-        assertEquals(95.347,    result.getTime(), 1e-9);
+        assertEquals(95.347, result.getTime(), 1e-9);
         assertTrue(result.isPlayer());
         assertFalse(result.isIncident());
         assertEquals(2, result.getPosition());

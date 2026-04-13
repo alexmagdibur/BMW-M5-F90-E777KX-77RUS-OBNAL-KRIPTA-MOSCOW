@@ -52,7 +52,7 @@ public class AttackTest {
 
     @Test
     void meleeAttack_onAdjacentBehind_targetEliminated() {
-        SurvivalParticipant player   = player(3, 0);
+        SurvivalParticipant player = player(3, 0);
         SurvivalParticipant follower = bot("Следующий");
         SurvivalRaceState state = new SurvivalRaceState(List.of(player, follower), 10);
 
@@ -74,7 +74,7 @@ public class AttackTest {
 
     @Test
     void meleeValidTargets_containOnlyAdjacentParticipants() {
-        SurvivalParticipant first  = bot("1-й");
+        SurvivalParticipant first = bot("1-й");
         SurvivalParticipant second = bot("2-й");
         SurvivalParticipant player = player(3, 0);
         SurvivalParticipant fourth = bot("4-й");
@@ -92,8 +92,8 @@ public class AttackTest {
 
     @Test
     void meleeValidTargets_doNotContainFarParticipant() {
-        SurvivalParticipant far    = bot("Далёкий"); // 2 позиции от игрока
-        SurvivalParticipant mid    = bot("Средний");
+        SurvivalParticipant far = bot("Далёкий"); // 2 позиции от игрока
+        SurvivalParticipant mid = bot("Средний");
         SurvivalParticipant player = player(3, 0);
         // [Далёкий(1), Средний(2), Игрок(3)]
         SurvivalRaceState state = new SurvivalRaceState(List.of(far, mid, player), 10);
@@ -101,7 +101,7 @@ public class AttackTest {
         List<SurvivalParticipant> targets = service.getValidTargets(state, player, true);
 
         assertFalse(targets.contains(far), "2+ позиций — недоступен");
-        assertTrue(targets.contains(mid),  "сосед доступен");
+        assertTrue(targets.contains(mid), "сосед доступен");
     }
 
     @Test
@@ -127,8 +127,8 @@ public class AttackTest {
 
     @Test
     void rangedValidTargets_containAllOtherParticipants() {
-        SurvivalParticipant far    = bot("Далёкий");
-        SurvivalParticipant mid    = bot("Средний");
+        SurvivalParticipant far = bot("Далёкий");
+        SurvivalParticipant mid = bot("Средний");
         SurvivalParticipant player = player(0, 3);
         // [Далёкий(1), Средний(2), Игрок(3)]
         SurvivalRaceState state = new SurvivalRaceState(List.of(far, mid, player), 10);
@@ -142,8 +142,8 @@ public class AttackTest {
 
     @Test
     void rangedAttack_onFarTarget_hitsSuccessfully() {
-        SurvivalParticipant far    = bot("Далёкий");
-        SurvivalParticipant mid    = bot("Средний");
+        SurvivalParticipant far = bot("Далёкий");
+        SurvivalParticipant mid = bot("Средний");
         SurvivalParticipant player = player(0, 3);
         SurvivalRaceState state = new SurvivalRaceState(List.of(far, mid, player), 10);
 
@@ -155,7 +155,7 @@ public class AttackTest {
     void rangedAttack_onLeader_hitsSuccessfully() {
         SurvivalParticipant leader = bot("Лидер");
         SurvivalParticipant second = bot("2-й");
-        SurvivalParticipant third  = bot("3-й");
+        SurvivalParticipant third = bot("3-й");
         SurvivalParticipant player = player(0, 3); // 4-я позиция
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, second, third, player), 10);
 

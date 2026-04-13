@@ -31,8 +31,8 @@ public class BattleEndTest {
     @Test
     void playerAloneAfterAllBotsEliminated_isVictory() {
         SurvivalParticipant player = player();
-        SurvivalParticipant bot1   = bot("Бот-1");
-        SurvivalParticipant bot2   = bot("Бот-2");
+        SurvivalParticipant bot1 = bot("Бот-1");
+        SurvivalParticipant bot2 = bot("Бот-2");
         SurvivalRaceState state = new SurvivalRaceState(List.of(player, bot1, bot2), 5);
 
         bot1.eliminate();
@@ -46,7 +46,7 @@ public class BattleEndTest {
     void playerAt1stAfterLeaderEliminated_isVictory() {
         SurvivalParticipant leader = bot("Лидер");
         SurvivalParticipant player = player();
-        SurvivalParticipant third  = bot("3-й");
+        SurvivalParticipant third = bot("3-й");
         // [Лидер(1), Игрок(2), 3-й]
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, third), 5);
 
@@ -164,7 +164,7 @@ public class BattleEndTest {
     @Test
     void raceIsOver_whenOnlyPlayerRemains_andHeWins() {
         SurvivalParticipant opponent = bot("Бот");
-        SurvivalParticipant player   = player();
+        SurvivalParticipant player = player();
         SurvivalRaceState state = new SurvivalRaceState(List.of(player, opponent), 5);
 
         opponent.eliminate();

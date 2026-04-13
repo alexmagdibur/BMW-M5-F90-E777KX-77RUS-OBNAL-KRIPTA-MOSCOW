@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WeaponTest {
 
     // уровень 1
-    private static final Weapon MELEE_1  = new Weapon("Кастет ВАЗ",        WeaponType.MELEE,  50_000,  25, 1);
-    private static final Weapon RANGED_1 = new Weapon("Рогатка-М",          WeaponType.RANGED, 40_000,  20, 1);
+    private static final Weapon MELEE_1  = new Weapon("Кастет ВАЗ", WeaponType.MELEE,  50_000,  25, 1);
+    private static final Weapon RANGED_1 = new Weapon("Рогатка-М", WeaponType.RANGED, 40_000,  20, 1);
     // уровень 2
-    private static final Weapon MELEE_2  = new Weapon("Цепь BMW",           WeaponType.MELEE,  180_000, 55, 2);
-    private static final Weapon RANGED_2 = new Weapon("Пистолет Макарова",  WeaponType.RANGED, 150_000, 48, 2);
+    private static final Weapon MELEE_2  = new Weapon("Цепь BMW", WeaponType.MELEE,  180_000, 55, 2);
+    private static final Weapon RANGED_2 = new Weapon("Пистолет Макарова", WeaponType.RANGED, 150_000, 48, 2);
     // уровень 3
-    private static final Weapon MELEE_3  = new Weapon("Плазменный кулак",   WeaponType.MELEE,  600_000, 95, 3);
+    private static final Weapon MELEE_3  = new Weapon("Плазменный кулак", WeaponType.MELEE,  600_000, 95, 3);
     private static final Weapon RANGED_3 = new Weapon("Рельсотрон Porsche", WeaponType.RANGED, 550_000, 90, 3);
 
     private Bolid bolid;
@@ -28,7 +28,7 @@ public class WeaponTest {
         bolid = new Bolid("Тестовый болид");
     }
 
-    // ─── установка 1 ближнего + 1 дальнего → успех ───────────────────────────
+    // установка 1 ближнего + 1 дальнего → успех
 
     @Test
     void installMeleeAndRanged_bothSlotsFilledSuccessfully() {
@@ -36,7 +36,7 @@ public class WeaponTest {
         bolid.installWeapon(RANGED_1);
 
         assertEquals(2, bolid.getWeapons().size());
-        assertSame(MELEE_1,  bolid.getWeapons().get(WeaponType.MELEE));
+        assertSame(MELEE_1, bolid.getWeapons().get(WeaponType.MELEE));
         assertSame(RANGED_1, bolid.getWeapons().get(WeaponType.RANGED));
     }
 

@@ -38,30 +38,31 @@ public class GameMenu {
     private final String playerName;
     private final List<Track> customTracks;
     private boolean running;
-    private final ShopService      shopService;
-    private final HireService      hireService;
-    private final AssemblyService  assemblyService;
-    private final RaceService      raceService;
-    private final WerewolfService  werewolfService;
-    private final SaveService      saveService;
-    private final List<Race>       raceHistory   = new ArrayList<>();
-    /** Плоская история результатов игрока — используется для сохранения. */
+    private final ShopService shopService;
+    private final HireService hireService;
+    private final AssemblyService assemblyService;
+    private final RaceService raceService;
+    private final WerewolfService werewolfService;
+    private final SaveService saveService;
+    private final List<Race> raceHistory   = new ArrayList<>();
+
+    // плоская история результатов игрока — используется для сохранения
     private final List<RaceResult> raceResults;
-    private Weather                currentWeather;
+    private Weather currentWeather;
 
     public GameMenu(Team playerTeam, String playerName, List<RaceResult> history, List<Track> customTracks) {
-        this.playerTeam      = playerTeam;
-        this.playerName      = playerName;
-        this.customTracks    = new ArrayList<>(customTracks);
-        this.raceResults     = new ArrayList<>(history);
-        this.running         = true;
-        this.saveService     = new SaveService();
-        this.shopService     = new ShopService(playerTeam);
-        this.hireService     = new HireService(playerTeam);
+        this.playerTeam = playerTeam;
+        this.playerName = playerName;
+        this.customTracks = new ArrayList<>(customTracks);
+        this.raceResults = new ArrayList<>(history);
+        this.running = true;
+        this.saveService = new SaveService();
+        this.shopService = new ShopService(playerTeam);
+        this.hireService = new HireService(playerTeam);
         this.assemblyService = new AssemblyService(playerTeam, saveService, playerName, raceResults);
-        this.raceService     = new RaceService(saveService, playerName, raceResults);
+        this.raceService = new RaceService(saveService, playerName, raceResults);
         this.werewolfService = new WerewolfService(playerTeam);
-        this.currentWeather  = Weather.random();
+        this.currentWeather = Weather.random();
     }
 
     public void run() {
@@ -101,15 +102,15 @@ public class GameMenu {
 
     private void handleChoice(int choice) {
         switch (choice) {
-            case 1  -> startRace();
-            case 2  -> shopService.openShop();
-            case 3  -> assemblyService.assembleBolid();
-            case 4  -> hireService.hireEngineer();
-            case 5  -> hireService.hirePilot();
-            case 6  -> System.out.println(playerTeam.getBolidsInfo());
-            case 7  -> System.out.println(playerTeam.getPilotsInfo());
-            case 8  -> System.out.println(playerTeam.getEngineersInfo());
-            case 9  -> System.out.println(playerTeam.getInventoryInfo());
+            case 1 -> startRace();
+            case 2 -> shopService.openShop();
+            case 3 -> assemblyService.assembleBolid();
+            case 4 -> hireService.hireEngineer();
+            case 5 -> hireService.hirePilot();
+            case 6 -> System.out.println(playerTeam.getBolidsInfo());
+            case 7 -> System.out.println(playerTeam.getPilotsInfo());
+            case 8 -> System.out.println(playerTeam.getEngineersInfo());
+            case 9 -> System.out.println(playerTeam.getInventoryInfo());
             case 10 -> showRaceStats();
             case 11 -> showOtherTeams();
             case 12 -> showOtherResults();
@@ -135,9 +136,7 @@ public class GameMenu {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Гонка
-    // ─────────────────────────────────────────────────────────────────────────
+    // гонка
 
     private void startRace() {
         if (!playerTeam.isReadyToRace()) {
@@ -159,9 +158,9 @@ public class GameMenu {
     }
 
     private void startNormalRace() {
-        Track    track    = selectTrack();    if (track    == null) return;
-        Bolid    bolid    = selectBolid();    if (bolid    == null) return;
-        Pilot    pilot    = selectPilot();    if (pilot    == null) return;
+        Track track = selectTrack(); if (track == null) return;
+        Bolid bolid = selectBolid(); if (bolid == null) return;
+        Pilot pilot = selectPilot(); if (pilot == null) return;
         Engineer engineer = selectEngineer(); if (engineer == null) return;
 
         List<Component> maxWorn = bolid.getAllComponents().stream()
@@ -196,9 +195,7 @@ public class GameMenu {
         currentWeather = nextWeather;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Режим выживания
-    // ─────────────────────────────────────────────────────────────────────────
+    // режим выживания
 
     private void startSurvivalMode() {
         System.out.println(Ansi.bold("\n———————— РЕЖИМ ВЫЖИВАНИЯ ————————"));
@@ -220,7 +217,7 @@ public class GameMenu {
         runSurvivalRaceLoop(state, svc);
     }
 
-    // ── Пошаговый цикл гонки выживания ───────────────────────────────────────
+    // пошаговый цикл гонки выживания
 
     private void runSurvivalRaceLoop(SurvivalRaceState state, SurvivalRaceService svc) {
         while (!state.isRaceOver()) {
@@ -253,14 +250,14 @@ public class GameMenu {
         for (int i = 0; i < active.size(); i++) {
             SurvivalParticipant p = active.get(i);
             String weapons = "";
-            if (p.getMeleeWeaponLevel() > 0)   weapons += " [Б.ур." + p.getMeleeWeaponLevel() + "]";
-            if (p.getRangedWeaponLevel() > 0)   weapons += " [Д.ур." + p.getRangedWeaponLevel() + "]";
+            if (p.getMeleeWeaponLevel() > 0) weapons += " [Б.ур." + p.getMeleeWeaponLevel() + "]";
+            if (p.getRangedWeaponLevel() > 0) weapons += " [Д.ур." + p.getRangedWeaponLevel() + "]";
             String marker = p.isPlayer() ? " ◄ ВЫ" : "";
             System.out.printf("  %d. %-20s | Перф: %3d%s%s%n",
                 i + 1, p.getName(), p.getPerformanceScore(), weapons, marker);
         }
 
-        // Выбывшие
+        // выбывшие
         List<SurvivalParticipant> out = state.getOrder().stream()
             .filter(SurvivalParticipant::isEliminated).toList();
         if (!out.isEmpty()) {
@@ -374,7 +371,7 @@ public class GameMenu {
         printSurvivalStandings(state);
     }
 
-    /** Покупка оружия из каталога — только в режиме выживания. */
+    // покупка оружия из каталога — только в режиме выживания
     private void survivalBuyWeapons() {
         System.out.println(Ansi.bold("\n— Купить оружие —"));
         System.out.printf("Бюджет: %,d руб.%n", playerTeam.getBudget());
@@ -406,7 +403,8 @@ public class GameMenu {
         }
     }
 
-    /** Установка оружия в болид из инвентаря — только в режиме выживания. */
+
+    // установка оружия в болид из инвентаря — только в режиме выживания
     private void survivalInstallWeapons(Bolid bolid) {
         System.out.println(Ansi.bold("\n— Установить оружие в болид —"));
 
@@ -538,9 +536,7 @@ public class GameMenu {
         return engineers.get(idx);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Износ
-    // ─────────────────────────────────────────────────────────────────────────
+    // износ
 
     private void printWearReport(Bolid bolid) {
         System.out.println(Ansi.bold("\nИзнос компонентов после гонки:"));
@@ -557,9 +553,7 @@ public class GameMenu {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Обслуживание болида
-    // ─────────────────────────────────────────────────────────────────────────
+    // обслуживание болида
 
     private void maintenanceBolid() {
         System.out.println(Ansi.bold("\n———————— ОБСЛУЖИВАНИЕ БОЛИДА ————————"));
@@ -702,17 +696,14 @@ public class GameMenu {
             old.getName(), replacement.getName());
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Сохранение
-    // ─────────────────────────────────────────────────────────────────────────
+
+    // сохранение
 
     private void saveGame() {
         saveService.saveGame(playerTeam, raceResults, playerName);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Статистика гонок
-    // ─────────────────────────────────────────────────────────────────────────
+    // статистика гонок
 
     private void showRaceStats() {
         System.out.println(Ansi.bold("\n———————— СТАТИСТИКА ГОНОК ————————"));
@@ -722,13 +713,13 @@ public class GameMenu {
             return;
         }
 
-        // Позиции и результаты — из raceResults (включает историю из сохранения)
-        int total    = raceResults.size();
-        int wins     = 0;
-        int podiums  = 0;
-        int dnfs     = 0;
-        int bestPos  = Integer.MAX_VALUE;
-        int posSum   = 0;
+        // позиции и результаты — из raceResults (включает историю из сохранения)
+        int total = raceResults.size();
+        int wins = 0;
+        int podiums = 0;
+        int dnfs = 0;
+        int bestPos = Integer.MAX_VALUE;
+        int posSum = 0;
         int finished = 0;
 
         for (RaceResult r : raceResults) {
@@ -744,7 +735,7 @@ public class GameMenu {
             }
         }
 
-        // Призовые — только из Race объектов текущей сессии (RaceResult не хранит приз)
+        // призовые — только из Race объектов текущей сессии (RaceResult не хранит приз)
         long sessionPrize = 0;
         for (Race r : raceHistory) {
             sessionPrize += r.getPrizeAwarded();
@@ -763,18 +754,14 @@ public class GameMenu {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Другие команды
-    // ─────────────────────────────────────────────────────────────────────────
+    // другие команды
 
     private void showOtherTeams() {
         System.out.println(Ansi.bold("\n———————— ДРУГИЕ КОМАНДЫ ————————"));
         System.out.println(BotGenerator.getLeagueTable());
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // История результатов
-    // ─────────────────────────────────────────────────────────────────────────
+    // история результатов
 
     private void showOtherResults() {
         System.out.println(Ansi.bold("\n———————— ИСТОРИЯ ГОНОК ————————"));

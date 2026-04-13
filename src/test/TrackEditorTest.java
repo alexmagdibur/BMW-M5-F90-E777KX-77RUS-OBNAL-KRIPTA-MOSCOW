@@ -22,7 +22,7 @@ public class TrackEditorTest {
 
     @BeforeEach
     void setUp() {
-        originalIn  = System.in;
+        originalIn = System.in;
         originalOut = System.out;
         captured = new ByteArrayOutputStream();
         System.setOut(new PrintStream(captured));
@@ -62,7 +62,7 @@ public class TrackEditorTest {
         TrackEditor editor = new TrackEditor();
         editor.open();
 
-        // Проверяем customTracks через геттер
+        // проверяем customTracks через геттер
         List<Track> custom = editor.getCustomTracks();
         assertEquals(1, custom.size(), "Должен быть ровно один пользовательский трек");
 
@@ -76,7 +76,7 @@ public class TrackEditorTest {
         assertEquals(SectionType.CLIMB, track.getSections().get(2).getType());
         assertEquals(300, track.getSections().get(2).getLength());
 
-        // Проверяем, что вывод содержит название трека (пункт 2 — просмотр)
+        // проверяем, что вывод содержит название трека (пункт 2 — просмотр)
         String output = captured.toString();
         assertTrue(output.contains("Тест-Трек"), "Вывод должен содержать название нового трека");
         assertTrue(output.contains("Пользовательские треки"), "Вывод должен содержать секцию пользовательских треков");

@@ -10,9 +10,7 @@ public class EntitySerializer {
     private static final String SEP      = ";";
     private static final String LIST_SEP = ",";
 
-    // ── Team ──────────────────────────────────────────────────────────────────
-
-    /** Формат: name;budget */
+    // Team
     public String serializeTeam(Team team) {
         return team.getName() + SEP + team.getBudget();
     }
@@ -22,34 +20,24 @@ public class EntitySerializer {
         return new Team(p[0], Long.parseLong(p[1]));
     }
 
-    // ── Component ─────────────────────────────────────────────────────────────
-
-    /** Формат: name;type;price;performanceValue;wear */
+    // Component
     public String serializeComponent(Component c) {
-        return c.getName()             + SEP
-             + c.getType().name()      + SEP
-             + c.getPrice()            + SEP
-             + c.getPerformanceValue() + SEP
-             + c.getWear();
+        return c.getName() + SEP + c.getType().name() + SEP
+             + c.getPrice() + SEP + c.getPerformanceValue() + SEP + c.getWear();
     }
 
     public Component deserializeComponent(String line) {
-        String[]      p    = split(line, 5);
+        String[] p = split(line, 5);
         ComponentType type = ComponentType.valueOf(p[1]);
-        int           wear = Integer.parseInt(p[4]);
+        int wear = Integer.parseInt(p[4]);
         Component c = new Component(p[0], type, Integer.parseInt(p[2]), Integer.parseInt(p[3]));
         c.setWear(wear);
         return c;
     }
 
-    // ── Bolid ─────────────────────────────────────────────────────────────────
-
-    /**
-     * Формат: bolidName;mainComp1,mainComp2,...;extra1,extra2,...
-     * Главные компоненты (installComponent) и extras (addExtra) хранятся отдельно.
-     */
+    // Bolid
     public String serializeBolid(Bolid b) {
-        StringBuilder mains  = new StringBuilder();
+        StringBuilder mains = new StringBuilder();
         StringBuilder extras = new StringBuilder();
 
         for (Component c : b.getComponents().values()) {
@@ -60,14 +48,13 @@ public class EntitySerializer {
             if (extras.length() > 0) extras.append(LIST_SEP);
             extras.append(c.getName());
         }
-
         return b.getName() + SEP + mains + SEP + extras;
     }
 
-    /** allComponents — плоский список всех десериализованных компонентов для поиска по имени. */
+
     public Bolid deserializeBolid(String line, List<Component> allComponents) {
-        String[] p     = split(line, 3);
-        Bolid    bolid = new Bolid(p[0]);
+        String[] p = split(line, 3);
+        Bolid bolid = new Bolid(p[0]);
 
         if (!p[1].isEmpty()) {
             for (String name : p[1].split(LIST_SEP, -1)) {
@@ -81,56 +68,46 @@ public class EntitySerializer {
                 if (c != null) bolid.addExtra(c);
             }
         }
-
         return bolid;
     }
 
-    // ── Pilot ─────────────────────────────────────────────────────────────────
-
-    /** Формат: name;salary;skill;isWerewolf */
+    // Pilot
     public String serializePilot(Pilot p) {
         return p.getName() + SEP + p.getSalary() + SEP + p.getSkill() + SEP + p.isWerewolf();
     }
 
     public Pilot deserializePilot(String line) {
-        String[] p     = split(line, 4);
-        Pilot    pilot = new Pilot(p[0], Integer.parseInt(p[1]), Integer.parseInt(p[2]));
+        String[] p = split(line, 4);
+        Pilot pilot = new Pilot(p[0], Integer.parseInt(p[1]), Integer.parseInt(p[2]));
         pilot.setWerewolf(Boolean.parseBoolean(p[3]));
         return pilot;
     }
 
-    // ── Engineer ──────────────────────────────────────────────────────────────
-
-    /** Формат: name;salary;qualification;isWerewolf */
+    // Engineer
     public String serializeEngineer(Engineer e) {
         return e.getName() + SEP + e.getSalary() + SEP + e.getQualification() + SEP + e.isWerewolf();
     }
 
     public Engineer deserializeEngineer(String line) {
-        String[] p   = split(line, 4);
+        String[] p = split(line, 4);
         Engineer eng = new Engineer(p[0], Integer.parseInt(p[1]), Integer.parseInt(p[2]));
         eng.setWerewolf(Boolean.parseBoolean(p[3]));
         return eng;
     }
 
-    // ── RaceResult ────────────────────────────────────────────────────────────
-
-    /** Формат: teamName;time;isPlayer;isIncident;position */
+    // RaceResult
     public String serializeRaceResult(RaceResult r) {
-        return r.getTeamName() + SEP
-             + r.getTime()     + SEP
-             + r.isPlayer()    + SEP
-             + r.isIncident()  + SEP
-             + r.getPosition();
+        return r.getTeamName() + SEP + r.getTime() + SEP + r.isPlayer() + SEP
+             + r.isIncident() + SEP + r.getPosition();
     }
 
     public RaceResult deserializeRaceResult(String line) {
-        String[] p        = split(line, 5);
-        String   teamName = p[0];
-        double   time     = Double.parseDouble(p[1]);
-        boolean  isPlayer = Boolean.parseBoolean(p[2]);
-        boolean  incident = Boolean.parseBoolean(p[3]);
-        int      position = Integer.parseInt(p[4]);
+        String[] p = split(line, 5);
+        String teamName = p[0];
+        double time = Double.parseDouble(p[1]);
+        boolean isPlayer = Boolean.parseBoolean(p[2]);
+        boolean incident = Boolean.parseBoolean(p[3]);
+        int position = Integer.parseInt(p[4]);
 
         RaceResult r = incident
                 ? RaceResult.dnf(teamName, isPlayer)
@@ -139,11 +116,7 @@ public class EntitySerializer {
         return r;
     }
 
-    // ── Track ─────────────────────────────────────────────────────────────────
-
-    /**
-     * Формат: Название;STRAIGHT:500,TURN:200,CLIMB:300
-     */
+    // Track
     public String serializeTrack(Track track) {
         StringBuilder sb = new StringBuilder();
         for (TrackSection s : track.getSections()) {
@@ -170,8 +143,7 @@ public class EntitySerializer {
         return new Track(name, sections);
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
-
+    // helpers
     private String[] split(String line, int expectedParts) {
         String[] parts = line.split(SEP, -1);
         if (parts.length < expectedParts) {

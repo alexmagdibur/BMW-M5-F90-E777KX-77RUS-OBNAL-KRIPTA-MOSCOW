@@ -10,7 +10,7 @@ public class SaveFileManagerTest {
 
     private SaveFileManager manager;
 
-    // Уникальный игрок для каждого запуска — изолируем тесты от остатков на диске
+    // уникальный игрок для каждого запуска — изолируем тесты от остатков на диске
     private static final String PLAYER = "test_player_junit";
 
     @BeforeEach
@@ -20,7 +20,7 @@ public class SaveFileManagerTest {
 
     @AfterEach
     void tearDown() {
-        // Удаляем созданные тестом файлы и папку, чтобы не засорять проект
+        // удаляем созданные тестом файлы и папку, чтобы не засорять проект
         deleteDir(new File("saves" + File.separator + PLAYER));
     }
 

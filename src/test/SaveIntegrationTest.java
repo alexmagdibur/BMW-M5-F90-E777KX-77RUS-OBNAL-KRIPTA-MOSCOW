@@ -32,27 +32,27 @@ public class SaveIntegrationTest {
         deleteDir(new File("saves" + File.separator + PLAYER_B));
     }
 
-    // Сценарий 1 + 2: сохранить - загрузить - сверить состояние
+    // сценарий 1 + 2: сохранить - загрузить - сверить состояние
 
     @Test
     void scenario_newGame_buyComponents_save_thenLoad_budgetPreserved() {
-        // Сессия 1: новая игра, покупаем компоненты, сохраняем
+        // сессия 1: новая игра, покупаем компоненты, сохраняем
         Team team = new Team(PLAYER_A, 10_000_000L);
 
-        // Симулируем покупку двух компонентов (ShopService тратит деньги)
+        // симулируем покупку двух компонентов (ShopService тратит деньги)
         Component engine = new Component("Двигатель RS", ComponentType.ENGINE, 500_000, 85);
         Component tires  = new Component("Шины Pirelli", ComponentType.TIRES, 200_000, 65);
         team.spend(500_000 + 200_000);    // как это делает ShopService
         team.addComponent(engine);
         team.addComponent(tires);
 
-        // Добавляем пилота и инженера
+        // добавляем пилота и инженера
         team.addPilot(new Pilot("Петров", 300_000, 80));
         team.addEngineer(new Engineer("Иванов", 150_000, 75));
 
         saveService.saveGame(team, List.of(), PLAYER_A);
 
-        // Сессия 2: находим сохранение и загружаем
+        // сессия 2: находим сохранение и загружаем
         List<String> saves = saveService.getAvailableSaves(PLAYER_A);
         assertFalse(saves.isEmpty(), "Список сохранений не должен быть пустым");
 
@@ -148,12 +148,12 @@ public class SaveIntegrationTest {
         assertEquals(1, loaded.getRaceHistory().size(), "История гонок должна содержать 1 запись");
         RaceResult lr = loaded.getRaceHistory().get(0);
         assertEquals(PLAYER_A, lr.getTeamName());
-        assertEquals(3,        lr.getPosition());
-        assertEquals(91.5,     lr.getTime(), 1e-9);
+        assertEquals(3, lr.getPosition());
+        assertEquals(91.5, lr.getTime(), 1e-9);
     }
 
 
-    // Сценарий 3: другой игрок не видит чужих сохранений
+    // сценарий 3: другой игрок не видит чужих сохранений
 
     @Test
     void scenario_differentPlayer_seesNoSaves() {
@@ -169,11 +169,11 @@ public class SaveIntegrationTest {
 
     @Test
     void scenario_differentPlayer_ownSavesAreIsolated() {
-        // Оба игрока сохраняют свои игры
+        // оба игрока сохраняют свои игры
         saveService.autoSave(new Team(PLAYER_A, 1_000_000L), List.of(), PLAYER_A);
         saveService.autoSave(new Team(PLAYER_B, 9_000_000L), List.of(), PLAYER_B);
 
-        // Каждый видит только своё
+        // каждый видит только своё
         GameSave loadedA = saveService.loadGame(PLAYER_A, "autosave.csv");
         GameSave loadedB = saveService.loadGame(PLAYER_B, "autosave.csv");
 
@@ -185,7 +185,7 @@ public class SaveIntegrationTest {
     void scenario_multipleManualSaves_allListed() {
         Team team = new Team(PLAYER_A, 10_000_000L);
 
-        // Три ручных сохранения в разные моменты
+        // три ручных сохранения в разные моменты
         saveService.saveGame(team, List.of(), PLAYER_A);
         try { Thread.sleep(1100); } catch (InterruptedException ignored) {}  // разные временные метки
         saveService.saveGame(team, List.of(), PLAYER_A);
@@ -212,7 +212,7 @@ public class SaveIntegrationTest {
         System.out.println("toString: " + str);
 
         assertTrue(str.contains("Команда Альфа"), "toString должен содержать название команды");
-        assertTrue(str.contains("1"),             "toString должен содержать количество гонок");
+        assertTrue(str.contains("1"), "toString должен содержать количество гонок");
     }
 
     // helper

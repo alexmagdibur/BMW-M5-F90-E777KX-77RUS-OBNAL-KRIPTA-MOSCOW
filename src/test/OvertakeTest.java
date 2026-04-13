@@ -76,9 +76,9 @@ public class OvertakeTest {
 
     @Test
     void playerAt2nd_in3ParticipantRace_overtakes1stOnly() {
-        SurvivalParticipant first  = bot("1-й");
+        SurvivalParticipant first = bot("1-й");
         SurvivalParticipant player = player();
-        SurvivalParticipant third  = bot("3-й");
+        SurvivalParticipant third = bot("3-й");
         // [1-й, Игрок(2), 3-й]
         SurvivalRaceState state = new SurvivalRaceState(List.of(first, player, third), 10);
 
@@ -100,7 +100,7 @@ public class OvertakeTest {
 
     @Test
     void playerAt1st_tryOvertake_positionsUnchanged() {
-        SurvivalParticipant player   = player();
+        SurvivalParticipant player = player();
         SurvivalParticipant follower = bot("Следующий");
         SurvivalRaceState state = new SurvivalRaceState(List.of(player, follower), 10);
 
@@ -119,14 +119,14 @@ public class OvertakeTest {
 
     @Test
     void playerAt1st_tryOvertake_orderListUnchanged() {
-        SurvivalParticipant player   = player();
+        SurvivalParticipant player = player();
         SurvivalParticipant follower = bot("Следующий");
         SurvivalRaceState state = new SurvivalRaceState(List.of(player, follower), 10);
 
         service.tryOvertake(state, player);
 
         List<SurvivalParticipant> active = state.getActiveParticipants();
-        assertSame(player,   active.get(0));
+        assertSame(player, active.get(0));
         assertSame(follower, active.get(1));
     }
 }

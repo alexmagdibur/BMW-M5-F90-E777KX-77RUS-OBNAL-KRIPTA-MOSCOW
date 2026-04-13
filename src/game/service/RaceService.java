@@ -23,23 +23,23 @@ public class RaceService {
 
     private static double WEREWOLF_CHANCE = 0.4;
 
-    private final SaveService      saveService;
-    private final String           playerName;
+    private final SaveService saveService;
+    private final String playerName;
     private final List<RaceResult> raceResults;
 
-    /** Конструктор без автосохранения — используется в тестах. */
+    // конструктор без автосохранения — используется в тестах
     public RaceService() {
         this(null, null, null);
     }
 
-    /** Конструктор с автосохранением — используется из GameMenu. */
+    // конструктор с автосохранением
     public RaceService(SaveService saveService, String playerName, List<RaceResult> raceResults) {
         this.saveService  = saveService;
         this.playerName   = playerName;
         this.raceResults  = raceResults;
     }
 
-    /** Только для тестов: позволяет переопределить вероятность оборотня. */
+    // только для тестов: позволяет переопределить вероятность оборотня
     public static void setWerewolfChance(double value) {
         WEREWOLF_CHANCE = value;
     }
@@ -96,7 +96,7 @@ public class RaceService {
 
         Race race = new Race(track, all, playerResult.getPosition(), prize, weather, dnfReason);
 
-        // Добавляем результат игрока в общий список — autoSave вызывается снаружи,
+        // добавляем результат игрока в общий список — autoSave вызывается снаружи,
         // после применения износа (WearService.applyWear), чтобы wear сохранился корректно.
         if (raceResults != null) {
             raceResults.add(playerResult);

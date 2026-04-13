@@ -12,12 +12,12 @@ public class GameSaveTest {
         Team team = new Team("Ferrari", 1_000_000);
 
         Bolid bolid = new Bolid("SF-24");
-        bolid.installComponent(new Component("Двигатель",     ComponentType.ENGINE,       0, 80));
-        bolid.installComponent(new Component("Трансмиссия",  ComponentType.TRANSMISSION, 0, 75));
-        bolid.installComponent(new Component("Подвеска",     ComponentType.SUSPENSION,   0, 70));
-        bolid.installComponent(new Component("Шасси",        ComponentType.CHASSIS,      0, 70));
-        bolid.installComponent(new Component("Обвесы",       ComponentType.AERO_PACKAGE, 0, 65));
-        bolid.installComponent(new Component("Шины",         ComponentType.TIRES,        0, 60));
+        bolid.installComponent(new Component("Двигатель", ComponentType.ENGINE, 0, 80));
+        bolid.installComponent(new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 75));
+        bolid.installComponent(new Component("Подвеска", ComponentType.SUSPENSION, 0, 70));
+        bolid.installComponent(new Component("Шасси", ComponentType.CHASSIS, 0, 70));
+        bolid.installComponent(new Component("Обвесы", ComponentType.AERO_PACKAGE, 0, 65));
+        bolid.installComponent(new Component("Шины", ComponentType.TIRES, 0, 60));
         team.addBolid(bolid);
 
         team.addPilot(new Pilot("Леклер", 500_000, 90));
@@ -43,8 +43,8 @@ public class GameSaveTest {
     @Test
     void gameSaveStoresRaceHistory() {
         Team team = buildTeam();
-        RaceResult r1 = new RaceResult("Ferrari",  90.5, true);
-        RaceResult r2 = new RaceResult("RedBull",  91.2, false);
+        RaceResult r1 = new RaceResult("Ferrari", 90.5, true);
+        RaceResult r2 = new RaceResult("RedBull", 91.2, false);
         r1.setPosition(1);
         r2.setPosition(2);
 
@@ -84,6 +84,6 @@ public class GameSaveTest {
 
         String str = save.toString();
         assertTrue(str.contains("Ferrari"), "toString должен содержать название команды");
-        assertTrue(str.contains("1"),       "toString должен содержать количество гонок");
+        assertTrue(str.contains("1"), "toString должен содержать количество гонок");
     }
 }

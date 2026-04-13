@@ -12,7 +12,8 @@
       "Bash('C:/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3\\\\bin/mvn.cmd' -f D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml clean test)",
       "Bash(mvn clean:*)",
       "Bash(export JAVA_HOME=\"/c/Program Files/Java/jdk-25\")",
-      "Bash(\"/c/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn\" -f \"D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml\" clean test)"
+      "Bash(\"/c/Program Files/JetBrains/IntelliJIdea2025.2/plugins/maven/lib/maven3/bin/mvn\" -f \"D:/BMSTU/BMW-M5-F90-E777KX-77RUS-OBNAL-KRIPTA-MOSCOW/src/pom.xml\" clean test)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

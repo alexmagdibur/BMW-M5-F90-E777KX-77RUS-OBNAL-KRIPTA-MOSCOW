@@ -38,7 +38,7 @@ public class BattleChoiceTest {
         return new SurvivalParticipant(name, false, 300, 0, 0);
     }
 
-    // ─── OVERTAKE: атаки не происходит ───────────────────────────────────────
+    // OVERTAKE: атаки не происходит
 
     @Test
     void chooseOvertake_playerMovesForward_noTargetEliminated() {
@@ -81,7 +81,7 @@ public class BattleChoiceTest {
         assertFalse(leader.isEliminated());
     }
 
-    // ─── MELEE_ATTACK: обгона не происходит ──────────────────────────────────
+    // MELEE_ATTACK: обгона не происходит
 
     @Test
     void chooseMeleeAttack_targetEliminated_onlyOneEffect() {
@@ -100,8 +100,8 @@ public class BattleChoiceTest {
 
     @Test
     void chooseMeleeAttack_in3ParticipantRace_onlyTargetEliminated() {
-        SurvivalParticipant leader   = bot("Лидер");
-        SurvivalParticipant player   = armedPlayer();
+        SurvivalParticipant leader = bot("Лидер");
+        SurvivalParticipant player = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 
@@ -112,12 +112,12 @@ public class BattleChoiceTest {
         assertEquals(2, state.getActiveParticipants().size());
     }
 
-    // ─── RANGED_ATTACK: обгона не происходит ─────────────────────────────────
+    // RANGED_ATTACK: обгона не происходит
 
     @Test
     void chooseRangedAttack_farTargetEliminated_othersUntouched() {
-        SurvivalParticipant far    = bot("Далёкий");
-        SurvivalParticipant mid    = bot("Средний");
+        SurvivalParticipant far = bot("Далёкий");
+        SurvivalParticipant mid = bot("Средний");
         SurvivalParticipant player = armedPlayer();
         // [Далёкий(1), Средний(2), Игрок(3)]
         SurvivalRaceState state = new SurvivalRaceState(List.of(far, mid, player), 10);
@@ -145,7 +145,7 @@ public class BattleChoiceTest {
         assertEquals(3, state.getActiveParticipants().size());
     }
 
-    // ─── PASS: ничего не происходит ──────────────────────────────────────────
+    // PASS: ничего не происходит
 
     @Test
     void choosePass_nothingHappens() {
@@ -160,26 +160,26 @@ public class BattleChoiceTest {
         assertEquals(2, state.getActivePosition(player));
     }
 
-    // ─── одно действие = ровно один эффект ───────────────────────────────────
+    // одно действие = ровно один эффект
 
     @Test
     void singleChoice_overtake_noEliminationsOccur() {
-        SurvivalParticipant leader   = bot("Лидер");
-        SurvivalParticipant player   = armedPlayer();
+        SurvivalParticipant leader = bot("Лидер");
+        SurvivalParticipant player = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 
         service.applyPlayerChoice(state, player, PlayerChoice.OVERTAKE, null);
 
         assertEquals(1, state.getActivePosition(player), "обгон произошёл");
-        assertFalse(leader.isEliminated(),   "никто не выбыл");
+        assertFalse(leader.isEliminated(), "никто не выбыл");
         assertFalse(follower.isEliminated(), "никто не выбыл");
     }
 
     @Test
     void singleChoice_meleeHit_noSimultaneousOvertake() {
-        SurvivalParticipant leader   = bot("Лидер");
-        SurvivalParticipant player   = armedPlayer();
+        SurvivalParticipant leader = bot("Лидер");
+        SurvivalParticipant player = armedPlayer();
         SurvivalParticipant follower = bot("Следующий");
         SurvivalRaceState state = new SurvivalRaceState(List.of(leader, player, follower), 10);
 

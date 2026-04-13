@@ -29,12 +29,9 @@ public class RaceTest {
     @Test
     void raceReturnsResultWithPositiveTime() {
         Race race = new RaceService().runRace(
-            new Team("Тест", 0),
-            buildCompleteBolid(),
-            new Pilot("Пилот", 0, 75),
-            new Engineer("Инженер", 0, 60),
-            simpleTrack(),
-            Weather.DRY
+            new Team("Тест", 0), buildCompleteBolid(),
+            new Pilot("Пилот", 0, 75), new Engineer("Инженер", 0, 60),
+            simpleTrack(), Weather.DRY
         );
 
         assertFalse(race.isPlayerDNF(), "Гонка без износа не должна давать DNF");
@@ -51,12 +48,9 @@ public class RaceTest {
     @Test
     void playerIsAssignedAPosition() {
         Race race = new RaceService().runRace(
-            new Team("Тест", 0),
-            buildCompleteBolid(),
-            new Pilot("Пилот", 0, 75),
-            new Engineer("Инженер", 0, 60),
-            simpleTrack(),
-            Weather.DRY
+            new Team("Тест", 0), buildCompleteBolid(),
+            new Pilot("Пилот", 0, 75), new Engineer("Инженер", 0, 60),
+            simpleTrack(), Weather.DRY
         );
 
         assertTrue(race.getPlayerPosition() >= 1, "Позиция должна быть >= 1");

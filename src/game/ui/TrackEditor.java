@@ -15,13 +15,13 @@ public class TrackEditor {
     private final String playerName;
     private final TrackFileManager trackFileManager;
 
-    /** Конструктор без сохранения — для обратной совместимости. */
+    // конструктор без сохранения — для обратной совместимости
     public TrackEditor() {
         this.playerName = null;
         this.trackFileManager = null;
     }
 
-    /** Конструктор с поддержкой сохранения/загрузки треков для игрока. */
+    // конструктор с поддержкой сохранения/загрузки треков для игрока
     public TrackEditor(String playerName) {
         this.playerName = playerName;
         this.trackFileManager = new TrackFileManager();

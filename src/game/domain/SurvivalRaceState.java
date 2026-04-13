@@ -10,8 +10,8 @@ public class SurvivalRaceState {
     private final int totalSteps;
 
     public SurvivalRaceState(List<SurvivalParticipant> order, int totalSteps) {
-        this.order       = new ArrayList<>(order);
-        this.totalSteps  = totalSteps;
+        this.order = new ArrayList<>(order);
+        this.totalSteps = totalSteps;
         this.currentStep = 0;
     }
 
@@ -19,8 +19,8 @@ public class SurvivalRaceState {
     public List<SurvivalParticipant> getOrder() { return order; }
 
     public int getCurrentStep() { return currentStep; }
-    public int getTotalSteps()  { return totalSteps; }
-    public void advanceStep()   { currentStep++; }
+    public int getTotalSteps() { return totalSteps; }
+    public void advanceStep() { currentStep++; }
 
     // только активные (не выбывшие) в порядке позиций
     public List<SurvivalParticipant> getActiveParticipants() {

@@ -13,12 +13,8 @@ import java.util.List;
 public class BotGenerator {
 
     private static final String[] BOT_NAMES = {
-        "Чуваки на АвтоВАЗе",
-        "M5 Asphalt 8",
-        "Распил Владивосток",
-        "JDM Racing Club",
-        "Клуб дядек на Крузаках",
-        "Можно, а зачем?"
+        "Чуваки на АвтоВАЗе", "M5 Asphalt 8", "Распил Владивосток",
+        "JDM Racing Club", "Клуб дядек на Крузаках", "Можно, а зачем?"
     };
 
     private static final int BOT_COUNT = 3;

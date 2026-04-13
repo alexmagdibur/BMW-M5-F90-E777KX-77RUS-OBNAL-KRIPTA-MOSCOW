@@ -12,14 +12,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Интеграционный тест автосохранения.
- *
- * Сценарии:
- *   1. Собрать болид → autosave.csv должен появиться.
- *   2. Провести гонку → autosave.csv должен обновиться (болид + результат гонки).
- *   3. Загрузить autosave.csv → команда, болид, история на месте.
- */
+
+// Интеграционный тест автосохранения.
+// Сценарии:
+// 1. Собрать болид → autosave.csv должен появиться.
+// 2. Провести гонку → autosave.csv должен обновиться (болид + результат гонки).
+// 3. Загрузить autosave.csv → команда, болид, история на месте.
+
 public class AutoSaveTest {
 
     private static final String PLAYER = "autosave_test_player";
@@ -32,9 +31,9 @@ public class AutoSaveTest {
 
     @BeforeEach
     void setUp() {
-        saveService  = new SaveService();
-        raceResults  = new ArrayList<>();
-        team         = new Team(PLAYER, 10_000_000L);
+        saveService = new SaveService();
+        raceResults = new ArrayList<>();
+        team = new Team(PLAYER, 10_000_000L);
     }
 
     @AfterEach
@@ -46,12 +45,12 @@ public class AutoSaveTest {
 
     private Bolid buildAndAssembleBolid(String bolidName) {
         // Кладём компоненты в инвентарь
-        Component engine = new Component("Двигатель",   ComponentType.ENGINE,       0, 80);
-        Component trans  = new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 75);
-        Component susp   = new Component("Подвеска",    ComponentType.SUSPENSION,   0, 70);
-        Component chas   = new Component("Шасси",       ComponentType.CHASSIS,      0, 70);
-        Component aero   = new Component("Аэропакет",   ComponentType.AERO_PACKAGE, 0, 65);
-        Component tires  = new Component("Шины",        ComponentType.TIRES,        0, 60);
+        Component engine = new Component("Двигатель", ComponentType.ENGINE, 0, 80);
+        Component trans = new Component("Трансмиссия", ComponentType.TRANSMISSION, 0, 75);
+        Component susp = new Component("Подвеска", ComponentType.SUSPENSION, 0, 70);
+        Component chas = new Component("Шасси", ComponentType.CHASSIS, 0, 70);
+        Component aero = new Component("Аэропакет", ComponentType.AERO_PACKAGE, 0, 65);
+        Component tires = new Component("Шины", ComponentType.TIRES, 0, 60);
         team.addComponent(engine);
         team.addComponent(trans);
         team.addComponent(susp);
@@ -91,13 +90,8 @@ public class AutoSaveTest {
 
         // RaceService добавляет результат в raceResults, но autoSave НЕ вызывает
         RaceService raceService = new RaceService(saveService, PLAYER, raceResults);
-        Race race = raceService.runRace(
-                team,
-                bolid,
-                team.getPilots().get(0),
-                team.getEngineers().get(0),
-                track,
-                Weather.DRY
+        Race race = raceService.runRace(team, bolid, team.getPilots().get(0),
+                team.getEngineers().get(0), track, Weather.DRY
         );
 
         // Применяем износ (как GameMenu после runRace)
@@ -164,7 +158,6 @@ public class AutoSaveTest {
         Bolid bolid = buildAndAssembleBolid("SF-24");
         runRaceWithAutoSave(bolid);
         runRaceWithAutoSave(bolid);
-
         GameSave save = saveService.loadGame(PLAYER, "autosave.csv");
         assertEquals(2, save.getRaceHistory().size(),
                 "После двух гонок в автосохранении должно быть 2 записи");
@@ -178,10 +171,10 @@ public class AutoSaveTest {
         runRaceWithAutoSave(bolid);
 
         GameSave save = saveService.loadGame(PLAYER, "autosave.csv");
-        // Бюджет мог вырасти (приз) или остаться — главное что он совпадает с текущим
+        // бюджет мог вырасти (приз) или остаться — главное что он совпадает с текущим
         assertEquals(team.getBudget(), save.getTeam().getBudget(),
                 "Бюджет в автосохранении должен совпадать с текущим бюджетом команды");
-        // Дополнительно убеждаемся, что значение разумное
+        // дополнительно убеждаемся, что значение разумное
         assertTrue(save.getTeam().getBudget() >= budgetBeforeRace,
                 "После гонки бюджет не может стать меньше (штрафов нет)");
     }
@@ -193,7 +186,7 @@ public class AutoSaveTest {
         Bolid bolid = buildAndAssembleBolid("SF-24");
         runRaceWithAutoSave(bolid);
 
-        // "Перезапуск" — новый сервис (как Main.java при следующем старте)
+        // "перезапуск" — новый сервис (как Main.java при следующем старте)
         SaveService freshService = new SaveService();
         GameSave loaded = freshService.loadGame(PLAYER, "autosave.csv");
 
@@ -240,23 +233,23 @@ public class AutoSaveTest {
                 "История гонок должна быть на месте после загрузки");
     }
 
-    // Wear сохраняется корректно
+    // wear сохраняется корректно
 
     @Test
     void wearIsPersistedAfterRace() {
         Bolid bolid = buildAndAssembleBolid("SF-24");
 
-        // Убеждаемся что до гонки wear = 0
+        // убеждаемся что до гонки wear = 0
         bolid.getAllComponents().forEach(c ->
                 assertEquals(0, c.getWear(), "Износ до гонки должен быть 0 у " + c.getName()));
 
         runRaceWithAutoSave(bolid);
 
-        // Гонка применяет wear — хотя бы один компонент должен износиться
+        // гонка применяет wear — хотя бы один компонент должен износиться
         int totalWear = bolid.getAllComponents().stream().mapToInt(Component::getWear).sum();
         assertTrue(totalWear > 0, "После гонки должен появиться износ");
 
-        // Загружаем из autosave — wear должен совпасть
+        // загружаем из autosave — wear должен совпасть
         GameSave loaded = saveService.loadGame(PLAYER, "autosave.csv");
         Bolid loadedBolid = loaded.getTeam().getBolids().get(0);
 
@@ -296,7 +289,7 @@ public class AutoSaveTest {
         System.out.println("toString: " + str);
 
         assertTrue(str.contains(PLAYER), "toString должен содержать имя команды");
-        assertTrue(str.contains("1"),    "toString должен содержать количество гонок");
+        assertTrue(str.contains("1"), "toString должен содержать количество гонок");
     }
 
     // helper
