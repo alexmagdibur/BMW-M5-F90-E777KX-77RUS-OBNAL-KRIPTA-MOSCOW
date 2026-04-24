@@ -243,7 +243,12 @@ public class SaveServiceTest {
     private void deleteDir(File dir) {
         if (!dir.exists()) return;
         File[] files = dir.listFiles();
-        if (files != null) for (File f : files) f.delete();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) deleteDir(f);
+                else f.delete();
+            }
+        }
         dir.delete();
     }
 }

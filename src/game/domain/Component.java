@@ -27,6 +27,7 @@ public class Component {
     public int getPrice() { return price; }
     public int getPerformanceValue() { return performanceValue; }
     public int getWear() { return wear; }
+    public int getLevel() { return level; }
 
 
     public Component copy() {

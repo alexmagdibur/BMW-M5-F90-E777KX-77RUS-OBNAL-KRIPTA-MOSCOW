@@ -1,6 +1,7 @@
 package saving;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class SaveFileManager {
         }
 
         File file = new File(dir, fileName);
-        try (FileWriter fw = new FileWriter(file)) {
+        try (Writer fw = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             fw.write(content);
         } catch (IOException e) {
             System.err.println("[SaveFileManager] Ошибка записи файла \"" + file.getPath() + "\": " + e.getMessage());
@@ -42,7 +43,8 @@ public class SaveFileManager {
         }
 
         StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line).append("\n");

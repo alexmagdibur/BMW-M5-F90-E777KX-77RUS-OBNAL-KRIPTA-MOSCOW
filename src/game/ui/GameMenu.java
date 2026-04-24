@@ -5,6 +5,7 @@ import data.WeaponCatalog;
 import domain.Bolid;
 import domain.Component;
 import domain.ComponentType;
+import domain.EmergencyKit;
 import domain.Engineer;
 import domain.Pilot;
 import domain.Race;
@@ -17,6 +18,7 @@ import domain.Weather;
 import domain.PlayerChoice;
 import domain.SurvivalParticipant;
 import domain.SurvivalRaceState;
+import saving.BolidReportWriter;
 import service.AssemblyService;
 import service.BotGenerator;
 import service.HireService;
@@ -107,7 +109,7 @@ public class GameMenu {
             case 3 -> assemblyService.assembleBolid();
             case 4 -> hireService.hireEngineer();
             case 5 -> hireService.hirePilot();
-            case 6 -> System.out.println(playerTeam.getBolidsInfo());
+            case 6 -> viewBolids();
             case 7 -> System.out.println(playerTeam.getPilotsInfo());
             case 8 -> System.out.println(playerTeam.getEngineersInfo());
             case 9 -> System.out.println(playerTeam.getInventoryInfo());
@@ -462,6 +464,13 @@ public class GameMenu {
             System.out.println("  — нет пилота (используйте «Нанять пилота»)");
         if (playerTeam.getEngineers().isEmpty())
             System.out.println("  — нет инженера (используйте «Нанять инженера»)");
+        if (!playerTeam.getEmergencyKit().isComplete()) {
+            System.out.println("  — набор экстренной помощи неполный (купите в магазине «Купить компоненты»):");
+            var kit = playerTeam.getEmergencyKit();
+            if (!kit.hasFirstAidKit())      System.out.println("      • Аптечка");
+            if (!kit.hasFireExtinguisher()) System.out.println("      • Огнетушитель");
+            if (!kit.hasWarningTriangle())  System.out.println("      • Знак аварийной остановки");
+        }
     }
 
     private Track selectTrack() {
@@ -701,6 +710,94 @@ public class GameMenu {
 
     private void saveGame() {
         saveService.saveGame(playerTeam, raceResults, playerName);
+    }
+
+    // просмотр болидов
+
+    private void viewBolids() {
+        List<Bolid> bolids = playerTeam.getBolids();
+        if (bolids.isEmpty()) {
+            System.out.println("Болидов нет. Соберите болид в пункте «Собрать болид».");
+            return;
+        }
+
+        System.out.println(Ansi.bold("\n———————— БОЛИДЫ ————————"));
+        for (int i = 0; i < bolids.size(); i++) {
+            Bolid b = bolids.get(i);
+            System.out.printf("  %d. %-27s | Перфоманс: %3d | Собран: %s%n",
+                    i + 1, b.getName(), b.getPerformanceScore(),
+                    b.isComplete() ? "Да" : "Нет");
+        }
+        System.out.println("  0. Назад");
+
+        int idx = ConsoleInput.readInt("Ваш выбор: ") - 1;
+        if (idx < 0 || idx >= bolids.size()) return;
+
+        viewBolidDetail(bolids.get(idx));
+    }
+
+    private void viewBolidDetail(Bolid bolid) {
+        boolean loop = true;
+        while (loop) {
+            printBolidDetail(bolid);
+            System.out.println(Ansi.bold("\n  Действия:"));
+            System.out.println("  1. Сохранить болид (.bin)");
+            System.out.println("  2. Экспорт отчёта (.json)");
+            System.out.println("  0. Назад");
+
+            switch (ConsoleInput.readInt("Ваш выбор: ")) {
+                case 1 -> saveBolidToBin(bolid);
+                case 2 -> exportBolidReport(bolid);
+                case 0 -> loop = false;
+                default -> System.out.println("Неверный выбор.");
+            }
+        }
+    }
+
+    private void printBolidDetail(Bolid bolid) {
+        System.out.println(Ansi.bold("\n———— " + bolid.getName() + " ————"));
+        System.out.printf("Перфоманс: %d | Собран: %s | Изношенные компоненты: %s%n",
+                bolid.getPerformanceScore(),
+                bolid.isComplete() ? "Да" : "Нет",
+                bolid.hasWornComponents() ? "Да ⚠" : "Нет");
+
+        if (!bolid.getComponents().isEmpty()) {
+            System.out.println(Ansi.bold("\nОсновные компоненты:"));
+            for (Component c : bolid.getComponents().values()) {
+                String warn = c.isWornOut() ? " ⚠" : "";
+                System.out.printf("  %-14s %-27s Перф: %3d  Износ: %3d%%%s%n",
+                        c.getType(), c.getName(), c.getPerformanceValue(), c.getWear(), warn);
+            }
+        }
+
+        if (!bolid.getExtras().isEmpty()) {
+            System.out.println(Ansi.bold("\nДополнительные:"));
+            for (Component c : bolid.getExtras()) {
+                System.out.printf("  %-27s Перф: %3d  Износ: %3d%%%n",
+                        c.getName(), c.getPerformanceValue(), c.getWear());
+            }
+        }
+
+        if (!bolid.getWeapons().isEmpty()) {
+            System.out.println(Ansi.bold("\nОружие:"));
+            for (Weapon w : bolid.getWeapons().values()) {
+                System.out.printf("  [%s] %-27s Урон: %d  Ур.%d%n",
+                        w.getType(), w.getName(), w.getDamage(), w.getLevel());
+            }
+        }
+    }
+
+    private void saveBolidToBin(Bolid bolid) {
+        saveService.saveBolid(bolid, playerName);
+    }
+
+    private void exportBolidReport(Bolid bolid) {
+        try {
+            java.io.File file = new BolidReportWriter().writeReport(bolid, playerName);
+            System.out.println("Отчёт сохранён: " + file.getPath());
+        } catch (java.io.IOException e) {
+            System.err.println("Ошибка экспорта отчёта: " + e.getMessage());
+        }
     }
 
     // статистика гонок

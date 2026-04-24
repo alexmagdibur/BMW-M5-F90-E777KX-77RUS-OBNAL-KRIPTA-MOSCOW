@@ -21,16 +21,18 @@ public class EntitySerializer {
     }
 
     // Component
+    // формат: name;type;price;performanceValue;wear;level
     public String serializeComponent(Component c) {
         return c.getName() + SEP + c.getType().name() + SEP
-             + c.getPrice() + SEP + c.getPerformanceValue() + SEP + c.getWear();
+             + c.getPrice() + SEP + c.getPerformanceValue() + SEP + c.getWear() + SEP + c.getLevel();
     }
 
     public Component deserializeComponent(String line) {
-        String[] p = split(line, 5);
+        String[] p = split(line, 6);
         ComponentType type = ComponentType.valueOf(p[1]);
-        int wear = Integer.parseInt(p[4]);
-        Component c = new Component(p[0], type, Integer.parseInt(p[2]), Integer.parseInt(p[3]));
+        int wear  = Integer.parseInt(p[4]);
+        int level = Integer.parseInt(p[5]);
+        Component c = new Component(p[0], type, Integer.parseInt(p[2]), Integer.parseInt(p[3]), level);
         c.setWear(wear);
         return c;
     }
@@ -141,6 +143,21 @@ public class EntitySerializer {
             }
         }
         return new Track(name, sections);
+    }
+
+    // EmergencyKit (уровень команды)
+    // формат: firstAidKit;fireExtinguisher;warningTriangle
+    public String serializeEmergencyKit(EmergencyKit kit) {
+        return kit.hasFirstAidKit() + SEP + kit.hasFireExtinguisher() + SEP + kit.hasWarningTriangle();
+    }
+
+    public EmergencyKit deserializeEmergencyKit(String line) {
+        String[] p = split(line, 3);
+        return new EmergencyKit(
+                Boolean.parseBoolean(p[0]),
+                Boolean.parseBoolean(p[1]),
+                Boolean.parseBoolean(p[2])
+        );
     }
 
     // helpers

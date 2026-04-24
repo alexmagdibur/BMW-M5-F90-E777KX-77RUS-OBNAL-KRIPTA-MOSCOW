@@ -27,7 +27,8 @@ public class ShopServiceTest {
 
     @Test
     void budgetDeductedAfterPurchase() {
-        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n");
+        // 7 категорий: купить 1й ENGINE (1,0), пропустить остальные 6 (0x6), пропустить набор (0)
+        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n0\n");
 
         Team team = new Team("Тест", 1_000_000);
         new ShopService(team).openShop();
@@ -37,7 +38,7 @@ public class ShopServiceTest {
 
     @Test
     void componentAddedToInventoryAfterPurchase() {
-        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n");
+        mockInput("1\n0\n0\n0\n0\n0\n0\n0\n0\n");
 
         Team team = new Team("Тест", 1_000_000);
         int inventoryBefore = team.getInventory().size();

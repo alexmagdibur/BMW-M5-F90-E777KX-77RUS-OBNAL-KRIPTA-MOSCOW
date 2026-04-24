@@ -13,6 +13,7 @@ public class Team {
     private List<Bolid> bolids;
     private List<Pilot> pilots;
     private List<Engineer> engineers;
+    private EmergencyKit emergencyKit;
 
     public Team(String name, long budget) {
         this.name = name;
@@ -22,6 +23,7 @@ public class Team {
         this.bolids = new ArrayList<>();
         this.pilots = new ArrayList<>();
         this.engineers = new ArrayList<>();
+        this.emergencyKit = new EmergencyKit(false, false, false);
     }
 
     public String getName() { return name; }
@@ -31,6 +33,8 @@ public class Team {
     public List<Bolid> getBolids() { return bolids; }
     public List<Pilot> getPilots() { return pilots; }
     public List<Engineer> getEngineers() { return engineers; }
+    public EmergencyKit getEmergencyKit() { return emergencyKit; }
+    public void setEmergencyKit(EmergencyKit kit) { this.emergencyKit = kit; }
 
     public boolean canAfford(long amount) {
         return budget >= amount;
@@ -85,7 +89,7 @@ public class Team {
 
     public boolean isReadyToRace() {
         boolean hasBolid = bolids.stream().anyMatch(Bolid::isComplete);
-        return hasBolid && !pilots.isEmpty() && !engineers.isEmpty();
+        return hasBolid && !pilots.isEmpty() && !engineers.isEmpty() && emergencyKit.isComplete();
     }
 
     public String getBolidsInfo() {

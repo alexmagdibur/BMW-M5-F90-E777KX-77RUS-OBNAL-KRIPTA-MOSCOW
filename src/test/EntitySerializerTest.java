@@ -38,7 +38,7 @@ public class EntitySerializerTest {
 
     @Test
     void componentRoundTrip() {
-        Component original = new Component("V8 Двигатель", ComponentType.ENGINE, 150_000, 85);
+        Component original = new Component("V8 Двигатель", ComponentType.ENGINE, 150_000, 85, 3);
         original.setWear(30);
 
         String line = s.serializeComponent(original);
@@ -49,6 +49,7 @@ public class EntitySerializerTest {
         assertEquals(original.getPrice(), result.getPrice());
         assertEquals(original.getPerformanceValue(), result.getPerformanceValue());
         assertEquals(original.getWear(), result.getWear());
+        assertEquals(original.getLevel(), result.getLevel());
     }
 
     @Test
@@ -198,8 +199,8 @@ public class EntitySerializerTest {
     }
 
     @Test
-    void componentSerializedLineHasFiveFields() {
+    void componentSerializedLineHasSixFields() {
         String line = s.serializeComponent(new Component("Шасси", ComponentType.CHASSIS, 80_000, 65));
-        assertEquals(5, line.split(";", -1).length);
+        assertEquals(6, line.split(";", -1).length);
     }
 }
