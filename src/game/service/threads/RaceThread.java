@@ -83,13 +83,16 @@ public class RaceThread implements Runnable {
         allParticipants.add(playerThread);
         allParticipants.addAll(botThreads);
 
-        // запускаем погоду и инциденты
-        Thread weatherThread = new Thread(new WeatherThread(state, 5000));
-        Thread incidentThread = new Thread(new IncidentThread(state, allParticipants, 3000));
+        // запускаем погоду, инциденты и комментатора
+        Thread weatherThread     = new Thread(new WeatherThread(state, 5000));
+        Thread incidentThread    = new Thread(new IncidentThread(state, allParticipants, 3000));
+        Thread commentatorThread = new Thread(new CommentatorThread(state, allParticipants, 4000));
         weatherThread.setDaemon(true);
         incidentThread.setDaemon(true);
+        commentatorThread.setDaemon(true);
         weatherThread.start();
         incidentThread.start();
+        commentatorThread.start();
 
         // запускаем болиды
         List<Thread> bolideThreads = new ArrayList<>();
@@ -109,8 +112,10 @@ public class RaceThread implements Runnable {
         // прерываем вспомогательные потоки (они спят) и ждём
         weatherThread.interrupt();
         incidentThread.interrupt();
-        try { weatherThread.join(1000); } catch (InterruptedException ignored) {}
-        try { incidentThread.join(1000); } catch (InterruptedException ignored) {}
+        commentatorThread.interrupt();
+        try { weatherThread.join(1000); }     catch (InterruptedException ignored) {}
+        try { incidentThread.join(1000); }    catch (InterruptedException ignored) {}
+        try { commentatorThread.join(1000); } catch (InterruptedException ignored) {}
 
         // применяем износ к болиду игрока
         WearService.applyWear(bolid, track);
