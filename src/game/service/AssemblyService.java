@@ -3,6 +3,7 @@ package service;
 import domain.Bolid;
 import domain.Component;
 import domain.ComponentType;
+import domain.EmergencyKit;
 import domain.RaceResult;
 import domain.Team;
 import ui.ConsoleInput;
@@ -109,6 +110,8 @@ public class AssemblyService {
             bolid.addExtra(c);
             team.removeComponent(c);
         }
+        bolid.setEmergencyKit(team.getEmergencyKit());
+        team.setEmergencyKit(new EmergencyKit(false, false, false));
         team.addBolid(bolid);
 
         if (saveService != null) {

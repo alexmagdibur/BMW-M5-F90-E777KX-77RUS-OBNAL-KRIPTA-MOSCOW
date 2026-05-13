@@ -88,8 +88,9 @@ public class Team {
     }
 
     public boolean isReadyToRace() {
-        boolean hasBolid = bolids.stream().anyMatch(Bolid::isComplete);
-        return hasBolid && !pilots.isEmpty() && !engineers.isEmpty() && emergencyKit.isComplete();
+        boolean hasBolid = bolids.stream()
+            .anyMatch(b -> b.isComplete() && b.getEmergencyKit().isComplete());
+        return hasBolid && !pilots.isEmpty() && !engineers.isEmpty();
     }
 
     public String getBolidsInfo() {

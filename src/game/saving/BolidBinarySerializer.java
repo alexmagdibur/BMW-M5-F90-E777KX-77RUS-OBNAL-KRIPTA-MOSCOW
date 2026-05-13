@@ -9,7 +9,7 @@ public class BolidBinarySerializer {
 
     private static final byte MAGIC_1  = (byte) 0xB0;
     private static final byte MAGIC_2  = (byte) 0x11;
-    private static final byte VERSION  = 1;
+    private static final byte VERSION  = 2;
 
     // сохраняет болид в бинарный файл
     public void save(Bolid bolid, File file) throws IOException {
@@ -60,6 +60,15 @@ public class BolidBinarySerializer {
         for (Weapon w : weapons.values()) {
             writeWeapon(out, w);
         }
+
+        // набор экстренной помощи
+        writeEmergencyKit(out, bolid.getEmergencyKit());
+    }
+
+    private void writeEmergencyKit(DataOutputStream out, EmergencyKit kit) throws IOException {
+        out.writeBoolean(kit.hasFirstAidKit());
+        out.writeBoolean(kit.hasFireExtinguisher());
+        out.writeBoolean(kit.hasWarningTriangle());
     }
 
     private void writeComponent(DataOutputStream out, Component c) throws IOException {
@@ -112,7 +121,16 @@ public class BolidBinarySerializer {
             bolid.installWeapon(readWeapon(in));
         }
 
+        bolid.setEmergencyKit(readEmergencyKit(in));
+
         return bolid;
+    }
+
+    private EmergencyKit readEmergencyKit(DataInputStream in) throws IOException {
+        boolean aid = in.readBoolean();
+        boolean fire = in.readBoolean();
+        boolean triangle = in.readBoolean();
+        return new EmergencyKit(aid, fire, triangle);
     }
 
     private Component readComponent(DataInputStream in) throws IOException {

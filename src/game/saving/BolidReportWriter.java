@@ -36,7 +36,8 @@ public class BolidReportWriter {
         appendBoolean(sb, "hasWornComponents", bolid.hasWornComponents(), true);
         appendComponentArray(sb, "components", bolid.getComponents().values(), true);
         appendComponentArray(sb, "extras", bolid.getExtras(), true);
-        appendWeaponArray(sb, "weapons", bolid.getWeapons().values(), false);
+        appendWeaponArray(sb, "weapons", bolid.getWeapons().values(), true);
+        appendEmergencyKit(sb, bolid.getEmergencyKit(), false);
         sb.append("}\n");
         return sb.toString();
     }
@@ -84,6 +85,14 @@ public class BolidReportWriter {
             sb.append("    }").append(last ? "\n" : ",\n");
         }
         sb.append("  ]").append(comma ? ",\n" : "\n");
+    }
+
+    private void appendEmergencyKit(StringBuilder sb, EmergencyKit kit, boolean comma) {
+        sb.append("  \"emergencyKit\": {\n");
+        appendBoolean(sb, "firstAidKit", kit.hasFirstAidKit(), true,  4);
+        appendBoolean(sb, "fireExtinguisher", kit.hasFireExtinguisher(), true,  4);
+        appendBoolean(sb, "warningTriangle", kit.hasWarningTriangle(), false, 4);
+        sb.append("  }").append(comma ? ",\n" : "\n");
     }
 
     // field helpers (indent=2)

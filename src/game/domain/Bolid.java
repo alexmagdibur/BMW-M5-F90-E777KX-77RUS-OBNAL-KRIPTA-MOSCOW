@@ -11,15 +11,21 @@ public class Bolid {
     private Map<ComponentType, Component> components;
     private List<Component> extras;
     private Map<WeaponType, Weapon> weapons;
+    private EmergencyKit emergencyKit;
 
     public Bolid(String name) {
         this.name = name;
         this.components = new EnumMap<>(ComponentType.class);
         this.extras = new ArrayList<>();
         this.weapons = new EnumMap<>(WeaponType.class);
+        this.emergencyKit = new EmergencyKit(false, false, false);
     }
 
     public String getName() { return name; }
+
+    public EmergencyKit getEmergencyKit() { return emergencyKit; }
+
+    public void setEmergencyKit(EmergencyKit kit) { this.emergencyKit = kit; }
 
     public void installComponent(Component component) {
         components.put(component.getType(), component);

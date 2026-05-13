@@ -65,9 +65,10 @@ public class EmergencyKitRaceTest {
     @Test
     void teamWithCompleteKitCanRace() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFirstAidKit(true);
-        team.getEmergencyKit().setFireExtinguisher(true);
-        team.getEmergencyKit().setWarningTriangle(true);
+        Bolid bolid = team.getBolids().get(0);
+        bolid.getEmergencyKit().setFirstAidKit(true);
+        bolid.getEmergencyKit().setFireExtinguisher(true);
+        bolid.getEmergencyKit().setWarningTriangle(true);
 
         assertTrue(team.isReadyToRace(), "Полный набор + болид + персонал = готов к гонке");
     }
@@ -75,8 +76,9 @@ public class EmergencyKitRaceTest {
     @Test
     void missingFirstAidKitBlocksRace() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFireExtinguisher(true);
-        team.getEmergencyKit().setWarningTriangle(true);
+        Bolid bolid = team.getBolids().get(0);
+        bolid.getEmergencyKit().setFireExtinguisher(true);
+        bolid.getEmergencyKit().setWarningTriangle(true);
         // аптечки нет
 
         assertFalse(team.isReadyToRace(), "Без аптечки гонка недоступна");
@@ -85,8 +87,9 @@ public class EmergencyKitRaceTest {
     @Test
     void missingFireExtinguisherBlocksRace() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFirstAidKit(true);
-        team.getEmergencyKit().setWarningTriangle(true);
+        Bolid bolid = team.getBolids().get(0);
+        bolid.getEmergencyKit().setFirstAidKit(true);
+        bolid.getEmergencyKit().setWarningTriangle(true);
         // огнетушителя нет
 
         assertFalse(team.isReadyToRace(), "Без огнетушителя гонка недоступна");
@@ -95,8 +98,9 @@ public class EmergencyKitRaceTest {
     @Test
     void missingWarningTriangleBlocksRace() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFirstAidKit(true);
-        team.getEmergencyKit().setFireExtinguisher(true);
+        Bolid bolid = team.getBolids().get(0);
+        bolid.getEmergencyKit().setFirstAidKit(true);
+        bolid.getEmergencyKit().setFireExtinguisher(true);
         // знака нет
 
         assertFalse(team.isReadyToRace(), "Без знака аварийной остановки гонка недоступна");
@@ -126,15 +130,15 @@ public class EmergencyKitRaceTest {
     @Test
     void completeKitSavedAndLoadedCorrectly() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFirstAidKit(true);
-        team.getEmergencyKit().setFireExtinguisher(true);
-        team.getEmergencyKit().setWarningTriangle(true);
+        team.getBolids().get(0).getEmergencyKit().setFirstAidKit(true);
+        team.getBolids().get(0).getEmergencyKit().setFireExtinguisher(true);
+        team.getBolids().get(0).getEmergencyKit().setWarningTriangle(true);
 
         SaveService service = new SaveService();
         service.autoSave(team, List.of(), PLAYER);
 
         GameSave loaded = service.loadGame(PLAYER, "autosave.csv");
-        EmergencyKit kit = loaded.getTeam().getEmergencyKit();
+        EmergencyKit kit = loaded.getTeam().getBolids().get(0).getEmergencyKit();
 
         assertTrue(kit.hasFirstAidKit(),      "Аптечка должна сохраниться");
         assertTrue(kit.hasFireExtinguisher(),  "Огнетушитель должен сохраниться");
@@ -145,13 +149,13 @@ public class EmergencyKitRaceTest {
     @Test
     void emptyKitSavedAndLoadedCorrectly() {
         Team team = readyTeamWithoutKit();
-        // набор не куплен
+        // набор не добавлен на болид
 
         SaveService service = new SaveService();
         service.autoSave(team, List.of(), PLAYER);
 
         GameSave loaded = service.loadGame(PLAYER, "autosave.csv");
-        EmergencyKit kit = loaded.getTeam().getEmergencyKit();
+        EmergencyKit kit = loaded.getTeam().getBolids().get(0).getEmergencyKit();
 
         assertFalse(kit.hasFirstAidKit());
         assertFalse(kit.hasFireExtinguisher());
@@ -162,15 +166,15 @@ public class EmergencyKitRaceTest {
     @Test
     void partialKitSavedAndLoadedCorrectly() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFirstAidKit(true);
-        team.getEmergencyKit().setWarningTriangle(true);
+        team.getBolids().get(0).getEmergencyKit().setFirstAidKit(true);
+        team.getBolids().get(0).getEmergencyKit().setWarningTriangle(true);
         // огнетушителя нет
 
         SaveService service = new SaveService();
         service.autoSave(team, List.of(), PLAYER);
 
         GameSave loaded = service.loadGame(PLAYER, "autosave.csv");
-        EmergencyKit kit = loaded.getTeam().getEmergencyKit();
+        EmergencyKit kit = loaded.getTeam().getBolids().get(0).getEmergencyKit();
 
         assertTrue(kit.hasFirstAidKit());
         assertFalse(kit.hasFireExtinguisher(), "Огнетушитель не должен появиться после загрузки");
@@ -180,7 +184,7 @@ public class EmergencyKitRaceTest {
     @Test
     void loadedTeamWithoutKitStillCannotRace() {
         Team team = readyTeamWithoutKit();
-        // набор не куплен
+        // набор не добавлен на болид
 
         SaveService service = new SaveService();
         service.autoSave(team, List.of(), PLAYER);
@@ -193,9 +197,9 @@ public class EmergencyKitRaceTest {
     @Test
     void loadedTeamWithCompleteKitCanRace() {
         Team team = readyTeamWithoutKit();
-        team.getEmergencyKit().setFirstAidKit(true);
-        team.getEmergencyKit().setFireExtinguisher(true);
-        team.getEmergencyKit().setWarningTriangle(true);
+        team.getBolids().get(0).getEmergencyKit().setFirstAidKit(true);
+        team.getBolids().get(0).getEmergencyKit().setFireExtinguisher(true);
+        team.getBolids().get(0).getEmergencyKit().setWarningTriangle(true);
 
         SaveService service = new SaveService();
         service.autoSave(team, List.of(), PLAYER);

@@ -464,9 +464,15 @@ public class GameMenu {
             System.out.println("  — нет пилота (используйте «Нанять пилота»)");
         if (playerTeam.getEngineers().isEmpty())
             System.out.println("  — нет инженера (используйте «Нанять инженера»)");
-        if (!playerTeam.getEmergencyKit().isComplete()) {
-            System.out.println("  — набор экстренной помощи неполный (купите в магазине «Купить компоненты»):");
-            var kit = playerTeam.getEmergencyKit();
+        boolean kitOk = playerTeam.getBolids().stream()
+            .anyMatch(b -> b.isComplete() && b.getEmergencyKit().isComplete());
+        if (!kitOk) {
+            System.out.println("  — набор экстренной помощи болида неполный"
+                + " (купите в магазине, затем соберите болид):");
+            EmergencyKit kit = ready.stream()
+                .map(Bolid::getEmergencyKit)
+                .findFirst()
+                .orElse(playerTeam.getEmergencyKit());
             if (!kit.hasFirstAidKit())      System.out.println("      • Аптечка");
             if (!kit.hasFireExtinguisher()) System.out.println("      • Огнетушитель");
             if (!kit.hasWarningTriangle())  System.out.println("      • Знак аварийной остановки");

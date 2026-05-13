@@ -335,6 +335,47 @@ public class BolidReportWriterTest {
         assertTrue(json.contains("\"name\": \"Полный\""));
     }
 
+    // emergencyKit в JSON
+
+    @Test
+    void emergencyKitKeyPresentInJson() throws IOException {
+        String json = read(writer.writeReport(new Bolid("Тест"), PLAYER));
+        assertTrue(json.contains("\"emergencyKit\""));
+    }
+
+    @Test
+    void emptyKitAllFalseInJson() throws IOException {
+        String json = read(writer.writeReport(new Bolid("Болид"), PLAYER));
+        assertTrue(json.contains("\"firstAidKit\": false"));
+        assertTrue(json.contains("\"fireExtinguisher\": false"));
+        assertTrue(json.contains("\"warningTriangle\": false"));
+    }
+
+    @Test
+    void completeKitAllTrueInJson() throws IOException {
+        Bolid bolid = new Bolid("Болид");
+        bolid.getEmergencyKit().setFirstAidKit(true);
+        bolid.getEmergencyKit().setFireExtinguisher(true);
+        bolid.getEmergencyKit().setWarningTriangle(true);
+
+        String json = read(writer.writeReport(bolid, PLAYER));
+        assertTrue(json.contains("\"firstAidKit\": true"));
+        assertTrue(json.contains("\"fireExtinguisher\": true"));
+        assertTrue(json.contains("\"warningTriangle\": true"));
+    }
+
+    @Test
+    void partialKitPreservedInJson() throws IOException {
+        Bolid bolid = new Bolid("Болид");
+        bolid.getEmergencyKit().setFirstAidKit(true);
+        // огнетушитель и знак — false
+
+        String json = read(writer.writeReport(bolid, PLAYER));
+        assertTrue(json.contains("\"firstAidKit\": true"));
+        assertTrue(json.contains("\"fireExtinguisher\": false"));
+        assertTrue(json.contains("\"warningTriangle\": false"));
+    }
+
     // escapeJson
 
     @Test

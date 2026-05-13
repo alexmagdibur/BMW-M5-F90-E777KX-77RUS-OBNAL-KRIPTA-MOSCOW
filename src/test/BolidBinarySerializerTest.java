@@ -151,6 +151,50 @@ public class BolidBinarySerializerTest {
         assertTrue(loaded.isComplete());
     }
 
+    // EmergencyKit
+
+    @Test
+    void emptyKitPreservedAfterRoundTrip() throws IOException {
+        Bolid original = new Bolid("Болид");
+        // kit не задан — по умолчанию все false
+        serializer.save(original, tempFile);
+        EmergencyKit kit = serializer.load(tempFile).getEmergencyKit();
+
+        assertFalse(kit.hasFirstAidKit());
+        assertFalse(kit.hasFireExtinguisher());
+        assertFalse(kit.hasWarningTriangle());
+    }
+
+    @Test
+    void completeKitPreservedAfterRoundTrip() throws IOException {
+        Bolid original = new Bolid("Болид");
+        original.getEmergencyKit().setFirstAidKit(true);
+        original.getEmergencyKit().setFireExtinguisher(true);
+        original.getEmergencyKit().setWarningTriangle(true);
+
+        serializer.save(original, tempFile);
+        EmergencyKit kit = serializer.load(tempFile).getEmergencyKit();
+
+        assertTrue(kit.hasFirstAidKit());
+        assertTrue(kit.hasFireExtinguisher());
+        assertTrue(kit.hasWarningTriangle());
+        assertTrue(kit.isComplete());
+    }
+
+    @Test
+    void partialKitPreservedAfterRoundTrip() throws IOException {
+        Bolid original = new Bolid("Болид");
+        original.getEmergencyKit().setFirstAidKit(true);
+        // огнетушитель и знак — false
+
+        serializer.save(original, tempFile);
+        EmergencyKit kit = serializer.load(tempFile).getEmergencyKit();
+
+        assertTrue(kit.hasFirstAidKit());
+        assertFalse(kit.hasFireExtinguisher());
+        assertFalse(kit.hasWarningTriangle());
+    }
+
     // файловый формат
 
     @Test
@@ -166,7 +210,7 @@ public class BolidBinarySerializerTest {
 
         assertEquals((byte) 0xB0, bytes[0], "Первый байт — магическое число 0xB0");
         assertEquals((byte) 0x11, bytes[1], "Второй байт — магическое число 0x11");
-        assertEquals((byte) 1, bytes[2], "Третий байт — версия формата 1");
+        assertEquals((byte) 2, bytes[2], "Третий байт — версия формата 2");
     }
 
     @Test
