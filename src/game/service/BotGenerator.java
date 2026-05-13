@@ -1,5 +1,7 @@
 package service;
 
+import data.TacticCatalog;
+import domain.RaceTactic;
 import domain.RaceResult;
 import domain.SectionType;
 import domain.Track;
@@ -22,6 +24,7 @@ public class BotGenerator {
 
     public static List<RaceResult> generate(Track track, Weather weather) {
         double ref = referenceTime(track, weather);
+        List<RaceTactic> tactics = TacticCatalog.getAvailableTactics();
 
         List<String> usedNames = new ArrayList<>();
         List<RaceResult> bots = new ArrayList<>();
@@ -29,7 +32,9 @@ public class BotGenerator {
         for (int i = 0; i < BOT_COUNT; i++) {
             String name = pickName(usedNames);
             double time = ref * RandomUtil.nextDouble(0.80, 1.25);
-            bots.add(new RaceResult(name, time, false));
+            // случайная тактика из каталога
+            RaceTactic tactic = tactics.get(RandomUtil.nextInt(0, tactics.size() - 1));
+            bots.add(new RaceResult(name, time, false, tactic));
         }
         return bots;
     }

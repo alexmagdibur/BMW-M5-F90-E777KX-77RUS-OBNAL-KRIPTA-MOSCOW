@@ -7,12 +7,19 @@ public class RaceResult {
     private final boolean isPlayer;
     private final boolean incidentOccurred;
     private int position;
+    private RaceTactic tactic;
 
     public RaceResult(String teamName, double time, boolean isPlayer) {
         this.teamName = teamName;
         this.time = time;
         this.isPlayer = isPlayer;
         this.incidentOccurred = false;
+    }
+
+    // конструктор для бота с тактикой
+    public RaceResult(String teamName, double time, boolean isPlayer, RaceTactic tactic) {
+        this(teamName, time, isPlayer);
+        this.tactic = tactic;
     }
 
     private RaceResult(String teamName, boolean isPlayer) {
@@ -31,8 +38,10 @@ public class RaceResult {
     public boolean isPlayer() { return isPlayer; }
     public boolean isIncident() { return incidentOccurred; }
     public int getPosition() { return position; }
+    public RaceTactic getTactic() { return tactic; }
 
     public void setPosition(int position) { this.position = position; }
+    public void setTactic(RaceTactic tactic) { this.tactic = tactic; }
 
 
     public static String formatTime(double seconds) {
