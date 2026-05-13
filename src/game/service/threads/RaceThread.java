@@ -12,7 +12,6 @@ import domain.RaceTactic;
 import domain.Team;
 import domain.Track;
 import domain.Weather;
-import service.WearService;
 import util.RandomUtil;
 
 import java.util.ArrayList;
@@ -24,8 +23,6 @@ public class RaceThread implements Runnable {
     private static final long PRIZE_1ST = 2_000_000;
     private static final long PRIZE_2ND = 1_000_000;
     private static final long PRIZE_3RD = 500_000;
-
-    private static final double WEREWOLF_CHANCE = 0.4;
 
     private static final String[] BOT_NAMES = {
         "Чуваки на АвтоВАЗе", "M5 Asphalt 8", "Распил Владивосток",
@@ -39,12 +36,15 @@ public class RaceThread implements Runnable {
     private final Track track;
     private final int plannedPitStops;
     private final Weather initialWeather;
+    // dnf-причина, определённая до старта (оборотень или инцидент) — null если не было
+    private final String presetPlayerDnfReason;
 
     // результат гонки — доступен после run()
     private Race race;
 
     public RaceThread(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
-                      Track track, int plannedPitStops, Weather initialWeather) {
+                      Track track, int plannedPitStops, Weather initialWeather,
+                      String presetPlayerDnfReason) {
         this.team = team;
         this.bolid = bolid;
         this.pilot = pilot;
@@ -52,6 +52,7 @@ public class RaceThread implements Runnable {
         this.track = track;
         this.plannedPitStops = plannedPitStops;
         this.initialWeather = initialWeather;
+        this.presetPlayerDnfReason = presetPlayerDnfReason;
     }
 
     public Race getRace() { return race; }
@@ -63,17 +64,15 @@ public class RaceThread implements Runnable {
         state.raceRunning.set(true);
         state.log("🏁 СТАРТ! Трасса: " + track.getName() + " | Погода: " + initialWeather);
 
-        // проверка оборотня до старта потоков
-        String werewolfDnf = checkWerewolf(state);
-
         // создаём BolideThread для игрока
         BolideThread playerThread = new BolideThread(
             state, bolid, pilot, engineer, track, plannedPitStops, team.getName(), true
         );
-        if (werewolfDnf != null) {
+        // если dnf определён заранее (оборотень или pre-race инцидент) — сразу помечаем
+        if (presetPlayerDnfReason != null) {
             playerThread.setDnf();
             state.results.add(new BolideResult(team.getName(), 0, true, true));
-            state.log("🐺 " + werewolfDnf);
+            state.log("⛔ " + presetPlayerDnfReason);
         }
 
         // создаём BolideThread для ботов
@@ -84,9 +83,9 @@ public class RaceThread implements Runnable {
         allParticipants.addAll(botThreads);
 
         // запускаем погоду, инциденты и комментатора
-        Thread weatherThread     = new Thread(new WeatherThread(state, 5000));
-        Thread incidentThread    = new Thread(new IncidentThread(state, allParticipants, 3000));
-        Thread commentatorThread = new Thread(new CommentatorThread(state, allParticipants, 4000));
+        Thread weatherThread     = new Thread(new WeatherThread(state, 1500));
+        Thread incidentThread    = new Thread(new IncidentThread(state, allParticipants, 800));
+        Thread commentatorThread = new Thread(new CommentatorThread(state, allParticipants, 500));
         weatherThread.setDaemon(true);
         incidentThread.setDaemon(true);
         commentatorThread.setDaemon(true);
@@ -117,22 +116,7 @@ public class RaceThread implements Runnable {
         try { incidentThread.join(1000); }    catch (InterruptedException ignored) {}
         try { commentatorThread.join(1000); } catch (InterruptedException ignored) {}
 
-        // применяем износ к болиду игрока
-        WearService.applyWear(bolid, track);
-
-        race = buildRace(state, werewolfDnf);
-    }
-
-    // возвращает строку причины dnf если кто-то стал оборотнем, иначе null
-    private String checkWerewolf(RaceState state) {
-        if (initialWeather != Weather.SOLAR_ECLIPSE) return null;
-        if (Math.random() < WEREWOLF_CHANCE) {
-            return "Пилот " + pilot.getName() + " стал оборотнем — DNF!";
-        }
-        if (Math.random() < WEREWOLF_CHANCE) {
-            return "Инженер " + engineer.getName() + " стал оборотнем — DNF!";
-        }
-        return null;
+        race = buildRace(state, presetPlayerDnfReason);
     }
 
     private List<BolideThread> createBots(RaceState state) {
@@ -155,12 +139,12 @@ public class RaceThread implements Runnable {
     // болид бота с 6 компонентами — суммарный перфоманс попадает в диапазон RaceCalculator [300, 540]
     private static Bolid createBotBolid(String ownerName) {
         Bolid b = new Bolid(ownerName + "_bolid");
-        b.installComponent(new Component("Двигатель",    ComponentType.ENGINE,       0, RandomUtil.nextInt(50, 90)));
-        b.installComponent(new Component("КПП",          ComponentType.TRANSMISSION, 0, RandomUtil.nextInt(50, 90)));
-        b.installComponent(new Component("Подвеска",     ComponentType.SUSPENSION,   0, RandomUtil.nextInt(50, 90)));
-        b.installComponent(new Component("Шасси",        ComponentType.CHASSIS,      0, RandomUtil.nextInt(50, 90)));
-        b.installComponent(new Component("Аэропакет",    ComponentType.AERO_PACKAGE, 0, RandomUtil.nextInt(50, 90)));
-        b.installComponent(new Component("Шины",         ComponentType.TIRES,        0, RandomUtil.nextInt(50, 90)));
+        b.installComponent(new Component("Двигатель", ComponentType.ENGINE, 0, RandomUtil.nextInt(50, 90)));
+        b.installComponent(new Component("КПП", ComponentType.TRANSMISSION, 0, RandomUtil.nextInt(50, 90)));
+        b.installComponent(new Component("Подвеска", ComponentType.SUSPENSION, 0, RandomUtil.nextInt(50, 90)));
+        b.installComponent(new Component("Шасси", ComponentType.CHASSIS, 0, RandomUtil.nextInt(50, 90)));
+        b.installComponent(new Component("Аэропакет", ComponentType.AERO_PACKAGE, 0, RandomUtil.nextInt(50, 90)));
+        b.installComponent(new Component("Шины", ComponentType.TIRES, 0, RandomUtil.nextInt(50, 90)));
         return b;
     }
 

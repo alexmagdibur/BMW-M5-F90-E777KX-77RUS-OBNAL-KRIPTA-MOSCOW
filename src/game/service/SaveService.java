@@ -97,15 +97,29 @@ public class SaveService {
             team.addComponent(csvSerializer.deserializeComponent(line));
         }
 
-        // 3. болиды из .bin файлов
-        for (String bolidName : linesOf(sections, SEC_BOLID_REFS)) {
+        // 3. болиды из .bin файлов + износ из CSV (каждый сейв хранит своё состояние износа)
+        for (String bolidLine : linesOf(sections, SEC_BOLID_REFS)) {
+            String[] parts = bolidLine.split(";");
+            String bolidName = parts[0];
             File binFile = new File(bolidDir(playerName), safeName(bolidName) + ".bin");
             if (!binFile.exists()) {
                 System.err.println("[SaveService] Файл болида не найден: " + binFile.getPath());
                 continue;
             }
             try {
-                team.addBolid(binSerializer.load(binFile));
+                Bolid bolid = binSerializer.load(binFile);
+                // износ из CSV перекрывает значения .bin (новый формат: parts[1..n] = TYPE:wear)
+                for (int i = 1; i < parts.length; i++) {
+                    String[] kv = parts[i].split(":");
+                    if (kv.length == 2) {
+                        try {
+                            ComponentType type = ComponentType.valueOf(kv[0]);
+                            Component c = bolid.getComponent(type);
+                            if (c != null) c.setWear(Integer.parseInt(kv[1]));
+                        } catch (Exception ignored) {}
+                    }
+                }
+                team.addBolid(bolid);
             } catch (IOException e) {
                 System.err.println("[SaveService] Ошибка загрузки болида «"
                         + bolidName + "»: " + e.getMessage());
@@ -151,10 +165,15 @@ public class SaveService {
             sb.append(csvSerializer.serializeComponent(c)).append("\n");
         }
 
-        // имена болидов как ссылки на .bin файлы
+        // болиды: имя + износ каждого компонента (чтобы каждый CSV-сейв был самодостаточным)
         append(sb, SEC_BOLID_REFS);
         for (Bolid b : team.getBolids()) {
-            sb.append(b.getName()).append("\n");
+            StringBuilder line = new StringBuilder(b.getName());
+            for (Map.Entry<ComponentType, Component> entry : b.getComponents().entrySet()) {
+                line.append(";").append(entry.getKey().name())
+                    .append(":").append(entry.getValue().getWear());
+            }
+            sb.append(line).append("\n");
         }
 
         append(sb, SEC_KITS);

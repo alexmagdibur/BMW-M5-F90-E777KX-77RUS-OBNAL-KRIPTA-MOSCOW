@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ConsoleInput {
@@ -8,13 +9,18 @@ public class ConsoleInput {
 
     public static int readInt(String prompt) {
         System.out.print(prompt);
-        while (!scanner.hasNextInt()) {
-            scanner.nextLine();
-            System.out.print("Введите номер: ");
+        try {
+            while (!scanner.hasNextInt()) {
+                if (!scanner.hasNextLine()) return -1;
+                scanner.nextLine();
+                System.out.print("Введите номер: ");
+            }
+            int value = scanner.nextInt();
+            if (scanner.hasNextLine()) scanner.nextLine();
+            return value;
+        } catch (NoSuchElementException e) {
+            return -1;
         }
-        int value = scanner.nextInt();
-        scanner.nextLine();
-        return value;
     }
 
     public static String readLine(String prompt) {

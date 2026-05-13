@@ -1,0 +1,14 @@
+#TEAM
+суетологи;8307223
+#COMPONENTS
+#BOLID_REFS
+приора в обвесе эмки;ENGINE:14;TRANSMISSION:15;SUSPENSION:22;CHASSIS:8;AERO_PACKAGE:8;TIRES:36
+#EMERGENCY_KITS
+false;false;false
+#PILOTS
+Руслан Ахтямов;750000;91;true
+#ENGINEERS
+Елизавета Тихомирова;700000;90;false
+#RACE_HISTORY
+суетологи;80.81092206086008;true;false;1
+суетологи;1.7976931348623157E308;true;true;4

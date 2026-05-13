@@ -73,6 +73,7 @@ public class GameMenu {
         while (running) {
             printMenu();
             int choice = ConsoleInput.readInt("Введите ваш выбор: ");
+            if (choice == -1) { running = false; break; }
             handleChoice(choice);
         }
     }
@@ -142,33 +143,41 @@ public class GameMenu {
 
     // гонка
 
+    private boolean canStartRace() {
+        boolean hasBolid = playerTeam.getBolids().stream().anyMatch(Bolid::isComplete);
+        return hasBolid && !playerTeam.getPilots().isEmpty() && !playerTeam.getEngineers().isEmpty();
+    }
+
     private void startRace() {
-        if (!playerTeam.isReadyToRace()) {
+        if (!canStartRace()) {
             printNotReadyReason();
             return;
         }
 
         System.out.println(Ansi.bold("\nВыберите режим гонки:"));
-        System.out.println("  1. Обычный");
-        System.out.println("  2. Выживание");
+        System.out.println("  1. Обычный — без пит-стопов");
+        System.out.println("  2. Обычный — 1 пит-стоп");
+        System.out.println("  3. Обычный — 2 пит-стопа");
+        System.out.println("  4. Выживание");
         System.out.println("  0. Отмена");
         int mode = ConsoleInput.readInt("Ваш выбор: ");
 
         switch (mode) {
-            case 1 -> startNormalRace();
-            case 2 -> startSurvivalMode();
+            case 1 -> startNormalRace(0);
+            case 2 -> startNormalRace(1);
+            case 3 -> startNormalRace(2);
+            case 4 -> startSurvivalMode();
             default -> System.out.println("Отмена.");
         }
     }
 
-    private void startNormalRace() {
+    private void startNormalRace(int plannedPitStops) {
         Track track = selectTrack(); if (track == null) return;
         Bolid bolid = selectBolid(); if (bolid == null) return;
         Pilot pilot = selectPilot(); if (pilot == null) return;
         Engineer engineer = selectEngineer(); if (engineer == null) return;
 
         selectTactic(pilot);
-        int plannedPitStops = selectPlannedPitStops();
 
         List<Component> maxWorn = bolid.getAllComponents().stream()
             .filter(c -> c.getType() != ComponentType.EXTRA && c.getWear() >= 100).toList();
@@ -497,18 +506,9 @@ public class GameMenu {
         if (choice >= 1 && choice <= tactics.size()) {
             pilot.setTactic(tactics.get(choice - 1));
             System.out.println("Тактика выбрана: " + pilot.getTactic().getName());
-        } else if (choice == 0) {
-            System.out.println("Тактика не изменена: " + current);
         } else {
-            System.out.println("Некорректный ввод — тактика не изменена: " + current);
+            System.out.println("Тактика не изменена: " + current);
         }
-    }
-
-    private int selectPlannedPitStops() {
-        int choice = ConsoleInput.readInt("Сколько пит-стопов планируете? (0, 1 или 2): ");
-        if (choice == 0 || choice == 1 || choice == 2) return choice;
-        System.out.println("Некорректный ввод — пит-стопов: 0.");
-        return 0;
     }
 
     private Track selectTrack() {

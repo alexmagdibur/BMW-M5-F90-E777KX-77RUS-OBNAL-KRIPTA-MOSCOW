@@ -25,6 +25,12 @@ public class RaceState {
         this.currentWeather = initialWeather;
     }
 
+    // геттеры/сеттеры нужны тестам из других пакетов
+    public Weather getCurrentWeather() { return currentWeather; }
+    public void setCurrentWeather(Weather w) { currentWeather = w; }
+    public AtomicBoolean getRaceRunning() { return raceRunning; }
+    public void setRaceStartTime(long t) { raceStartTime = t; }
+
     // synchronized — чтобы строки из разных потоков не перемешивались в консоли
     public synchronized void log(String message) {
         long elapsed = System.currentTimeMillis() - raceStartTime;

@@ -1,0 +1,97 @@
+{
+  "name": "приора в обвесе эмки",
+  "complete": true,
+  "performanceScore": 520,
+  "hasWornComponents": false,
+  "components": [
+    {
+      "name": "Lada Priora 16-кл.",
+      "type": "ENGINE",
+      "price": 300000,
+      "performanceValue": 60,
+      "wear": 6,
+      "level": 1,
+      "wornOut": false
+    },
+    {
+      "name": "АКПП BMW ZF 8HP",
+      "type": "TRANSMISSION",
+      "price": 300000,
+      "performanceValue": 75,
+      "wear": 7,
+      "level": 2,
+      "wornOut": false
+    },
+    {
+      "name": "Спортивная подвеска",
+      "type": "SUSPENSION",
+      "price": 250000,
+      "performanceValue": 70,
+      "wear": 10,
+      "level": 2,
+      "wornOut": false
+    },
+    {
+      "name": "Стальное шасси",
+      "type": "CHASSIS",
+      "price": 200000,
+      "performanceValue": 55,
+      "wear": 4,
+      "level": 1,
+      "wornOut": false
+    },
+    {
+      "name": "Обвесы BMW M5 F90",
+      "type": "AERO_PACKAGE",
+      "price": 200000,
+      "performanceValue": 68,
+      "wear": 4,
+      "level": 2,
+      "wornOut": false
+    },
+    {
+      "name": "Pirelli P Zero Medium",
+      "type": "TIRES",
+      "price": 100000,
+      "performanceValue": 70,
+      "wear": 17,
+      "level": 2,
+      "wornOut": false
+    }
+  ],
+  "extras": [
+    {
+      "name": "Тонировка в круг",
+      "type": "EXTRA",
+      "price": 20000,
+      "performanceValue": 15,
+      "wear": 0,
+      "level": 2,
+      "wornOut": false
+    },
+    {
+      "name": "Блатные номера Е777КХ 77RUS",
+      "type": "EXTRA",
+      "price": 777777,
+      "performanceValue": 77,
+      "wear": 0,
+      "level": 2,
+      "wornOut": false
+    },
+    {
+      "name": "Автозвук Pride Car Audio",
+      "type": "EXTRA",
+      "price": 80000,
+      "performanceValue": 30,
+      "wear": 0,
+      "level": 2,
+      "wornOut": false
+    }
+  ],
+  "weapons": [],
+  "emergencyKit": {
+    "firstAidKit": true,
+    "fireExtinguisher": true,
+    "warningTriangle": true
+  }
+}
