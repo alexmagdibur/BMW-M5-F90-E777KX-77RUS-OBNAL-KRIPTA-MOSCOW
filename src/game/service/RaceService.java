@@ -1,7 +1,6 @@
 package service;
 
 import domain.Bolid;
-import domain.Component;
 import domain.Engineer;
 import domain.Pilot;
 import domain.Race;
@@ -9,19 +8,11 @@ import domain.RaceResult;
 import domain.Team;
 import domain.Track;
 import domain.Weather;
-import util.RandomUtil;
+import service.threads.RaceThread;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class RaceService {
-
-    private static final long PRIZE_1ST = 2_000_000;
-    private static final long PRIZE_2ND = 1_000_000;
-    private static final long PRIZE_3RD = 500_000;
-
-    private static double WEREWOLF_CHANCE = 0.4;
 
     private final SaveService saveService;
     private final String playerName;
@@ -39,82 +30,23 @@ public class RaceService {
         this.raceResults  = raceResults;
     }
 
-    // только для тестов: позволяет переопределить вероятность оборотня
-    public static void setWerewolfChance(double value) {
-        WEREWOLF_CHANCE = value;
-    }
-
     public Race runRace(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
                         Track track, Weather weather) {
-        if (weather == Weather.SOLAR_ECLIPSE) {
-            pilot.setWerewolf(RandomUtil.nextDouble(0.0, 1.0) < WEREWOLF_CHANCE);
-            engineer.setWerewolf(RandomUtil.nextDouble(0.0, 1.0) < WEREWOLF_CHANCE);
-        } else {
-            pilot.setWerewolf(false);
-            engineer.setWerewolf(false);
-        }
+        RaceThread raceThread = new RaceThread(team, bolid, pilot, engineer, track, 1, weather);
 
-        String dnfReason = null;
-        if (pilot.isWerewolf()) {
-            dnfReason = "Пилот стал оборотнем, у него лапки! DNF";
-        } else if (engineer.isWerewolf()) {
-            dnfReason = "Инженер стал оборотнем, у него лапки! DNF";
-        } else {
-            dnfReason = checkIncident(bolid);
-        }
+        // run() а не start() — гонка блокирует меню до полного завершения
+        new Thread(raceThread).run();
 
-        RaceResult playerResult;
-        if (dnfReason != null) {
-            playerResult = RaceResult.dnf(team.getName(), true);
-        } else {
-            double playerTime = RaceCalculator.calculateTime(bolid, pilot, engineer, track, weather);
-            playerResult = new RaceResult(team.getName(), playerTime, true);
-        }
+        Race race = raceThread.getRace();
 
-        List<RaceResult> all = new ArrayList<>(BotGenerator.generate(track, weather));
-        all.add(playerResult);
-
-        all.sort(Comparator.comparingDouble(RaceResult::getTime));
-
-        for (int i = 0; i < all.size(); i++) {
-            all.get(i).setPosition(i + 1);
-        }
-
-        long prize = 0;
-        if (dnfReason == null) {
-            prize = switch (playerResult.getPosition()) {
-                case 1 -> PRIZE_1ST;
-                case 2 -> PRIZE_2ND;
-                case 3 -> PRIZE_3RD;
-                default -> 0L;
-            };
-        }
-
-        if (prize > 0) {
-            team.earn(prize);
-        }
-
-        Race race = new Race(track, all, playerResult.getPosition(), prize, weather, dnfReason);
-
-        // добавляем результат игрока в общий список — autoSave вызывается снаружи,
-        // после применения износа (WearService.applyWear), чтобы wear сохранился корректно.
-        if (raceResults != null) {
-            raceResults.add(playerResult);
+        // добавляем результат игрока в историю — autoSave вызывается снаружи
+        if (raceResults != null && race != null) {
+            race.getResults().stream()
+                .filter(RaceResult::isPlayer)
+                .findFirst()
+                .ifPresent(raceResults::add);
         }
 
         return race;
-    }
-
-    private static final double INCIDENT_CHANCE = 1;
-
-
-    private String checkIncident(Bolid bolid) {
-        for (Component c : bolid.getComponents().values()) {
-            if (c.isWornOut() && RandomUtil.nextDouble(0.0, 1.0) < INCIDENT_CHANCE) {
-                c.setWear(100);
-                return "отказ компонента «" + c.getName() + "»";
-            }
-        }
-        return null;
     }
 }
