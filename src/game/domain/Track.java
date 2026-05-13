@@ -8,6 +8,7 @@ public class Track {
 
     private final String name;
     private final List<TrackSection> sections;
+    private PitLane pitLane;
 
     public Track(String name, List<TrackSection> sections) {
         this.name = name;
@@ -16,6 +17,8 @@ public class Track {
 
     public String getName() { return name; }
     public List<TrackSection> getSections() { return sections; }
+    public PitLane getPitLane() { return pitLane; }
+    public void setPitLane(PitLane pitLane) { this.pitLane = pitLane; }
 
     public int getTotalLength() {
         return sections.stream().mapToInt(TrackSection::getLength).sum();
@@ -52,6 +55,10 @@ public class Track {
         sb.append(sections.stream()
             .map(TrackSection::toString)
             .collect(Collectors.joining(", ")));
+
+        if (pitLane != null) {
+            sb.append(String.format("%n  Боксы: вместимость %d", pitLane.getCapacity()));
+        }
 
         return sb.toString().stripTrailing();
     }

@@ -1,5 +1,6 @@
 package data;
 
+import domain.PitLane;
 import domain.SectionType;
 import domain.Track;
 import domain.TrackSection;
@@ -13,7 +14,7 @@ public class TrackCatalog {
     }
 
     private static Track monza() {
-        return new Track("Монца", List.of(
+        Track t = new Track("Монца", List.of(
             new TrackSection(SectionType.STRAIGHT, 1100),
             new TrackSection(SectionType.TURN,300),
             new TrackSection(SectionType.STRAIGHT, 750),
@@ -23,10 +24,12 @@ public class TrackCatalog {
             new TrackSection(SectionType.STRAIGHT, 900),
             new TrackSection(SectionType.TURN, 200)
         ));
+        t.setPitLane(new PitLane(2));
+        return t;
     }
 
     private static Track nurburgring() {
-        return new Track("Нюрбургринг", List.of(
+        Track t = new Track("Нюрбургринг", List.of(
             new TrackSection(SectionType.STRAIGHT, 650),
             new TrackSection(SectionType.CLIMB, 400),
             new TrackSection(SectionType.TURN, 350),
@@ -38,10 +41,12 @@ public class TrackCatalog {
             new TrackSection(SectionType.TURN, 400),
             new TrackSection(SectionType.STRAIGHT, 700)
         ));
+        t.setPitLane(new PitLane(2));
+        return t;
     }
 
     private static Track sochiAutodrom() {
-        return new Track("Сочи Автодром", List.of(
+        Track t = new Track("Сочи Автодром", List.of(
             new TrackSection(SectionType.STRAIGHT, 850),
             new TrackSection(SectionType.TURN, 400),
             new TrackSection(SectionType.STRAIGHT, 500),
@@ -52,5 +57,7 @@ public class TrackCatalog {
             new TrackSection(SectionType.TURN, 300),
             new TrackSection(SectionType.STRAIGHT, 550)
         ));
+        t.setPitLane(new PitLane(2));
+        return t;
     }
 }
