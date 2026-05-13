@@ -1,7 +1,9 @@
 package ui;
 
+import data.TacticCatalog;
 import data.TrackCatalog;
 import data.WeaponCatalog;
+import domain.RaceTactic;
 import domain.Bolid;
 import domain.Component;
 import domain.ComponentType;
@@ -165,6 +167,9 @@ public class GameMenu {
         Pilot pilot = selectPilot(); if (pilot == null) return;
         Engineer engineer = selectEngineer(); if (engineer == null) return;
 
+        selectTactic(pilot);
+        int plannedPitStops = selectPlannedPitStops();
+
         List<Component> maxWorn = bolid.getAllComponents().stream()
             .filter(c -> c.getType() != ComponentType.EXTRA && c.getWear() >= 100).toList();
         if (!maxWorn.isEmpty()) {
@@ -181,7 +186,7 @@ public class GameMenu {
 
         System.out.println(Ansi.bold("\nЗапускаем гонку на трассе: " + track.getName() + "..."));
 
-        Race race = raceService.runRace(playerTeam, bolid, pilot, engineer, track, currentWeather);
+        Race race = raceService.runRace(playerTeam, bolid, pilot, engineer, track, currentWeather, plannedPitStops);
         raceHistory.add(race);
         System.out.println(race);
 
@@ -477,6 +482,33 @@ public class GameMenu {
             if (!kit.hasFireExtinguisher()) System.out.println("      • Огнетушитель");
             if (!kit.hasWarningTriangle())  System.out.println("      • Знак аварийной остановки");
         }
+    }
+
+    private void selectTactic(Pilot pilot) {
+        List<RaceTactic> tactics = TacticCatalog.getAvailableTactics();
+        String current = pilot.getTactic() != null ? pilot.getTactic().getName() : "Нет тактики";
+        System.out.println(Ansi.bold("\nВыбор тактики гонки:"));
+        System.out.println("  Текущая тактика пилота: " + current);
+        for (int i = 0; i < tactics.size(); i++) {
+            System.out.printf("  %d. %s%n", i + 1, tactics.get(i).getName());
+        }
+        System.out.println("  0. Оставить текущую");
+        int choice = ConsoleInput.readInt("Выберите тактику (0 — оставить текущую): ");
+        if (choice >= 1 && choice <= tactics.size()) {
+            pilot.setTactic(tactics.get(choice - 1));
+            System.out.println("Тактика выбрана: " + pilot.getTactic().getName());
+        } else if (choice == 0) {
+            System.out.println("Тактика не изменена: " + current);
+        } else {
+            System.out.println("Некорректный ввод — тактика не изменена: " + current);
+        }
+    }
+
+    private int selectPlannedPitStops() {
+        int choice = ConsoleInput.readInt("Сколько пит-стопов планируете? (0, 1 или 2): ");
+        if (choice == 0 || choice == 1 || choice == 2) return choice;
+        System.out.println("Некорректный ввод — пит-стопов: 0.");
+        return 0;
     }
 
     private Track selectTrack() {

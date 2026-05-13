@@ -31,8 +31,8 @@ public class RaceService {
     }
 
     public Race runRace(Team team, Bolid bolid, Pilot pilot, Engineer engineer,
-                        Track track, Weather weather) {
-        RaceThread raceThread = new RaceThread(team, bolid, pilot, engineer, track, 1, weather);
+                        Track track, Weather weather, int plannedPitStops) {
+        RaceThread raceThread = new RaceThread(team, bolid, pilot, engineer, track, plannedPitStops, weather);
 
         // run() а не start() — гонка блокирует меню до полного завершения
         new Thread(raceThread).run();
