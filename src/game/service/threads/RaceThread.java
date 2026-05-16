@@ -82,10 +82,15 @@ public class RaceThread implements Runnable {
         allParticipants.add(playerThread);
         allParticipants.addAll(botThreads);
 
+        // инициализируем счётчик прогресса до старта потоков — happens-before через start()
+        for (BolideThread bt : allParticipants) {
+            state.sectionProgress.put(bt.getParticipantName(), 0);
+        }
+
         // запускаем погоду, инциденты и комментатора
         Thread weatherThread     = new Thread(new WeatherThread(state, 1500));
         Thread incidentThread    = new Thread(new IncidentThread(state, allParticipants, 800));
-        Thread commentatorThread = new Thread(new CommentatorThread(state, allParticipants, 500));
+        Thread commentatorThread = new Thread(new CommentatorThread(state, 700));
         weatherThread.setDaemon(true);
         incidentThread.setDaemon(true);
         commentatorThread.setDaemon(true);

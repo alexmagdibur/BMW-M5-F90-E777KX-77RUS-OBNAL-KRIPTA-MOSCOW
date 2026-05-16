@@ -3,6 +3,8 @@ package service.threads;
 import domain.Weather;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -21,8 +23,30 @@ public class RaceState {
     // итерация безопасна без блокировок, запись создаёт копию массива
     final List<BolideResult> results = new CopyOnWriteArrayList<>();
 
+    // ConcurrentHashMap — пишет каждый BolideThread (своя запись), читает CommentatorThread;
+    // отражает сколько секций каждый участник уже проехал
+    final ConcurrentHashMap<String, Integer> sectionProgress = new ConcurrentHashMap<>();
+
     public RaceState(Weather initialWeather) {
         this.currentWeather = initialWeather;
+    }
+
+    // лидер среди ещё едущих участников (не финишировавших)
+    String getLeaderName(java.util.Set<String> finishedNames) {
+        return sectionProgress.entrySet().stream()
+            .filter(e -> !finishedNames.contains(e.getKey()))
+            .max(Map.Entry.comparingByValue())
+            .map(Map.Entry::getKey)
+            .orElse(null);
+    }
+
+    // замыкающий среди ещё едущих участников
+    String getLaggardName(java.util.Set<String> finishedNames) {
+        return sectionProgress.entrySet().stream()
+            .filter(e -> !finishedNames.contains(e.getKey()))
+            .min(Map.Entry.comparingByValue())
+            .map(Map.Entry::getKey)
+            .orElse(null);
     }
 
     // геттеры/сеттеры нужны тестам из других пакетов
