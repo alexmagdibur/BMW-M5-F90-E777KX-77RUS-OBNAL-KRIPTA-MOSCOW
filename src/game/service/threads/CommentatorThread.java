@@ -3,17 +3,18 @@ package service.threads;
 import data.CommentatorPhrases;
 import util.RandomUtil;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CommentatorThread implements Runnable {
 
     private final RaceState state;
-    private final List<BolideThread> participants;
     private final int commentIntervalMs;
+    // последний выведенный комментарий — пропускаем повтор той же фразы
+    private String lastComment = "";
 
-    public CommentatorThread(RaceState state, List<BolideThread> participants, int commentIntervalMs) {
+    public CommentatorThread(RaceState state, int commentIntervalMs) {
         this.state = state;
-        this.participants = participants;
         this.commentIntervalMs = commentIntervalMs;
     }
 
@@ -27,29 +28,39 @@ public class CommentatorThread implements Runnable {
             }
             if (!state.raceRunning.get()) break;
 
-            // рандомно выбираем тип комментария: 0 — погода, 1 — позиции, 2 — спонсор
-            int type = RandomUtil.nextInt(0, 2);
-            switch (type) {
-                case 0 -> state.log("🎙 " + CommentatorPhrases.getWeatherPhrase(state.currentWeather));
-                case 1 -> commentPositions();
-                case 2 -> state.log("📢 " + CommentatorPhrases.getSponsorPhrase());
+            String comment = buildComment();
+            // null — нечего говорить; совпадение — не повторяем одно и то же
+            if (comment != null && !comment.equals(lastComment)) {
+                state.log(comment);
+                lastComment = comment;
             }
         }
     }
 
-    private void commentPositions() {
-        // читаем снапшот CopyOnWriteArrayList — безопасно без synchronized
-        List<BolideResult> results = List.copyOf(state.results);
+    private String buildComment() {
+        int type = RandomUtil.nextInt(0, 2);
+        return switch (type) {
+            case 0 -> "🎙 " + CommentatorPhrases.getWeatherPhrase(state.currentWeather);
+            case 1 -> buildPositionComment();
+            default -> "📢 " + CommentatorPhrases.getSponsorPhrase();
+        };
+    }
 
-        if (!results.isEmpty()) {
-            // среди финишировавших берём первого как лидера, последнего как замыкающего
-            String leader = results.get(0).getParticipantName();
-            String last   = results.get(results.size() - 1).getParticipantName();
-            state.log("🎙 " + CommentatorPhrases.getPositionPhrase(leader, last));
-        } else {
-            // никто ещё не финишировал — комментируем по активным участникам
-            String first = participants.isEmpty() ? "?" : participants.get(0).getParticipantName();
-            state.log("🎙 " + first + " всё ещё на трассе, итоги скоро!");
+    private String buildPositionComment() {
+        // имена уже финишировавших / DNF — исключаем их из «активных»
+        Set<String> finishedNames = state.results.stream()
+            .map(BolideResult::getParticipantName)
+            .collect(Collectors.toSet());
+
+        // лидер и замыкающий среди тех, кто ещё едет (по числу пройденных секций)
+        String leader  = state.getLeaderName(finishedNames);
+        String laggard = state.getLaggardName(finishedNames);
+
+        if (leader == null) return null; // все финишировали — не спамим
+
+        if (leader.equals(laggard)) {
+            return "🎙 " + leader + " продолжает борьбу на трассе!";
         }
+        return "🎙 " + CommentatorPhrases.getPositionPhrase(leader, laggard);
     }
 }

@@ -72,9 +72,13 @@ public class BolideThread implements Runnable {
             }
 
             totalTime += sectionTime;
+            // обновляем прогресс — CommentatorThread использует для определения реального лидера
+            state.sectionProgress.put(participantName, i + 1);
 
             try {
-                Thread.sleep((long)(sectionTime * 5));
+                // 1 секунда модельного времени = 50 мс реального;
+                // при множителе 5 весь заезд укладывался в ~430 мс и всё валилось в [00:00]
+                Thread.sleep((long)(sectionTime * 50));
             } catch (InterruptedException e) {
                 break;
             }
