@@ -2,8 +2,11 @@ package domain;
 
 public class PitStop {
 
-    // длительность пит-стопа в миллисекундах (для Thread.sleep в BolideThread)
-    public static final int DURATION_MS = 2000;
+    // длительность пит-стопа в миллисекундах (для Thread.sleep в BolideThread).
+    // Значение 800мс согласовано с множителем BolideThread.MS_PER_SIM_SECOND=50:
+    // 800 / 50 = 16 симуляционных секунд — реалистичная цена пит-стопа
+    // относительно длины гонки (80–110 с).
+    public static final int DURATION_MS = 800;
     // снижение износа шин за один пит-стоп
     public static final double WEAR_REDUCTION = 30.0;
 

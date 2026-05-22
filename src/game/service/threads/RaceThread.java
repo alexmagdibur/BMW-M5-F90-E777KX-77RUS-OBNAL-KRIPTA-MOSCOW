@@ -82,9 +82,13 @@ public class RaceThread implements Runnable {
         allParticipants.add(playerThread);
         allParticipants.addAll(botThreads);
 
-        // инициализируем счётчик прогресса до старта потоков — happens-before через start()
+        // инициализируем счётчик прогресса до старта потоков — happens-before через start().
+        // DNF-участника (preset) пропускаем: он уже в state.results и не поедет,
+        // поэтому CommentatorThread не должен показывать его как лидера/замыкающего.
         for (BolideThread bt : allParticipants) {
-            state.sectionProgress.put(bt.getParticipantName(), 0);
+            if (!bt.isDnf()) {
+                state.sectionProgress.put(bt.getParticipantName(), 0);
+            }
         }
 
         // запускаем погоду, инциденты и комментатора

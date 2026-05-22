@@ -14,6 +14,11 @@ import java.util.List;
 
 public class BolideThread implements Runnable {
 
+    // 1 симуляционная секунда = 50 мс реального времени.
+    // Используется и для сна на секцию, и для конвертации длительности питстопа
+    // в симуляционные секунды — чтобы totalTime отражал реальный порядок финиша.
+    static final double MS_PER_SIM_SECOND = 50.0;
+
     private final RaceState state;
     private final Bolid bolid;
     private final Pilot pilot;
@@ -76,16 +81,16 @@ public class BolideThread implements Runnable {
             state.sectionProgress.put(participantName, i + 1);
 
             try {
-                // 1 секунда модельного времени = 50 мс реального;
-                // при множителе 5 весь заезд укладывался в ~430 мс и всё валилось в [00:00]
-                Thread.sleep((long)(sectionTime * 50));
+                Thread.sleep((long)(sectionTime * MS_PER_SIM_SECOND));
             } catch (InterruptedException e) {
                 break;
             }
 
-            // пит-стоп каждые sectionsPerPitStop секций
+            // пит-стоп каждые sectionsPerPitStop секций;
+            // tryPitStop() возвращает стоимость питстопа в симуляционных секундах —
+            // добавляем к totalTime, чтобы порядок в таблице совпадал с порядком в логах
             if ((i + 1) % sectionsPerPitStop == 0 && pitsDone < plannedPitStops) {
-                tryPitStop();
+                totalTime += tryPitStop();
                 pitsDone++;
             }
         }
@@ -96,9 +101,14 @@ public class BolideThread implements Runnable {
         }
     }
 
-    private void tryPitStop() {
+    // Возвращает стоимость питстопа в симуляционных секундах:
+    //   успешный въезд → DURATION_MS / MS_PER_SIM_SECOND (= 16 с при текущих константах)
+    //   боксы заняты  → 0.0 (пит-стоп пропущен, время не тратится)
+    // Благодаря этому totalTime = секции + питстопы, и сортировка результатов
+    // всегда совпадает с реальным порядком финиша в логах.
+    private double tryPitStop() {
         PitLane pit = track.getPitLane();
-        if (pit == null) return;
+        if (pit == null) return 0.0;
 
         if (pit.tryEnter()) {
             state.log("🔧 " + participantName + " заехал в боксы");
@@ -110,8 +120,10 @@ public class BolideThread implements Runnable {
             PitStop.applyBonus(bolid);
             pit.leave();
             state.log("✅ " + participantName + " выехал из боксов");
+            return PitStop.DURATION_MS / MS_PER_SIM_SECOND;
         } else {
             state.log("⛔ " + participantName + " — боксы заняты, пит-стоп пропущен");
+            return 0.0;
         }
     }
 }
